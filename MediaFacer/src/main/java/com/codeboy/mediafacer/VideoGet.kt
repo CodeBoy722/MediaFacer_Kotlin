@@ -2,8 +2,14 @@ package com.codeboy.mediafacer
 
 import android.content.Context
 
-internal class VideoGet(val context: Context) {
+ object VideoGet {
 
+  fun initialize(){
 
+  }
+
+  fun findBuckets(){
+
+  }
 
 }

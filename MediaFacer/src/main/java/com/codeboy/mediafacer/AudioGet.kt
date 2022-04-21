@@ -2,7 +2,20 @@ package com.codeboy.mediafacer
 
 import android.content.Context
 
-internal class AudioGet(val context: Context) {
+ object AudioGet {
+
+
+  fun findBuckets(){
+
+  }
+
+  fun findAlbums(){
+
+  }
+
+  fun findArtists(){
+
+  }
 
 
 }
