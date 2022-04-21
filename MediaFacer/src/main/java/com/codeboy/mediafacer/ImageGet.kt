@@ -1,15 +1,14 @@
 package com.codeboy.mediafacer
 
-import android.content.Context
 
- object ImageGet {
+ internal interface ImageGet {
 
 
-  fun findBuckets(){
+  fun findImageBuckets(){
 
   }
 
-  fun findAlbums(){
+  fun findImageAlbums(){
 
   }
 

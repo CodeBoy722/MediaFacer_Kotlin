@@ -1,19 +1,18 @@
 package com.codeboy.mediafacer
 
-import android.content.Context
 
- object AudioGet {
+ internal interface AudioGet {
 
 
-  fun findBuckets(){
-
-  }
-
-  fun findAlbums(){
+  fun findAudioBuckets(){
 
   }
 
-  fun findArtists(){
+  fun findAudioAlbums(){
+
+  }
+
+  fun findAudioArtists(){
 
   }
 

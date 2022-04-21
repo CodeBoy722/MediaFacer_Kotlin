@@ -1,35 +1,88 @@
 package com.codeboy.mediafacer
 
+import android.annotation.SuppressLint
 import android.content.Context
-import android.database.ContentObserver
-import android.os.Handler
-import android.os.Looper
+import android.database.Cursor
 import android.provider.MediaStore
-import android.util.Log
 
-class MediaFacer() {
+class MediaFacer(val context:Context): VideoGet, AudioGet,ImageGet {
+
+    val externalContentUri = MediaStore.Audio.Media.EXTERNAL_CONTENT_URI
+    val internalContentUri = MediaStore.Audio.Media.INTERNAL_CONTENT_URI
+    lateinit var cursor: Cursor
+    var audioSelection = MediaStore.Audio.Media.IS_MUSIC + " != 0"
+
+    var mediaPaginationStart = 0
+    var mediaPaginationLimit = 0
+
+
+
+    @SuppressLint("InlinedApi")
+    private val audioProjections = arrayOf(
+        MediaStore.Audio.Media.TITLE,
+        MediaStore.Audio.Media.DISPLAY_NAME,
+        MediaStore.Audio.Media.ARTIST,
+        MediaStore.Audio.Media.ARTIST_ID,
+        MediaStore.Audio.Media.ALBUM,
+        MediaStore.Audio.Media.ALBUM_ID,
+        MediaStore.Audio.Media.COMPOSER,
+        MediaStore.Audio.Media.SIZE,
+        MediaStore.Audio.Media._ID,
+        MediaStore.Audio.Media.DURATION,
+        MediaStore.Audio.Media.BUCKET_ID
+    )
+
+    @SuppressLint("InlinedApi")
+    private val imageProjections = arrayOf(
+        MediaStore.Images.Media.DISPLAY_NAME,
+        MediaStore.Images.Media.SIZE,
+        MediaStore.Images.Media.BUCKET_DISPLAY_NAME,
+        MediaStore.Images.Media.BUCKET_ID,
+        MediaStore.Images.Media._ID,
+        MediaStore.Images.Media.DATE_TAKEN
+    )
+
+    @SuppressLint("InlinedApi")
+    var videoProjections = arrayOf(
+        MediaStore.Video.Media.DISPLAY_NAME,
+        MediaStore.Video.Media.DURATION,
+        MediaStore.Video.Media.BUCKET_DISPLAY_NAME,
+        MediaStore.Video.Media.BUCKET_ID,
+        MediaStore.Video.Media.SIZE,
+        MediaStore.Video.Media._ID,
+        MediaStore.Video.Media.ALBUM,
+        MediaStore.Video.Media.DATE_TAKEN,
+        MediaStore.Video.Media.ARTIST
+    )
+
 
     /*in initialization function, get all audio album Ids, audio bucket Ids, audio artist Ids, image bucket Ids, image album Ids
     * video folder Ids in their various media classes*/
 
-    companion object {
+    /*companion object {
         fun initialize(appContext: Context){
 
-            VideoGet.findBuckets()
-            ImageGet.findAlbums()
-            ImageGet.findBuckets()
-            AudioGet.findAlbums()
-            AudioGet.findArtists()
-            AudioGet.findBuckets()
-
-
-
-
         }
+    }*/
+
+    fun withVideoPagination(start: Int, limit: Int,shouldPaginate: Boolean):MediaFacer{
+
+        return this
+    }
+
+    override fun findVideoBuckets() {
+        //super.findVideoBuckets()
+    }
+
+    fun deleteMedia(mediaId: Int){
 
     }
 
-    fun setVideoObserver(appContext: Context){
+    fun renameMedia(mediaId: Int){
+
+    }
+
+   /* fun setVideoObserver(appContext: Context){
         appContext.contentResolver.registerContentObserver(
             MediaStore.Video.Media.INTERNAL_CONTENT_URI, true,
             object : ContentObserver(Handler(Looper.getMainLooper())) {
@@ -111,14 +164,6 @@ class MediaFacer() {
 
     fun removeVideoObserver(){
 
-    }
-
-    fun deleteMedia(mediaId: Int){
-
-    }
-
-    fun renameMedia(mediaId: Int){
-
-    }
+    }*/
 
 }
