@@ -3,12 +3,15 @@ package com.codeboy.mediafacer
 
  internal interface ImageGet {
 
-
-  fun findImageBuckets(){
+  fun getImages(){
 
   }
 
-  fun findImageAlbums(){
+  fun getImageAlbums(){
+
+  }
+
+  fun getImageFolders(){
 
   }
 

@@ -3,18 +3,24 @@ package com.codeboy.mediafacer
 
  internal interface AudioGet {
 
-
-  fun findAudioBuckets(){
-
-  }
-
-  fun findAudioAlbums(){
+  fun getAudios(){
 
   }
 
-  fun findAudioArtists(){
+  fun getAudioAlbums(){
 
   }
 
+  fun getAudioArtist(){
+
+  }
+
+  fun getAudioBuckets(){
+
+  }
+
+  fun getAudioGenres(){
+
+  }
 
 }

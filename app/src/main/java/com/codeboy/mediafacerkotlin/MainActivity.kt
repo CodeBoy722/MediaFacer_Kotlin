@@ -11,8 +11,8 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
-        MediaFacer(this).withVideoPagination(0,500,true).findAudioAlbums()
-        MediaFacer(this).findAudioAlbums()
+        MediaFacer(this).withVideoPagination(0,500,true).getVideos()
+        MediaFacer(this).getVideos()
 
     }
 

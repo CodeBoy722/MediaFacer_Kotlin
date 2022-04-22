@@ -14,8 +14,7 @@ class MediaFacer(val context:Context): VideoGet, AudioGet,ImageGet {
 
     var mediaPaginationStart = 0
     var mediaPaginationLimit = 0
-
-
+    var shouldPaginate = false
 
     @SuppressLint("InlinedApi")
     private val audioProjections = arrayOf(
@@ -66,11 +65,10 @@ class MediaFacer(val context:Context): VideoGet, AudioGet,ImageGet {
     }*/
 
     fun withVideoPagination(start: Int, limit: Int,shouldPaginate: Boolean):MediaFacer{
-
         return this
     }
 
-    override fun findVideoBuckets() {
+    override fun getVideoFolders() {
         //super.findVideoBuckets()
     }
 
@@ -81,6 +79,20 @@ class MediaFacer(val context:Context): VideoGet, AudioGet,ImageGet {
     fun renameMedia(mediaId: Int){
 
     }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
    /* fun setVideoObserver(appContext: Context){
         appContext.contentResolver.registerContentObserver(
@@ -165,5 +177,7 @@ class MediaFacer(val context:Context): VideoGet, AudioGet,ImageGet {
     fun removeVideoObserver(){
 
     }*/
+
+
 
 }
