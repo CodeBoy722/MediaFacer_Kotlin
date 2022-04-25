@@ -1,5 +1,6 @@
 package com.codeboy.mediafacer
 
+import android.net.Uri
 import android.provider.MediaStore
 
 internal interface VideoGet {
@@ -18,11 +19,11 @@ internal interface VideoGet {
    )
 
 
- fun getVideos(){
+ fun getVideos(contentMedium: Uri){
 
  }
 
- fun getVideoFolders(){
+ fun getVideoFolders(contentMedium: Uri){
 
  }
 

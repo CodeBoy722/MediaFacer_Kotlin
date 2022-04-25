@@ -3,16 +3,19 @@ package com.codeboy.mediafacer
 import android.annotation.SuppressLint
 import android.content.Context
 import android.database.Cursor
+import android.net.Uri
 import android.provider.MediaStore
 
 class MediaFacer(val context:Context): VideoGet, AudioGet,ImageGet {
 
-    val audioExternalContentUri = MediaStore.Audio.Media.EXTERNAL_CONTENT_URI
-    val audioInternalContentUri = MediaStore.Audio.Media.INTERNAL_CONTENT_URI
-    val videoExternalContentUri = MediaStore.Video.Media.EXTERNAL_CONTENT_URI
-    val videoInternalContentUri = MediaStore.Video.Media.INTERNAL_CONTENT_URI
-    val imageExternalContentUri = MediaStore.Images.Media.EXTERNAL_CONTENT_URI
-    val imageInternalContentUri = MediaStore.Images.Media.INTERNAL_CONTENT_URI
+    companion object {
+        val externalAudioContent = MediaStore.Audio.Media.EXTERNAL_CONTENT_URI
+        val internalAudioContent = MediaStore.Audio.Media.INTERNAL_CONTENT_URI
+        val externalVideoContent = MediaStore.Video.Media.EXTERNAL_CONTENT_URI
+        val internalVideoContent = MediaStore.Video.Media.INTERNAL_CONTENT_URI
+        val externalImagesContent = MediaStore.Images.Media.EXTERNAL_CONTENT_URI
+        val internalImagesContent = MediaStore.Images.Media.INTERNAL_CONTENT_URI
+    }
 
     lateinit var cursor: Cursor
     var audioSelection = MediaStore.Audio.Media.IS_MUSIC + " != 0"
@@ -59,23 +62,14 @@ class MediaFacer(val context:Context): VideoGet, AudioGet,ImageGet {
         MediaStore.Video.Media.ARTIST
     )
 
-
-    /*in initialization function, get all audio album Ids, audio bucket Ids, audio artist Ids, image bucket Ids, image album Ids
-    * video folder Ids in their various media classes*/
-
-    /*companion object {
-        fun initialize(appContext: Context){
-
-        }
-    }*/
-
     fun withVideoPagination(start: Int, limit: Int,shouldPaginate: Boolean):MediaFacer{
         return this
     }
 
-    override fun getVideoFolders() {
+    override fun getVideoFolders(contentMedium: Uri) {
         //super.findVideoBuckets()
     }
+
 
     fun deleteMedia(mediaId: Int){
 
