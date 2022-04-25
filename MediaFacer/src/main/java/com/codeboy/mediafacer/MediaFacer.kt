@@ -7,8 +7,13 @@ import android.provider.MediaStore
 
 class MediaFacer(val context:Context): VideoGet, AudioGet,ImageGet {
 
-    val externalContentUri = MediaStore.Audio.Media.EXTERNAL_CONTENT_URI
-    val internalContentUri = MediaStore.Audio.Media.INTERNAL_CONTENT_URI
+    val audioExternalContentUri = MediaStore.Audio.Media.EXTERNAL_CONTENT_URI
+    val audioInternalContentUri = MediaStore.Audio.Media.INTERNAL_CONTENT_URI
+    val videoExternalContentUri = MediaStore.Video.Media.EXTERNAL_CONTENT_URI
+    val videoInternalContentUri = MediaStore.Video.Media.INTERNAL_CONTENT_URI
+    val imageExternalContentUri = MediaStore.Images.Media.EXTERNAL_CONTENT_URI
+    val imageInternalContentUri = MediaStore.Images.Media.INTERNAL_CONTENT_URI
+
     lateinit var cursor: Cursor
     var audioSelection = MediaStore.Audio.Media.IS_MUSIC + " != 0"
 
@@ -17,7 +22,7 @@ class MediaFacer(val context:Context): VideoGet, AudioGet,ImageGet {
     var shouldPaginate = false
 
     @SuppressLint("InlinedApi")
-    private val audioProjections = arrayOf(
+    override val audioProjections = arrayOf(
         MediaStore.Audio.Media.TITLE,
         MediaStore.Audio.Media.DISPLAY_NAME,
         MediaStore.Audio.Media.ARTIST,
@@ -32,7 +37,7 @@ class MediaFacer(val context:Context): VideoGet, AudioGet,ImageGet {
     )
 
     @SuppressLint("InlinedApi")
-    private val imageProjections = arrayOf(
+    override val imageProjections = arrayOf(
         MediaStore.Images.Media.DISPLAY_NAME,
         MediaStore.Images.Media.SIZE,
         MediaStore.Images.Media.BUCKET_DISPLAY_NAME,
@@ -42,7 +47,7 @@ class MediaFacer(val context:Context): VideoGet, AudioGet,ImageGet {
     )
 
     @SuppressLint("InlinedApi")
-    var videoProjections = arrayOf(
+    override val videoProjections = arrayOf(
         MediaStore.Video.Media.DISPLAY_NAME,
         MediaStore.Video.Media.DURATION,
         MediaStore.Video.Media.BUCKET_DISPLAY_NAME,
