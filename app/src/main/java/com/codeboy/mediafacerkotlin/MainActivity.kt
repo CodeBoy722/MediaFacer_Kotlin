@@ -18,8 +18,9 @@ class MainActivity : AppCompatActivity() {
         bindings = DataBindingUtil.setContentView(this, R.layout.activity_main)
         bindings.lifecycleOwner = this
 
-        MediaFacer(this).withVideoPagination(0,500,true).getVideos(externalVideoContent)
-        MediaFacer(this).getVideos(externalVideoContent)
+        val mediaFacer = MediaFacer()
+        val videosList = mediaFacer.withVideoPagination(0,500,true).getVideos(this,externalVideoContent)
+        val allVideos = mediaFacer.getVideos(this,externalVideoContent)
     }
 
 }

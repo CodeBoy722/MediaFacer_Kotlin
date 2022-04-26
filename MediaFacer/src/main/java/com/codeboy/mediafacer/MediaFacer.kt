@@ -5,21 +5,20 @@ import android.content.Context
 import android.database.Cursor
 import android.net.Uri
 import android.provider.MediaStore
+import com.codeboy.mediafacer.models.VideoContent
 
-class MediaFacer(val context:Context): VideoGet, AudioGet,ImageGet {
+class MediaFacer(): VideoGet, AudioGet,ImageGet {
 
     companion object {
-        val externalAudioContent = MediaStore.Audio.Media.EXTERNAL_CONTENT_URI
-        val internalAudioContent = MediaStore.Audio.Media.INTERNAL_CONTENT_URI
-        val externalVideoContent = MediaStore.Video.Media.EXTERNAL_CONTENT_URI
-        val internalVideoContent = MediaStore.Video.Media.INTERNAL_CONTENT_URI
-        val externalImagesContent = MediaStore.Images.Media.EXTERNAL_CONTENT_URI
-        val internalImagesContent = MediaStore.Images.Media.INTERNAL_CONTENT_URI
+        val externalAudioContent: Uri = MediaStore.Audio.Media.EXTERNAL_CONTENT_URI
+        val internalAudioContent: Uri = MediaStore.Audio.Media.INTERNAL_CONTENT_URI
+        val externalVideoContent: Uri = MediaStore.Video.Media.EXTERNAL_CONTENT_URI
+        val internalVideoContent: Uri = MediaStore.Video.Media.INTERNAL_CONTENT_URI
+        val externalImagesContent: Uri = MediaStore.Images.Media.EXTERNAL_CONTENT_URI
+        val internalImagesContent: Uri = MediaStore.Images.Media.INTERNAL_CONTENT_URI
     }
 
-    lateinit var cursor: Cursor
     var audioSelection = MediaStore.Audio.Media.IS_MUSIC + " != 0"
-
     var mediaPaginationStart = 0
     var mediaPaginationLimit = 0
     var shouldPaginate = false
@@ -63,13 +62,28 @@ class MediaFacer(val context:Context): VideoGet, AudioGet,ImageGet {
     )
 
     fun withVideoPagination(start: Int, limit: Int,shouldPaginate: Boolean):MediaFacer{
+        mediaPaginationStart = start
+        mediaPaginationLimit = limit
+        this.shouldPaginate = shouldPaginate
         return this
     }
 
-    override fun getVideoFolders(contentMedium: Uri) {
+    override fun getVideoFolders(context: Context, contentMedium: Uri) {
         //super.findVideoBuckets()
+        if(shouldPaginate){
+
+        }else{
+            super.getVideoFolders(context, contentMedium)
+        }
     }
 
+    override fun getVideos(context: Context, contentMedium: Uri): ArrayList<VideoContent> {
+        var videos = ArrayList<VideoContent>()
+        if(shouldPaginate){
+            //todo get paginated videos
+        }else videos = super.getVideos(context, contentMedium)
+        return videos
+    }
 
     fun deleteMedia(mediaId: Int){
 

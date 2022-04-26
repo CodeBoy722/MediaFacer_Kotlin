@@ -4,7 +4,7 @@ import android.media.MediaMetadata
 
 class VideoContent() {
 
-    var id: Long = 0
+    var id: Int = 0
     lateinit var name: String
     lateinit var path: String
     var duration: Long = 0
