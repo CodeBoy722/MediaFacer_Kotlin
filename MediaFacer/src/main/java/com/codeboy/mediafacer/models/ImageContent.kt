@@ -1,12 +1,15 @@
 package com.codeboy.mediafacer.models
 
+import java.util.*
+
 class ImageContent() {
 
-    lateinit var name: String
-    lateinit var path: String
-    lateinit var album: String
+    var name: String = ""
+    var album: String = ""
+    var bucketName: String = ""
     var size: Long = 0
-    lateinit var imageUri: String
+    var imageUri: String = ""
     var imageId = 0
+    var dateModified: Date = Date()
 
 }

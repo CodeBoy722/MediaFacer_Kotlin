@@ -2,21 +2,22 @@ package com.codeboy.mediafacer.models
 
 import android.media.MediaMetadata
 import android.net.Uri
+import java.util.*
 
 class AudioContent() {
 
-    lateinit var name: String
-    lateinit var title: String
-    lateinit var filePath: String
-    lateinit var artist: String
-    lateinit var album: String
-    lateinit var genre: String
-    lateinit var composer: String
-    lateinit var artUri: Uri
+    var name: String = ""
+    var title: String = ""
+    var artist: String = ""
+    var album: String = ""
+    var genre: String = ""
+    var composer: String = ""
+    var artUri: Uri = Uri.EMPTY
     var musicSize: Long = 0
     var duration: Long = 0
     var musicId: Long = 0
-    lateinit var musicUri: String
+    var musicUri: String = ""
+    var dateModified: Date = Date()
 
 
     fun getMediaMetadata(): MediaMetadata {

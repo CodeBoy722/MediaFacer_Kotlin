@@ -1,17 +1,18 @@
 package com.codeboy.mediafacer.models
 
 import android.media.MediaMetadata
+import java.util.*
 
 class VideoContent() {
 
     var id: Int = 0
-    lateinit var name: String
-    lateinit var path: String
+    var name: String = ""
     var duration: Long = 0
     var size: Long = 0
-    lateinit var videoUri: String
-    lateinit var album: String
-    lateinit var artist: String
+    var videoUri: String = ""
+    var album: String = ""
+    var artist: String = ""
+    var dateModified: Date = Date()
 
 
     fun getMediaMetadata(): MediaMetadata {

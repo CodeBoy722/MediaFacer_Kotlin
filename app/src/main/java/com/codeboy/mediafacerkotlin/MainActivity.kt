@@ -19,7 +19,7 @@ class MainActivity : AppCompatActivity() {
         bindings.lifecycleOwner = this
 
         val mediaFacer = MediaFacer()
-        val videosList = mediaFacer.withVideoPagination(0,500,true).getVideos(this,externalVideoContent)
+        val videosList = mediaFacer.withVideoPagination(0,20,true).getVideos(this,externalVideoContent)
         val allVideos = mediaFacer.getVideos(this,externalVideoContent)
     }
 

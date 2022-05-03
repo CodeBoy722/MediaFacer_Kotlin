@@ -4,6 +4,9 @@ import android.content.Context
 import android.net.Uri
 import android.provider.MediaStore
 import com.codeboy.mediafacer.models.VideoContent
+import java.util.*
+import java.util.concurrent.TimeUnit
+import kotlin.collections.ArrayList
 
 internal interface VideoGet {
 
@@ -26,37 +29,44 @@ internal interface VideoGet {
   val cursor = context.contentResolver.query(contentMedium, videoProjections, null, null,
    "LOWER (" + MediaStore.Video.Media.DATE_TAKEN + ") DESC")!! //DESC ASC
   try {
-   cursor.moveToFirst()
-   do {
-    val videoContent = VideoContent()
+   if(cursor.moveToFirst()){
+    do {
+     val videoContent = VideoContent()
 
-    videoContent.name = cursor.getString(cursor.getColumnIndexOrThrow(MediaStore.Video.Media.DISPLAY_NAME))
+     videoContent.name = cursor.getString(cursor.getColumnIndexOrThrow(MediaStore.Video.Media.DISPLAY_NAME))
 
-    videoContent.path = cursor.getString(cursor.getColumnIndexOrThrow(MediaStore.Video.Media.DATA))
+     videoContent.duration = cursor.getLong(cursor.getColumnIndexOrThrow(MediaStore.Video.Media.DURATION))
 
-    videoContent.duration = cursor.getLong(cursor.getColumnIndexOrThrow(MediaStore.Video.Media.DURATION))
+     videoContent.size = cursor.getLong(cursor.getColumnIndexOrThrow(MediaStore.Video.Media.SIZE))
 
-    videoContent.size = cursor.getLong(cursor.getColumnIndexOrThrow(MediaStore.Video.Media.SIZE))
+     videoContent.dateModified = Date(TimeUnit.SECONDS.toMillis(cursor.getLong(cursor.getColumnIndexOrThrow(MediaStore.Video.Media.DATE_MODIFIED))))
 
-    val id: Int = cursor.getInt(cursor.getColumnIndexOrThrow(MediaStore.Video.Media._ID))
+     val id: Int = cursor.getInt(cursor.getColumnIndexOrThrow(MediaStore.Video.Media._ID))
 
-    videoContent.id = id
-    val contentUri = Uri.withAppendedPath(contentMedium, id.toString())
-    videoContent.videoUri = contentUri.toString()
-    videoContent.album = cursor.getString(cursor.getColumnIndexOrThrow(MediaStore.Video.Media.ALBUM))
+     videoContent.id = id
+     val contentUri = Uri.withAppendedPath(contentMedium, id.toString())
+     videoContent.videoUri = contentUri.toString()
 
-    videoContent.artist = cursor.getString(cursor.getColumnIndexOrThrow(MediaStore.Video.Media.ARTIST))
-    allVideo.add(videoContent)
-   } while (cursor.moveToNext())
-   cursor.close()
+     videoContent.album = cursor.getString(cursor.getColumnIndexOrThrow(MediaStore.Video.Media.ALBUM))
+
+     videoContent.artist = cursor.getString(cursor.getColumnIndexOrThrow(MediaStore.Video.Media.ARTIST))
+     allVideo.add(videoContent)
+
+    } while (cursor.moveToNext())
+   }
+
   } catch (e: Exception) {
    e.printStackTrace()
   }
+  cursor.close()
   return allVideo
  }
+
+
 
  fun getVideoFolders(context: Context, contentMedium: Uri){
 
  }
+
 
 }
