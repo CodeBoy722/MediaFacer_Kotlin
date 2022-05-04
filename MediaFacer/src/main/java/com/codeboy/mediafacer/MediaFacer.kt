@@ -64,7 +64,7 @@ class MediaFacer(): VideoGet, AudioGet,ImageGet {
         MediaStore.Video.Media.ARTIST
     )
 
-    fun withVideoPagination(start: Int, limit: Int,shouldPaginate: Boolean):MediaFacer{
+    fun withPagination(start: Int, limit: Int,shouldPaginate: Boolean):MediaFacer{
         mediaPaginationStart = start
         mediaPaginationLimit = limit
         this.shouldPaginate = shouldPaginate
@@ -77,7 +77,7 @@ class MediaFacer(): VideoGet, AudioGet,ImageGet {
 
             val cursor = context.contentResolver.query(contentMedium, videoProjections, null, null,
                 "LOWER (" + MediaStore.Video.Media.DATE_TAKEN + ") DESC")!! //DESC ASC
-            var index = 0
+            var index = 1
             try {
                 if(cursor.moveToPosition(mediaPaginationStart)){
                     do {
@@ -106,12 +106,13 @@ class MediaFacer(): VideoGet, AudioGet,ImageGet {
 
                     } while (cursor.moveToNext())
                 }
-
-                cursor.close()
             } catch (e: Exception) {
                 e.printStackTrace()
             }
-
+            cursor.close()
+            mediaPaginationStart = 0
+            mediaPaginationLimit = 0
+            shouldPaginate = false
         }else videos = super.getVideos(context, contentMedium)
         return videos
     }
@@ -126,7 +127,7 @@ class MediaFacer(): VideoGet, AudioGet,ImageGet {
                 ,audioSelection,
                 null,
                 "LOWER (" + MediaStore.Audio.Media.TITLE + ") ASC")!! //"LOWER ("+MediaStore.Audio.Media.TITLE + ") ASC"
-            var index = 0
+            var index = 1
             try {
                 if (cursor.moveToPosition(mediaPaginationStart)) {
                     do {
@@ -173,14 +174,14 @@ class MediaFacer(): VideoGet, AudioGet,ImageGet {
                             break
                     } while (cursor.moveToNext())
                 }
-
             }catch (e: Exception){
                 e.printStackTrace()
             }
             cursor.close()
-
+            mediaPaginationStart = 0
+            mediaPaginationLimit = 0
+            shouldPaginate = false
         }else allAudio = super.getAudios(context, contentMedium)
-
         return  allAudio
     }
 
@@ -193,7 +194,7 @@ class MediaFacer(): VideoGet, AudioGet,ImageGet {
                 , null, null,
                 "LOWER (" + MediaStore.Images.Media.DATE_TAKEN + ") DESC")!!
 
-            var index = 0
+            var index = 1
             try {
                 if(cursor.moveToPosition(mediaPaginationStart)){
                     do {
@@ -224,12 +225,12 @@ class MediaFacer(): VideoGet, AudioGet,ImageGet {
                 e.printStackTrace()
             }
             cursor.close()
-
+            mediaPaginationStart = 0
+            mediaPaginationLimit = 0
+            shouldPaginate = false
         }else allImages = super.getImages(context, contentMedium)
         return allImages
     }
-
-
 
 
     override fun getVideoFolders(context: Context, contentMedium: Uri) {

@@ -1,60 +1,88 @@
 package com.codeboy.mediafacerkotlin.fragments
 
+import android.content.Context
 import android.os.Bundle
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.fragment.app.Fragment
+import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.Observer
+import androidx.recyclerview.widget.GridLayoutManager
+import androidx.recyclerview.widget.RecyclerView
+import com.codeboy.mediafacer.MediaFacer
+import com.codeboy.mediafacer.MediaFacer.Companion.externalImagesContent
+import com.codeboy.mediafacer.models.ImageContent
 import com.codeboy.mediafacerkotlin.R
+import com.codeboy.mediafacerkotlin.databinding.FragmentImagesBinding
+import com.codeboy.mediafacerkotlin.utils.EndlessScrollListener
+import com.codeboy.mediafacerkotlin.viewAdapters.ImageViewAdapter
 
-// TODO: Rename parameter arguments, choose names that match
-// the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-private const val ARG_PARAM1 = "param1"
-private const val ARG_PARAM2 = "param2"
-
-/**
- * A simple [Fragment] subclass.
- * Use the [ImagesFragment.newInstance] factory method to
- * create an instance of this fragment.
- */
 class ImagesFragment : Fragment() {
-    // TODO: Rename and change types of parameters
-    private var param1: String? = null
-    private var param2: String? = null
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        arguments?.let {
-            param1 = it.getString(ARG_PARAM1)
-            param2 = it.getString(ARG_PARAM2)
-        }
-    }
+    lateinit var bindings: FragmentImagesBinding
+    var images: MutableLiveData<ArrayList<ImageContent>> = MutableLiveData()
+    var paginationStart = 0
+    var paginationLimit = 50
+    var shouldPaginate = true
 
-    override fun onCreateView(
-        inflater: LayoutInflater, container: ViewGroup?,
-        savedInstanceState: Bundle?
-    ): View? {
-        // Inflate the layout for this fragment
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         return inflater.inflate(R.layout.fragment_images, container, false)
     }
 
-    companion object {
-        /**
-         * Use this factory method to create a new instance of
-         * this fragment using the provided parameters.
-         *
-         * @param param1 Parameter 1.
-         * @param param2 Parameter 2.
-         * @return A new instance of fragment ImagesFragment.
-         */
-        // TODO: Rename and change types and number of parameters
-        @JvmStatic
-        fun newInstance(param1: String, param2: String) =
-            ImagesFragment().apply {
-                arguments = Bundle().apply {
-                    putString(ARG_PARAM1, param1)
-                    putString(ARG_PARAM2, param2)
-                }
-            }
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        bindings = FragmentImagesBinding.bind(view)
+        bindings.lifecycleOwner = viewLifecycleOwner
+        initImages()
     }
+
+    private fun initImages(){
+
+        bindings.imagesList.hasFixedSize()
+        bindings.imagesList.setHasFixedSize(true)
+        bindings.imagesList.setItemViewCacheSize(20)
+        val numOfColumns = calculateNoOfColumns(requireActivity(), 90f)
+        val layoutManager = GridLayoutManager(requireActivity(),numOfColumns)
+        bindings.imagesList.layoutManager = layoutManager
+        bindings.imagesList.itemAnimator = null
+
+        val adapter = ImageViewAdapter()
+        bindings.imagesList.adapter = adapter
+
+        images.observe(viewLifecycleOwner, Observer {
+            adapter.submitList(it)
+        })
+
+        val imagesList = ArrayList<ImageContent>()
+        imagesList.addAll(
+            MediaFacer()
+                .withPagination(paginationStart,paginationLimit,shouldPaginate)
+                .getImages(requireActivity(),externalImagesContent)
+        )
+        paginationStart = imagesList.size+1
+        images.value = imagesList
+
+
+        bindings.imagesList.addOnScrollListener(object: EndlessScrollListener(layoutManager){
+            override fun onLoadMore(page: Int, totalItemsCount: Int, view: RecyclerView?) {
+                imagesList.addAll(
+                    MediaFacer()
+                        .withPagination(paginationStart,paginationLimit,shouldPaginate)
+                        .getImages(requireActivity(),externalImagesContent)
+                )
+                paginationStart = imagesList.size+1
+                images.value = imagesList
+            }
+        })
+
+    }
+
+    fun calculateNoOfColumns(context: Context, columnWidthDp: Float): Int { // For example columnWidthdp=180
+        val displayMetrics = context.resources.displayMetrics
+        val screenWidthDp = displayMetrics.widthPixels / displayMetrics.density
+        return (screenWidthDp / columnWidthDp + 0.5).toInt()
+    }
+
+
 }

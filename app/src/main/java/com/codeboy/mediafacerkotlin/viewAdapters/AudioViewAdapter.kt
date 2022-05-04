@@ -17,7 +17,6 @@ class AudioViewAdapter() : ListAdapter<AudioContent, AudioViewAdapter.AudioViewH
         TODO("Not yet implemented")
     }
 
-
     private class AudioDiffUtil : DiffUtil.ItemCallback<AudioContent>() {
         override fun areItemsTheSame(oldItem: AudioContent, newItem: AudioContent): Boolean {
             return oldItem.name == newItem.name

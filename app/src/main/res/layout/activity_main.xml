@@ -9,7 +9,7 @@
         android:layout_height="match_parent">
 
         <androidx.viewpager2.widget.ViewPager2
-            android:id="@+id/pages_holder"
+            android:id="@+id/body_pager"
             android:layout_width="0dp"
             android:layout_height="0dp"
             app:layout_constraintBottom_toTopOf="@+id/bottom_menu"
@@ -22,12 +22,18 @@
         <com.google.android.material.bottomnavigation.BottomNavigationView
             android:id="@+id/bottom_menu"
             android:layout_width="0dp"
-            android:layout_height="50dp"
-            android:background="@color/material_dynamic_neutral40"
+            android:layout_height="60dp"
+            app:elevation="0dp"
+            style="@style/bottom_menu"
+            app:itemIconTint="@color/colors_bottom_menu"
+            app:itemRippleColor="@color/light_Red_200"
+            app:itemTextColor="@color/colors_bottom_menu"
+            app:labelVisibilityMode="labeled"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/pages_holder" />
+            app:layout_constraintTop_toBottomOf="@+id/body_pager"
+            app:menu="@menu/menu_bottom" />
     </androidx.constraintlayout.widget.ConstraintLayout>
 
 </layout>

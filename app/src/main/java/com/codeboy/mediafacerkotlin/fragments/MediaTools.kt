@@ -6,19 +6,19 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import com.codeboy.mediafacerkotlin.R
-import com.codeboy.mediafacerkotlin.databinding.FragmentVideosBinding
+import com.codeboy.mediafacerkotlin.databinding.FragmentMediaToolsBinding
 
-class VideosFragment : Fragment() {
+class MediaTools : Fragment() {
 
-    lateinit var bindings: FragmentVideosBinding
+    lateinit var bindings: FragmentMediaToolsBinding
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        return inflater.inflate(R.layout.fragment_videos, container, false)
+        return inflater.inflate(R.layout.fragment_media_tools, container, false)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        bindings = FragmentVideosBinding.bind(view)
+        bindings = FragmentMediaToolsBinding.bind(view)
         bindings.lifecycleOwner = viewLifecycleOwner
     }
 

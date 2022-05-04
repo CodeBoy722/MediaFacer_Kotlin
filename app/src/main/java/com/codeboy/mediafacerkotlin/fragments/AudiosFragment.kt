@@ -1,60 +1,95 @@
 package com.codeboy.mediafacerkotlin.fragments
 
 import android.os.Bundle
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.fragment.app.Fragment
+import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.Observer
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
+import com.codeboy.mediafacer.MediaFacer
+import com.codeboy.mediafacer.MediaFacer.Companion.externalAudioContent
+import com.codeboy.mediafacer.models.AudioContent
 import com.codeboy.mediafacerkotlin.R
+import com.codeboy.mediafacerkotlin.databinding.FragmentAudiosBinding
+import com.codeboy.mediafacerkotlin.utils.EndlessScrollListener
+import com.codeboy.mediafacerkotlin.viewAdapters.AudioViewAdapter
 
-// TODO: Rename parameter arguments, choose names that match
-// the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-private const val ARG_PARAM1 = "param1"
-private const val ARG_PARAM2 = "param2"
-
-/**
- * A simple [Fragment] subclass.
- * Use the [AudiosFragment.newInstance] factory method to
- * create an instance of this fragment.
- */
 class AudiosFragment : Fragment() {
-    // TODO: Rename and change types of parameters
-    private var param1: String? = null
-    private var param2: String? = null
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        arguments?.let {
-            param1 = it.getString(ARG_PARAM1)
-            param2 = it.getString(ARG_PARAM2)
-        }
-    }
+    private lateinit var bindings: FragmentAudiosBinding
+    var audios: MutableLiveData<ArrayList<AudioContent>> = MutableLiveData()
+    var paginationStart = 0
+    var paginationLimit = 50
+    var shouldPaginate = true
 
-    override fun onCreateView(
-        inflater: LayoutInflater, container: ViewGroup?,
-        savedInstanceState: Bundle?
-    ): View? {
-        // Inflate the layout for this fragment
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         return inflater.inflate(R.layout.fragment_audios, container, false)
     }
 
-    companion object {
-        /**
-         * Use this factory method to create a new instance of
-         * this fragment using the provided parameters.
-         *
-         * @param param1 Parameter 1.
-         * @param param2 Parameter 2.
-         * @return A new instance of fragment AudiosFragment.
-         */
-        // TODO: Rename and change types and number of parameters
-        @JvmStatic
-        fun newInstance(param1: String, param2: String) =
-            AudiosFragment().apply {
-                arguments = Bundle().apply {
-                    putString(ARG_PARAM1, param1)
-                    putString(ARG_PARAM2, param2)
-                }
-            }
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        bindings = FragmentAudiosBinding.bind(view)
+        bindings.lifecycleOwner = viewLifecycleOwner
+        initAudios()
     }
+
+    private fun initAudios(){
+
+        // init and setup your recyclerview with a layout manager
+        bindings.audiosList.hasFixedSize()
+        bindings.audiosList.setHasFixedSize(true)
+        bindings.audiosList.setItemViewCacheSize(20)
+        val layoutManager = LinearLayoutManager(requireActivity(), RecyclerView.VERTICAL, false)
+        bindings.audiosList.layoutManager = layoutManager
+        bindings.audiosList.itemAnimator = null
+
+        //init your adapter and bind it to recyclerview
+        val audiosAdapter = AudioViewAdapter()
+        bindings.audiosList.adapter = audiosAdapter
+
+        //observe the LifeData list of items and feed them to recyclerview each time there is an update
+        audios.observe(viewLifecycleOwner, Observer {
+            audiosAdapter.submitList(it)
+        })
+
+        //get paginated audio items using MediaFacer, remember to set paginationStart to size+1 of
+        //of items gotten from MediaFacer to prepare for getting next page of items when user scroll
+        val videosList = ArrayList<AudioContent>()
+        videosList.addAll(
+            MediaFacer()
+                .withPagination(paginationStart,paginationLimit,shouldPaginate)
+                .getAudios(requireActivity(),externalAudioContent)
+        )
+        paginationStart = videosList.size+1
+        audios.value = videosList
+
+        //adding EndlessScrollListener to our recyclerview to auto paginate items when user is
+        //scrolling towards end of list
+        bindings.audiosList.addOnScrollListener(object: EndlessScrollListener(layoutManager){
+            override fun onLoadMore(page: Int, totalItemsCount: Int, view: RecyclerView?) {
+                videosList.addAll(
+                    MediaFacer()
+                        .withPagination(paginationStart,paginationLimit,shouldPaginate)
+                        .getAudios(requireActivity(),externalAudioContent)
+                )
+                paginationStart = videosList.size+1
+                audios.value = videosList
+            }
+        })
+
+        //normal RecyclerView.OnScrollListener(), you can use this if you wish
+       /* bindings.audiosList.addOnScrollListener(object: RecyclerView.OnScrollListener() {
+
+            override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
+                if(layoutManager.findLastVisibleItemPosition() == layoutManager.itemCount-1){
+
+                }
+                super.onScrolled(recyclerView, dx, dy)
+            }
+        })*/
+    }
+
 }

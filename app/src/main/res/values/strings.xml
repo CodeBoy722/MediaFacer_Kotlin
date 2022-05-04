@@ -2,4 +2,8 @@
     <string name="app_name">MediaFacer Kotlin</string>
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="audio">Audio</string>
+    <string name="video">Video</string>
+    <string name="images">Images</string>
+    <string name="media_tools">Media Tools</string>
 </resources>
