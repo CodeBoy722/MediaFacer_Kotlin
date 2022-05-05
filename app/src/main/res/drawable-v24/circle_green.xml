@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layer-list xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <item>
+        <shape android:shape="oval" >
+            <padding
+                android:bottom="2dp"
+                android:left="2dp"
+                android:right="2dp"
+                android:top="2dp" />
+            <solid android:color="#00ff0000" />
+            <corners android:radius="15dp" />
+        </shape>
+    </item>
+
+    <item>
+        <shape android:shape="oval" >
+            <padding
+                android:bottom="2dp"
+                android:left="2dp"
+                android:right="2dp"
+                android:top="2dp" />
+            <solid android:color="#10ff0000" />
+            <corners android:radius="15dp" />
+        </shape>
+    </item>
+
+    <item>
+        <shape android:shape="oval" >
+            <padding
+                android:bottom="2dp"
+                android:left="2dp"
+                android:right="2dp"
+                android:top="2dp" />
+            <solid android:color="#20ff0000" />
+            <corners android:radius="15dp" />
+        </shape>
+    </item>
+
+    <item>
+        <shape
+            android:shape="oval" >
+            <solid android:color="@color/WhiteSmoke"/>
+            <size
+                android:height="45dp"
+                android:width="45dp" />
+            <corners android:radius="15dp"/>
+        </shape>
+
+    </item>
+
+</layer-list>

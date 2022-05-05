@@ -6,4 +6,6 @@
     <string name="video">Video</string>
     <string name="images">Images</string>
     <string name="media_tools">Media Tools</string>
+    <string name="artist">artist</string>
+    <string name="title">title</string>
 </resources>

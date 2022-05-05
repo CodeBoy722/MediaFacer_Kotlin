@@ -27,6 +27,8 @@ class MainActivity : AppCompatActivity() {
         setUpBottomMenu()
     }
 
+
+
     private fun setUpBottomMenu(){
         val introFragmentList = ArrayList<Fragment>()
         introFragmentList.add(AudiosFragment())

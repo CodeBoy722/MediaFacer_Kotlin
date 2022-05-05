@@ -74,11 +74,10 @@ class MediaFacer(): VideoGet, AudioGet,ImageGet {
     override fun getVideos(context: Context, contentMedium: Uri): ArrayList<VideoContent> {
         var videos = ArrayList<VideoContent>()
         if(shouldPaginate){
-
             val cursor = context.contentResolver.query(contentMedium, videoProjections, null, null,
                 "LOWER (" + MediaStore.Video.Media.DATE_TAKEN + ") DESC")!! //DESC ASC
-            var index = 1
-            try {
+            var index = 0
+            //try {
                 if(cursor.moveToPosition(mediaPaginationStart)){
                     do {
                         val videoContent = VideoContent()
@@ -90,6 +89,8 @@ class MediaFacer(): VideoGet, AudioGet,ImageGet {
                         videoContent.size = cursor.getLong(cursor.getColumnIndexOrThrow(MediaStore.Video.Media.SIZE))
 
                         val id: Int = cursor.getInt(cursor.getColumnIndexOrThrow(MediaStore.Video.Media._ID))
+
+                        //videoContent.dateModified = Date(TimeUnit.SECONDS.toMillis(cursor.getLong(cursor.getColumnIndexOrThrow(MediaStore.Video.Media.DATE_MODIFIED))))
 
                         videoContent.id = id
                         val contentUri = Uri.withAppendedPath(contentMedium, id.toString())
@@ -106,9 +107,9 @@ class MediaFacer(): VideoGet, AudioGet,ImageGet {
 
                     } while (cursor.moveToNext())
                 }
-            } catch (e: Exception) {
+           /* } catch (e: Exception) {
                 e.printStackTrace()
-            }
+            }*/
             cursor.close()
             mediaPaginationStart = 0
             mediaPaginationLimit = 0
@@ -127,8 +128,8 @@ class MediaFacer(): VideoGet, AudioGet,ImageGet {
                 ,audioSelection,
                 null,
                 "LOWER (" + MediaStore.Audio.Media.TITLE + ") ASC")!! //"LOWER ("+MediaStore.Audio.Media.TITLE + ") ASC"
-            var index = 1
-            try {
+            var index = 0
+            //try {
                 if (cursor.moveToPosition(mediaPaginationStart)) {
                     do {
                         val audioContent = AudioContent()
@@ -148,7 +149,7 @@ class MediaFacer(): VideoGet, AudioGet,ImageGet {
 
                         audioContent.duration = cursor.getLong(cursor.getColumnIndexOrThrow(MediaStore.Audio.Media.DURATION))
 
-                        audioContent.dateModified = Date(TimeUnit.SECONDS.toMillis(cursor.getLong(cursor.getColumnIndexOrThrow(MediaStore.Audio.Media.DATE_MODIFIED))))
+                        //audioContent.dateModified = Date(TimeUnit.SECONDS.toMillis(cursor.getLong(cursor.getColumnIndexOrThrow(MediaStore.Audio.Media.DATE_MODIFIED))))
 
                         val albumId: Long = cursor.getLong(cursor.getColumnIndexOrThrow(MediaStore.Audio.Media.ALBUM_ID))
                         val sArtworkUri = Uri.parse("content://media/external/audio/albumart")
@@ -156,7 +157,7 @@ class MediaFacer(): VideoGet, AudioGet,ImageGet {
 
                         audioContent.artist = cursor.getString(cursor.getColumnIndexOrThrow(MediaStore.Audio.Media.ARTIST))
 
-                        audioContent.composer = cursor.getString(cursor.getColumnIndexOrThrow(MediaStore.Audio.Media.COMPOSER))
+                        //audioContent.composer = cursor.getString(cursor.getColumnIndexOrThrow(MediaStore.Audio.Media.COMPOSER))
 
                         var genreVolume = ""
                         if(contentMedium == externalAudioContent){
@@ -174,9 +175,9 @@ class MediaFacer(): VideoGet, AudioGet,ImageGet {
                             break
                     } while (cursor.moveToNext())
                 }
-            }catch (e: Exception){
+           /* }catch (e: Exception){
                 e.printStackTrace()
-            }
+            }*/
             cursor.close()
             mediaPaginationStart = 0
             mediaPaginationLimit = 0
@@ -194,8 +195,8 @@ class MediaFacer(): VideoGet, AudioGet,ImageGet {
                 , null, null,
                 "LOWER (" + MediaStore.Images.Media.DATE_TAKEN + ") DESC")!!
 
-            var index = 1
-            try {
+            var index = 0
+            //try {
                 if(cursor.moveToPosition(mediaPaginationStart)){
                     do {
                         val imageContent = ImageContent()
@@ -204,7 +205,7 @@ class MediaFacer(): VideoGet, AudioGet,ImageGet {
 
                         imageContent.size = cursor.getLong(cursor.getColumnIndexOrThrow(MediaStore.Images.Media.SIZE))
 
-                        imageContent.dateModified = Date(TimeUnit.SECONDS.toMillis(cursor.getLong(cursor.getColumnIndexOrThrow(MediaStore.Images.Media.DATE_MODIFIED))))
+                        //imageContent.dateModified = Date(TimeUnit.SECONDS.toMillis(cursor.getLong(cursor.getColumnIndexOrThrow(MediaStore.Images.Media.DATE_MODIFIED))))
 
                         val id: Int = cursor.getInt(cursor.getColumnIndexOrThrow(MediaStore.Images.Media._ID))
                         imageContent.imageId = id
@@ -221,9 +222,9 @@ class MediaFacer(): VideoGet, AudioGet,ImageGet {
                     } while (cursor.moveToNext())
 
                 }
-            } catch (e: Exception) {
+           /* } catch (e: Exception) {
                 e.printStackTrace()
-            }
+            }*/
             cursor.close()
             mediaPaginationStart = 0
             mediaPaginationLimit = 0

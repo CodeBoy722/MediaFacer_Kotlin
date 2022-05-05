@@ -1,13 +1,12 @@
 package com.codeboy.mediafacerkotlin.fragments
 
-import android.content.Context
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.codeboy.mediafacer.MediaFacer
@@ -16,15 +15,16 @@ import com.codeboy.mediafacer.models.ImageContent
 import com.codeboy.mediafacerkotlin.R
 import com.codeboy.mediafacerkotlin.databinding.FragmentImagesBinding
 import com.codeboy.mediafacerkotlin.utils.EndlessScrollListener
+import com.codeboy.mediafacerkotlin.utils.Utils.calculateNoOfColumns
 import com.codeboy.mediafacerkotlin.viewAdapters.ImageViewAdapter
 
 class ImagesFragment : Fragment() {
 
-    lateinit var bindings: FragmentImagesBinding
-    var images: MutableLiveData<ArrayList<ImageContent>> = MutableLiveData()
-    var paginationStart = 0
-    var paginationLimit = 50
-    var shouldPaginate = true
+    private lateinit var bindings: FragmentImagesBinding
+    private var images: MutableLiveData<ArrayList<ImageContent>> = MutableLiveData()
+    private var paginationStart = 0
+    private var paginationLimit = 500
+    private var shouldPaginate = true
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         return inflater.inflate(R.layout.fragment_images, container, false)
@@ -50,9 +50,9 @@ class ImagesFragment : Fragment() {
         val adapter = ImageViewAdapter()
         bindings.imagesList.adapter = adapter
 
-        images.observe(viewLifecycleOwner, Observer {
+        images.observe(viewLifecycleOwner) {
             adapter.submitList(it)
-        })
+        }
 
         val imagesList = ArrayList<ImageContent>()
         imagesList.addAll(
@@ -62,6 +62,7 @@ class ImagesFragment : Fragment() {
         )
         paginationStart = imagesList.size+1
         images.value = imagesList
+        Toast.makeText(requireActivity(), "gotten new images data "+imagesList.size.toString(), Toast.LENGTH_LONG).show()
 
 
         bindings.imagesList.addOnScrollListener(object: EndlessScrollListener(layoutManager){
@@ -73,16 +74,9 @@ class ImagesFragment : Fragment() {
                 )
                 paginationStart = imagesList.size+1
                 images.value = imagesList
+                Toast.makeText(requireActivity(), "gotten new images data "+imagesList.size.toString(), Toast.LENGTH_LONG).show()
             }
         })
 
     }
-
-    fun calculateNoOfColumns(context: Context, columnWidthDp: Float): Int { // For example columnWidthdp=180
-        val displayMetrics = context.resources.displayMetrics
-        val screenWidthDp = displayMetrics.widthPixels / displayMetrics.density
-        return (screenWidthDp / columnWidthDp + 0.5).toInt()
-    }
-
-
 }

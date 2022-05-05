@@ -4,9 +4,9 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.codeboy.mediafacer.MediaFacer
@@ -22,7 +22,7 @@ class AudiosFragment : Fragment() {
     private lateinit var bindings: FragmentAudiosBinding
     var audios: MutableLiveData<ArrayList<AudioContent>> = MutableLiveData()
     var paginationStart = 0
-    var paginationLimit = 50
+    var paginationLimit = 500
     var shouldPaginate = true
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
@@ -51,9 +51,9 @@ class AudiosFragment : Fragment() {
         bindings.audiosList.adapter = audiosAdapter
 
         //observe the LifeData list of items and feed them to recyclerview each time there is an update
-        audios.observe(viewLifecycleOwner, Observer {
+        audios.observe(viewLifecycleOwner) {
             audiosAdapter.submitList(it)
-        })
+        }
 
         //get paginated audio items using MediaFacer, remember to set paginationStart to size+1 of
         //of items gotten from MediaFacer to prepare for getting next page of items when user scroll
@@ -65,6 +65,7 @@ class AudiosFragment : Fragment() {
         )
         paginationStart = videosList.size+1
         audios.value = videosList
+        Toast.makeText(requireActivity(), "gotten new audio data "+videosList.size.toString(), Toast.LENGTH_LONG).show()
 
         //adding EndlessScrollListener to our recyclerview to auto paginate items when user is
         //scrolling towards end of list
@@ -77,6 +78,7 @@ class AudiosFragment : Fragment() {
                 )
                 paginationStart = videosList.size+1
                 audios.value = videosList
+                Toast.makeText(requireActivity(), "gotten new audio data "+videosList.size.toString(), Toast.LENGTH_LONG).show()
             }
         })
 

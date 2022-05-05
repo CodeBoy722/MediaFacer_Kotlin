@@ -1,21 +1,26 @@
 package com.codeboy.mediafacerkotlin.viewAdapters
 
+import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
+import com.bumptech.glide.Glide
+import com.bumptech.glide.request.RequestOptions
 import com.codeboy.mediafacer.models.ImageContent
 import com.codeboy.mediafacerkotlin.databinding.ImageItemBinding
 
-class ImageViewAdapter(): ListAdapter<ImageContent, ImageViewAdapter.ImageViewHolder>(ImageDiffUtil()) {
-
+class ImageViewAdapter : ListAdapter<ImageContent, ImageViewAdapter.ImageViewHolder>(ImageDiffUtil()) {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ImageViewHolder {
-        TODO("Not yet implemented")
+        val inflater = LayoutInflater.from(parent.context)
+        val bindingView = ImageItemBinding.inflate(inflater,parent,false)
+        return ImageViewHolder(bindingView)
     }
 
     override fun onBindViewHolder(holder: ImageViewHolder, position: Int) {
-        TODO("Not yet implemented")
+        holder.item = getItem(position)
+        holder.bind()
     }
 
 
@@ -31,9 +36,12 @@ class ImageViewAdapter(): ListAdapter<ImageContent, ImageViewAdapter.ImageViewHo
 
 
     class ImageViewHolder(private val bindings:ImageItemBinding): RecyclerView.ViewHolder(bindings.root){
-
+        lateinit var item: ImageContent
         fun bind(){
-
+            Glide.with(bindings.image)
+                .load(item.imageUri)
+                .apply(RequestOptions().centerCrop())
+                .into(bindings.image)
         }
     }
 

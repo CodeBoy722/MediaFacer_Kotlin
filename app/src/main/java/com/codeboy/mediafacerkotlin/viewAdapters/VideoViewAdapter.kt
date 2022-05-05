@@ -1,20 +1,27 @@
 package com.codeboy.mediafacerkotlin.viewAdapters
 
+import android.view.LayoutInflater
+import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
+import com.bumptech.glide.Glide
+import com.bumptech.glide.request.RequestOptions
 import com.codeboy.mediafacer.models.VideoContent
 import com.codeboy.mediafacerkotlin.databinding.VideoItemBinding
 
-class VideoViewAdapter(): ListAdapter<VideoContent, VideoViewAdapter.VideoViewHolder>(VideoDiffUtil()){
+class VideoViewAdapter : ListAdapter<VideoContent, VideoViewAdapter.VideoViewHolder>(VideoDiffUtil()){
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): VideoViewHolder {
-        TODO("Not yet implemented")
+        val inflater = LayoutInflater.from(parent.context)
+        val bindingView = VideoItemBinding.inflate(inflater,parent,false)
+        return VideoViewHolder(bindingView)
     }
 
     override fun onBindViewHolder(holder: VideoViewHolder, position: Int) {
-        TODO("Not yet implemented")
+        holder.item = getItem(position)
+        holder.bind()
     }
 
     private class VideoDiffUtil : DiffUtil.ItemCallback<VideoContent>() {
@@ -27,12 +34,20 @@ class VideoViewAdapter(): ListAdapter<VideoContent, VideoViewAdapter.VideoViewHo
         }
     }
 
-    class VideoViewHolder(private val bindings: VideoItemBinding): RecyclerView.ViewHolder(bindings.root){
-
+    class VideoViewHolder(private val bindings: VideoItemBinding)
+        : RecyclerView.ViewHolder(bindings.root), View.OnClickListener{
+        lateinit var item: VideoContent
         fun bind(){
-
+            Glide.with(bindings.videoPreview)
+                .load(item.videoUri)
+                .apply(RequestOptions().centerCrop())
+                .into(bindings.videoPreview)
+            bindings.play.setOnClickListener(this)
         }
 
+        override fun onClick(p0: View?) {
+
+        }
     }
 
 
