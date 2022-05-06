@@ -38,7 +38,8 @@ class MediaFacer(): VideoGet, AudioGet,ImageGet {
         MediaStore.Audio.Media.SIZE,
         MediaStore.Audio.Media._ID,
         MediaStore.Audio.Media.DURATION,
-        MediaStore.Audio.Media.BUCKET_ID
+        MediaStore.Audio.Media.BUCKET_ID,
+        MediaStore.Audio.Media.DATE_MODIFIED
     )
 
     @SuppressLint("InlinedApi")
@@ -48,7 +49,8 @@ class MediaFacer(): VideoGet, AudioGet,ImageGet {
         MediaStore.Images.Media.BUCKET_DISPLAY_NAME,
         MediaStore.Images.Media.BUCKET_ID,
         MediaStore.Images.Media._ID,
-        MediaStore.Images.Media.DATE_TAKEN
+        MediaStore.Images.Media.DATE_TAKEN,
+        MediaStore.Images.Media.DATE_MODIFIED
     )
 
     @SuppressLint("InlinedApi")
@@ -61,6 +63,7 @@ class MediaFacer(): VideoGet, AudioGet,ImageGet {
         MediaStore.Video.Media._ID,
         MediaStore.Video.Media.ALBUM,
         MediaStore.Video.Media.DATE_TAKEN,
+        MediaStore.Video.Media.DATE_MODIFIED,
         MediaStore.Video.Media.ARTIST
     )
 
@@ -75,7 +78,7 @@ class MediaFacer(): VideoGet, AudioGet,ImageGet {
         var videos = ArrayList<VideoContent>()
         if(shouldPaginate){
             val cursor = context.contentResolver.query(contentMedium, videoProjections, null, null,
-                "LOWER (" + MediaStore.Video.Media.DATE_TAKEN + ") DESC")!! //DESC ASC
+                "LOWER (" + MediaStore.Video.Media.DATE_MODIFIED + ") DESC")!! //DESC ASC
             var index = 0
             //try {
                 if(cursor.moveToPosition(mediaPaginationStart)){
@@ -90,7 +93,7 @@ class MediaFacer(): VideoGet, AudioGet,ImageGet {
 
                         val id: Int = cursor.getInt(cursor.getColumnIndexOrThrow(MediaStore.Video.Media._ID))
 
-                        //videoContent.dateModified = Date(TimeUnit.SECONDS.toMillis(cursor.getLong(cursor.getColumnIndexOrThrow(MediaStore.Video.Media.DATE_MODIFIED))))
+                        videoContent.dateModified = Date(TimeUnit.SECONDS.toMillis(cursor.getLong(cursor.getColumnIndexOrThrow(MediaStore.Video.Media.DATE_MODIFIED))))
 
                         videoContent.id = id
                         val contentUri = Uri.withAppendedPath(contentMedium, id.toString())
@@ -149,7 +152,7 @@ class MediaFacer(): VideoGet, AudioGet,ImageGet {
 
                         audioContent.duration = cursor.getLong(cursor.getColumnIndexOrThrow(MediaStore.Audio.Media.DURATION))
 
-                        //audioContent.dateModified = Date(TimeUnit.SECONDS.toMillis(cursor.getLong(cursor.getColumnIndexOrThrow(MediaStore.Audio.Media.DATE_MODIFIED))))
+                        audioContent.dateModified = Date(TimeUnit.SECONDS.toMillis(cursor.getLong(cursor.getColumnIndexOrThrow(MediaStore.Audio.Media.DATE_MODIFIED))))
 
                         val albumId: Long = cursor.getLong(cursor.getColumnIndexOrThrow(MediaStore.Audio.Media.ALBUM_ID))
                         val sArtworkUri = Uri.parse("content://media/external/audio/albumart")
@@ -193,7 +196,7 @@ class MediaFacer(): VideoGet, AudioGet,ImageGet {
             val cursor = context.contentResolver.query(contentMedium
                 ,imageProjections
                 , null, null,
-                "LOWER (" + MediaStore.Images.Media.DATE_TAKEN + ") DESC")!!
+                "LOWER (" + MediaStore.Images.Media.DATE_MODIFIED + ") DESC")!!
 
             var index = 0
             //try {
@@ -205,7 +208,7 @@ class MediaFacer(): VideoGet, AudioGet,ImageGet {
 
                         imageContent.size = cursor.getLong(cursor.getColumnIndexOrThrow(MediaStore.Images.Media.SIZE))
 
-                        //imageContent.dateModified = Date(TimeUnit.SECONDS.toMillis(cursor.getLong(cursor.getColumnIndexOrThrow(MediaStore.Images.Media.DATE_MODIFIED))))
+                        imageContent.dateModified = Date(TimeUnit.SECONDS.toMillis(cursor.getLong(cursor.getColumnIndexOrThrow(MediaStore.Images.Media.DATE_MODIFIED))))
 
                         val id: Int = cursor.getInt(cursor.getColumnIndexOrThrow(MediaStore.Images.Media._ID))
                         imageContent.imageId = id

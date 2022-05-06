@@ -19,7 +19,8 @@ internal interface ImageGet {
             MediaStore.Images.Media.BUCKET_DISPLAY_NAME,
             MediaStore.Images.Media.BUCKET_ID,
             MediaStore.Images.Media._ID,
-            MediaStore.Images.Media.DATE_TAKEN
+            MediaStore.Images.Media.DATE_TAKEN,
+            MediaStore.Images.Media.DATE_MODIFIED
         )
 
     fun getImages(context: Context, contentMedium: Uri): ArrayList<ImageContent>{

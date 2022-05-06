@@ -1,6 +1,8 @@
 package com.codeboy.mediafacerkotlin.fragments
 
 import android.os.Bundle
+import android.os.Handler
+import android.os.Looper
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -23,8 +25,9 @@ class VideosFragment : Fragment() {
     private lateinit var bindings: FragmentVideosBinding
     private var videos: MutableLiveData<ArrayList<VideoContent>> = MutableLiveData()
     private var paginationStart = 0
-    private var paginationLimit = 500
+    private var paginationLimit = 300
     private var shouldPaginate = true
+    private lateinit var videosList: ArrayList<VideoContent>
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         return inflater.inflate(R.layout.fragment_videos, container, false)
@@ -54,18 +57,20 @@ class VideosFragment : Fragment() {
             adapter.submitList(it)
         }
 
-        val videosList = ArrayList<VideoContent>()
-        videosList.addAll(
-            MediaFacer()
-                .withPagination(paginationStart,paginationLimit,shouldPaginate)
-                .getVideos(requireActivity(),externalVideoContent)
-        )
-        paginationStart = videosList.size+1
-        videos.value = videosList
-        Toast.makeText(requireActivity(), "gotten new video data "+videosList.size.toString(), Toast.LENGTH_LONG).show()
+        //init videoList
+        videosList = ArrayList<VideoContent>()
+        loadNewItems()
 
         bindings.videosList.addOnScrollListener(object: EndlessScrollListener(layoutManager){
             override fun onLoadMore(page: Int, totalItemsCount: Int, view: RecyclerView?) {
+                loadNewItems()
+            }
+        })
+    }
+
+    private fun loadNewItems(){
+        val handler = Handler(Looper.getMainLooper())
+            .post(Runnable {
                 videosList.addAll(
                     MediaFacer()
                         .withPagination(paginationStart,paginationLimit,shouldPaginate)
@@ -74,9 +79,7 @@ class VideosFragment : Fragment() {
                 paginationStart = videosList.size+1
                 videos.value = videosList
                 Toast.makeText(requireActivity(), "gotten new video data "+videosList.size.toString(), Toast.LENGTH_LONG).show()
-            }
-
-        })
+            })
     }
 
 }

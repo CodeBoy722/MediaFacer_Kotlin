@@ -26,7 +26,8 @@ internal interface AudioGet {
    MediaStore.Audio.Media.SIZE,
    MediaStore.Audio.Media._ID,
    MediaStore.Audio.Media.DURATION,
-   MediaStore.Audio.Media.BUCKET_ID
+   MediaStore.Audio.Media.BUCKET_ID,
+   MediaStore.Audio.Media.DATE_MODIFIED
   )
 
  fun getAudios(context: Context, contentMedium: Uri): ArrayList<AudioContent>{

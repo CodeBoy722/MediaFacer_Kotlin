@@ -1,6 +1,8 @@
 package com.codeboy.mediafacerkotlin.fragments
 
 import android.os.Bundle
+import android.os.Handler
+import android.os.Looper
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -23,8 +25,9 @@ class ImagesFragment : Fragment() {
     private lateinit var bindings: FragmentImagesBinding
     private var images: MutableLiveData<ArrayList<ImageContent>> = MutableLiveData()
     private var paginationStart = 0
-    private var paginationLimit = 500
+    private var paginationLimit = 300
     private var shouldPaginate = true
+    lateinit var imagesList: ArrayList<ImageContent>
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         return inflater.inflate(R.layout.fragment_images, container, false)
@@ -38,7 +41,6 @@ class ImagesFragment : Fragment() {
     }
 
     private fun initImages(){
-
         bindings.imagesList.hasFixedSize()
         bindings.imagesList.setHasFixedSize(true)
         bindings.imagesList.setItemViewCacheSize(20)
@@ -54,19 +56,19 @@ class ImagesFragment : Fragment() {
             adapter.submitList(it)
         }
 
-        val imagesList = ArrayList<ImageContent>()
-        imagesList.addAll(
-            MediaFacer()
-                .withPagination(paginationStart,paginationLimit,shouldPaginate)
-                .getImages(requireActivity(),externalImagesContent)
-        )
-        paginationStart = imagesList.size+1
-        images.value = imagesList
-        Toast.makeText(requireActivity(), "gotten new images data "+imagesList.size.toString(), Toast.LENGTH_LONG).show()
-
+        imagesList = ArrayList<ImageContent>()
+        loadNewItems()
 
         bindings.imagesList.addOnScrollListener(object: EndlessScrollListener(layoutManager){
             override fun onLoadMore(page: Int, totalItemsCount: Int, view: RecyclerView?) {
+               loadNewItems()
+            }
+        })
+    }
+
+    private fun loadNewItems(){
+        val handler = Handler(Looper.getMainLooper())
+            .post(Runnable {
                 imagesList.addAll(
                     MediaFacer()
                         .withPagination(paginationStart,paginationLimit,shouldPaginate)
@@ -75,8 +77,7 @@ class ImagesFragment : Fragment() {
                 paginationStart = imagesList.size+1
                 images.value = imagesList
                 Toast.makeText(requireActivity(), "gotten new images data "+imagesList.size.toString(), Toast.LENGTH_LONG).show()
-            }
-        })
-
+            })
     }
+
 }

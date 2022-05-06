@@ -20,6 +20,7 @@ internal interface VideoGet {
    MediaStore.Video.Media._ID,
    MediaStore.Video.Media.ALBUM,
    MediaStore.Video.Media.DATE_TAKEN,
+   MediaStore.Video.Media.DATE_MODIFIED,
    MediaStore.Video.Media.ARTIST
   )
 

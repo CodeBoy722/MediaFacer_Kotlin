@@ -1,6 +1,8 @@
 package com.codeboy.mediafacerkotlin.fragments
 
 import android.os.Bundle
+import android.os.Handler
+import android.os.Looper
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -20,10 +22,11 @@ import com.codeboy.mediafacerkotlin.viewAdapters.AudioViewAdapter
 class AudiosFragment : Fragment() {
 
     private lateinit var bindings: FragmentAudiosBinding
-    var audios: MutableLiveData<ArrayList<AudioContent>> = MutableLiveData()
-    var paginationStart = 0
-    var paginationLimit = 500
-    var shouldPaginate = true
+    private var audios: MutableLiveData<ArrayList<AudioContent>> = MutableLiveData()
+    private var paginationStart = 0
+    private var paginationLimit = 300
+    private var shouldPaginate = true
+    private lateinit var audiosList: ArrayList<AudioContent>
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         return inflater.inflate(R.layout.fragment_audios, container, false)
@@ -37,7 +40,6 @@ class AudiosFragment : Fragment() {
     }
 
     private fun initAudios(){
-
         // init and setup your recyclerview with a layout manager
         bindings.audiosList.hasFixedSize()
         bindings.audiosList.setHasFixedSize(true)
@@ -57,28 +59,14 @@ class AudiosFragment : Fragment() {
 
         //get paginated audio items using MediaFacer, remember to set paginationStart to size+1 of
         //of items gotten from MediaFacer to prepare for getting next page of items when user scroll
-        val videosList = ArrayList<AudioContent>()
-        videosList.addAll(
-            MediaFacer()
-                .withPagination(paginationStart,paginationLimit,shouldPaginate)
-                .getAudios(requireActivity(),externalAudioContent)
-        )
-        paginationStart = videosList.size+1
-        audios.value = videosList
-        Toast.makeText(requireActivity(), "gotten new audio data "+videosList.size.toString(), Toast.LENGTH_LONG).show()
+        audiosList = ArrayList<AudioContent>()
+        loadNewItems()
 
         //adding EndlessScrollListener to our recyclerview to auto paginate items when user is
         //scrolling towards end of list
         bindings.audiosList.addOnScrollListener(object: EndlessScrollListener(layoutManager){
             override fun onLoadMore(page: Int, totalItemsCount: Int, view: RecyclerView?) {
-                videosList.addAll(
-                    MediaFacer()
-                        .withPagination(paginationStart,paginationLimit,shouldPaginate)
-                        .getAudios(requireActivity(),externalAudioContent)
-                )
-                paginationStart = videosList.size+1
-                audios.value = videosList
-                Toast.makeText(requireActivity(), "gotten new audio data "+videosList.size.toString(), Toast.LENGTH_LONG).show()
+               loadNewItems()
             }
         })
 
@@ -92,6 +80,20 @@ class AudiosFragment : Fragment() {
                 super.onScrolled(recyclerView, dx, dy)
             }
         })*/
+    }
+
+    private fun loadNewItems(){
+        val handler = Handler(Looper.getMainLooper())
+            .post(Runnable {
+                audiosList.addAll(
+                    MediaFacer()
+                        .withPagination(paginationStart,paginationLimit,shouldPaginate)
+                        .getAudios(requireActivity(),externalAudioContent)
+                )
+                paginationStart = audiosList.size+1
+                audios.value = audiosList
+                Toast.makeText(requireActivity(), "gotten new audio data "+audiosList.size.toString(), Toast.LENGTH_LONG).show()
+            })
     }
 
 }
