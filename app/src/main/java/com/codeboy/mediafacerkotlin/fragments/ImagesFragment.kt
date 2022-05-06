@@ -13,6 +13,7 @@ import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.codeboy.mediafacer.MediaFacer
 import com.codeboy.mediafacer.MediaFacer.Companion.externalImagesContent
+import com.codeboy.mediafacer.MediaFacer.Companion.internalImagesContent
 import com.codeboy.mediafacer.models.ImageContent
 import com.codeboy.mediafacerkotlin.R
 import com.codeboy.mediafacerkotlin.databinding.FragmentImagesBinding
@@ -44,7 +45,7 @@ class ImagesFragment : Fragment() {
         bindings.imagesList.hasFixedSize()
         bindings.imagesList.setHasFixedSize(true)
         bindings.imagesList.setItemViewCacheSize(20)
-        val numOfColumns = calculateNoOfColumns(requireActivity(), 90f)
+        val numOfColumns = calculateNoOfColumns(requireActivity(), 100f)
         val layoutManager = GridLayoutManager(requireActivity(),numOfColumns)
         bindings.imagesList.layoutManager = layoutManager
         bindings.imagesList.itemAnimator = null
@@ -72,7 +73,7 @@ class ImagesFragment : Fragment() {
                 imagesList.addAll(
                     MediaFacer()
                         .withPagination(paginationStart,paginationLimit,shouldPaginate)
-                        .getImages(requireActivity(),externalImagesContent)
+                        .getImages(requireActivity(), externalImagesContent)
                 )
                 paginationStart = imagesList.size+1
                 images.value = imagesList

@@ -19,7 +19,6 @@ internal interface AudioGet {
    MediaStore.Audio.Media.TITLE,
    MediaStore.Audio.Media.DISPLAY_NAME,
    MediaStore.Audio.Media.ARTIST,
-   MediaStore.Audio.Media.ARTIST_ID,
    MediaStore.Audio.Media.ALBUM,
    MediaStore.Audio.Media.ALBUM_ID,
    MediaStore.Audio.Media.COMPOSER,
@@ -32,14 +31,12 @@ internal interface AudioGet {
 
  fun getAudios(context: Context, contentMedium: Uri): ArrayList<AudioContent>{
   val allAudio: ArrayList<AudioContent> = ArrayList()
-
   val audioSelection = MediaStore.Audio.Media.IS_MUSIC + " != 0"
   val cursor = context.contentResolver.query(contentMedium
    ,audioProjections
    ,audioSelection,
    null,
    "LOWER (" + MediaStore.Audio.Media.TITLE + ") ASC")!! //"LOWER ("+MediaStore.Audio.Media.TITLE + ") ASC"
-
   try {
    if (cursor.moveToFirst()) {
     do {
@@ -86,7 +83,7 @@ internal interface AudioGet {
   }catch (e: Exception){
    e.printStackTrace()
   }
-   cursor.close()
+  cursor.close()
   return allAudio
  }
 
@@ -114,7 +111,7 @@ internal interface AudioGet {
   val uri = MediaStore.Audio.Genres.getContentUriForAudioId(volumeName, media_id)
   val genresCursor: Cursor = context.contentResolver.query(uri, genresProj, null, null, null)!!
   val genreIndex = genresCursor.getColumnIndexOrThrow(MediaStore.Audio.Genres.NAME)
-  var genre: String = ""
+  var genre = ""
   while (genresCursor.moveToNext()) {
    genre = genresCursor.getString(genreIndex)
   }

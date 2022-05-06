@@ -13,6 +13,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.codeboy.mediafacer.MediaFacer
 import com.codeboy.mediafacer.MediaFacer.Companion.externalAudioContent
+import com.codeboy.mediafacer.MediaFacer.Companion.internalAudioContent
 import com.codeboy.mediafacer.models.AudioContent
 import com.codeboy.mediafacerkotlin.R
 import com.codeboy.mediafacerkotlin.databinding.FragmentAudiosBinding
@@ -88,7 +89,7 @@ class AudiosFragment : Fragment() {
                 audiosList.addAll(
                     MediaFacer()
                         .withPagination(paginationStart,paginationLimit,shouldPaginate)
-                        .getAudios(requireActivity(),externalAudioContent)
+                        .getAudios(requireActivity(), externalAudioContent)
                 )
                 paginationStart = audiosList.size+1
                 audios.value = audiosList

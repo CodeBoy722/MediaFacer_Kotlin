@@ -31,7 +31,6 @@ class MediaFacer(): VideoGet, AudioGet,ImageGet {
         MediaStore.Audio.Media.TITLE,
         MediaStore.Audio.Media.DISPLAY_NAME,
         MediaStore.Audio.Media.ARTIST,
-        MediaStore.Audio.Media.ARTIST_ID,
         MediaStore.Audio.Media.ALBUM,
         MediaStore.Audio.Media.ALBUM_ID,
         MediaStore.Audio.Media.COMPOSER,
@@ -160,7 +159,11 @@ class MediaFacer(): VideoGet, AudioGet,ImageGet {
 
                         audioContent.artist = cursor.getString(cursor.getColumnIndexOrThrow(MediaStore.Audio.Media.ARTIST))
 
-                        //audioContent.composer = cursor.getString(cursor.getColumnIndexOrThrow(MediaStore.Audio.Media.COMPOSER))
+                        try {
+                            audioContent.composer = cursor.getString(cursor.getColumnIndexOrThrow(MediaStore.Audio.Media.COMPOSER))
+                        }catch (ex: Exception){
+                          ex.printStackTrace()
+                        }
 
                         var genreVolume = ""
                         if(contentMedium == externalAudioContent){

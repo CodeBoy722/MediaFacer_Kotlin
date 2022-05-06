@@ -13,6 +13,7 @@ import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.codeboy.mediafacer.MediaFacer
 import com.codeboy.mediafacer.MediaFacer.Companion.externalVideoContent
+import com.codeboy.mediafacer.MediaFacer.Companion.internalVideoContent
 import com.codeboy.mediafacer.models.VideoContent
 import com.codeboy.mediafacerkotlin.R
 import com.codeboy.mediafacerkotlin.databinding.FragmentVideosBinding
@@ -45,7 +46,7 @@ class VideosFragment : Fragment() {
         bindings.videosList.hasFixedSize()
         bindings.videosList.setHasFixedSize(true)
         bindings.videosList.setItemViewCacheSize(20)
-        val numOfColumns = calculateNoOfColumns(requireActivity(), 110f)
+        val numOfColumns = calculateNoOfColumns(requireActivity(), 115f)
         val layoutManager = GridLayoutManager(requireActivity(),numOfColumns)
         bindings.videosList.layoutManager = layoutManager
         bindings.videosList.itemAnimator = null
@@ -74,7 +75,7 @@ class VideosFragment : Fragment() {
                 videosList.addAll(
                     MediaFacer()
                         .withPagination(paginationStart,paginationLimit,shouldPaginate)
-                        .getVideos(requireActivity(),externalVideoContent)
+                        .getVideos(requireActivity(), externalVideoContent)
                 )
                 paginationStart = videosList.size+1
                 videos.value = videosList
