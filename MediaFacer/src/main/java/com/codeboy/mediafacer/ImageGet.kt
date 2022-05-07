@@ -1,6 +1,7 @@
 package com.codeboy.mediafacer
 
 import android.content.Context
+import android.database.Cursor
 import android.net.Uri
 import android.os.Build
 import android.provider.MediaStore
@@ -19,6 +20,7 @@ internal interface ImageGet {
             MediaStore.Images.Media.BUCKET_DISPLAY_NAME,
             MediaStore.Images.Media.BUCKET_ID,
             MediaStore.Images.Media._ID,
+            MediaStore.Images.Media.ALBUM,
             MediaStore.Images.Media.DATE_TAKEN,
             MediaStore.Images.Media.DATE_MODIFIED
         )
@@ -43,7 +45,7 @@ internal interface ImageGet {
                     imageContent.dateModified = Date(TimeUnit.SECONDS.toMillis(cursor.getLong(cursor.getColumnIndexOrThrow(MediaStore.Images.Media.DATE_MODIFIED))))
 
                     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
-                        imageContent.album = cursor.getString(cursor.getColumnIndexOrThrow(MediaStore.Images.Media.ALBUM))
+                        //imageContent.album = cursor.getString(cursor.getColumnIndexOrThrow(MediaStore.Images.Media.ALBUM))
                     }
 
                     imageContent.bucketName = cursor.getString(cursor.getColumnIndexOrThrow(MediaStore.Images.Media.BUCKET_DISPLAY_NAME))

@@ -41,6 +41,7 @@ internal interface AudioGet {
    if (cursor.moveToFirst()) {
     do {
      val audioContent = AudioContent()
+
      audioContent.name = cursor.getString(cursor.getColumnIndexOrThrow(MediaStore.Audio.Media.DISPLAY_NAME))
 
      audioContent.title = cursor.getString(cursor.getColumnIndexOrThrow(MediaStore.Audio.Media.TITLE))
@@ -65,7 +66,9 @@ internal interface AudioGet {
 
      audioContent.artist = cursor.getString(cursor.getColumnIndexOrThrow(MediaStore.Audio.Media.ARTIST))
 
-     audioContent.composer = cursor.getString(cursor.getColumnIndexOrThrow(MediaStore.Audio.Media.COMPOSER))
+     try{
+      audioContent.composer = cursor.getString(cursor.getColumnIndexOrThrow(MediaStore.Audio.Media.COMPOSER))
+     }catch (ex: Exception){ex.printStackTrace()}
 
      var genreVolume = ""
      if(contentMedium == externalAudioContent){
@@ -75,7 +78,6 @@ internal interface AudioGet {
      }
 
      audioContent.genre = getGenre(cursor.getInt(cursor.getColumnIndexOrThrow(MediaStore.Audio.Media._ID)), genreVolume, context)
-
      allAudio.add(audioContent)
     } while (cursor.moveToNext())
    }
@@ -102,6 +104,7 @@ internal interface AudioGet {
  fun getAudioGenres(context: Context, contentMedium: Uri){
 
  }
+
 
  fun getGenre(media_id: Int, volumeName: String, context: Context): String {
   val genresProj = arrayOf(

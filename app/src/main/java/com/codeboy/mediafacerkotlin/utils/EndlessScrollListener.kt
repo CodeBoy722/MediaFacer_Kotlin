@@ -8,7 +8,7 @@ import androidx.recyclerview.widget.StaggeredGridLayoutManager
 abstract class EndlessScrollListener : RecyclerView.OnScrollListener {
     // The minimum amount of items to have below your current scroll position
     // before loading more.
-    private var visibleThreshold = 10
+    private var visibleThreshold = 15
 
     // The current offset index of data you have loaded
     private var currentPage = 0
@@ -21,7 +21,7 @@ abstract class EndlessScrollListener : RecyclerView.OnScrollListener {
 
     // Sets the starting page index
     private val startingPageIndex = 0
-    var mLayoutManager: RecyclerView.LayoutManager
+    private var mLayoutManager: RecyclerView.LayoutManager
 
     constructor(layoutManager: LinearLayoutManager) {
         mLayoutManager = layoutManager
@@ -55,17 +55,21 @@ abstract class EndlessScrollListener : RecyclerView.OnScrollListener {
     override fun onScrolled(view: RecyclerView, dx: Int, dy: Int) {
         var lastVisibleItemPosition = 0
         val totalItemCount = mLayoutManager.itemCount
-        if (mLayoutManager is StaggeredGridLayoutManager) {
-            val lastVisibleItemPositions =
-                (mLayoutManager as StaggeredGridLayoutManager).findLastVisibleItemPositions(null)
-            // get maximum element within the list
-            lastVisibleItemPosition = getLastVisibleItem(lastVisibleItemPositions)
-        } else if (mLayoutManager is GridLayoutManager) {
-            lastVisibleItemPosition =
-                (mLayoutManager as GridLayoutManager).findLastVisibleItemPosition()
-        } else if (mLayoutManager is LinearLayoutManager) {
-            lastVisibleItemPosition =
-                (mLayoutManager as LinearLayoutManager).findLastVisibleItemPosition()
+        when (mLayoutManager) {
+            is StaggeredGridLayoutManager -> {
+                val lastVisibleItemPositions =
+                    (mLayoutManager as StaggeredGridLayoutManager).findLastVisibleItemPositions(null)
+                // get maximum element within the list
+                lastVisibleItemPosition = getLastVisibleItem(lastVisibleItemPositions)
+            }
+            is GridLayoutManager -> {
+                lastVisibleItemPosition =
+                    (mLayoutManager as GridLayoutManager).findLastVisibleItemPosition()
+            }
+            is LinearLayoutManager -> {
+                lastVisibleItemPosition =
+                    (mLayoutManager as LinearLayoutManager).findLastVisibleItemPosition()
+            }
         }
 
         // If the total item count is zero and the previous isn't, assume the

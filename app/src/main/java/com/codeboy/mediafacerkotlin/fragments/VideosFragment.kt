@@ -1,5 +1,6 @@
 package com.codeboy.mediafacerkotlin.fragments
 
+import android.annotation.SuppressLint
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
@@ -13,7 +14,6 @@ import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.codeboy.mediafacer.MediaFacer
 import com.codeboy.mediafacer.MediaFacer.Companion.externalVideoContent
-import com.codeboy.mediafacer.MediaFacer.Companion.internalVideoContent
 import com.codeboy.mediafacer.models.VideoContent
 import com.codeboy.mediafacerkotlin.R
 import com.codeboy.mediafacerkotlin.databinding.FragmentVideosBinding
@@ -26,7 +26,7 @@ class VideosFragment : Fragment() {
     private lateinit var bindings: FragmentVideosBinding
     private var videos: MutableLiveData<ArrayList<VideoContent>> = MutableLiveData()
     private var paginationStart = 0
-    private var paginationLimit = 300
+    private var paginationLimit = 150
     private var shouldPaginate = true
     private lateinit var videosList: ArrayList<VideoContent>
 
@@ -41,6 +41,7 @@ class VideosFragment : Fragment() {
         initVideos()
     }
 
+    @SuppressLint("NotifyDataSetChanged")
     private fun initVideos(){
 
         bindings.videosList.hasFixedSize()
@@ -56,10 +57,12 @@ class VideosFragment : Fragment() {
 
         videos.observe(viewLifecycleOwner) {
             adapter.submitList(it)
+            //adapter.notifyItemRangeChanged(paginationStart,it.size-1)
+            adapter.notifyDataSetChanged()
         }
 
         //init videoList
-        videosList = ArrayList<VideoContent>()
+        videosList = ArrayList()
         loadNewItems()
 
         bindings.videosList.addOnScrollListener(object: EndlessScrollListener(layoutManager){
@@ -70,17 +73,21 @@ class VideosFragment : Fragment() {
     }
 
     private fun loadNewItems(){
-        val handler = Handler(Looper.getMainLooper())
-            .post(Runnable {
+        Handler(Looper.getMainLooper())
+            .post {
                 videosList.addAll(
                     MediaFacer()
-                        .withPagination(paginationStart,paginationLimit,shouldPaginate)
+                        .withPagination(paginationStart, paginationLimit, shouldPaginate)
                         .getVideos(requireActivity(), externalVideoContent)
                 )
-                paginationStart = videosList.size+1
+                paginationStart = videosList.size + 1
                 videos.value = videosList
-                Toast.makeText(requireActivity(), "gotten new video data "+videosList.size.toString(), Toast.LENGTH_LONG).show()
-            })
+                Toast.makeText(
+                    requireActivity(),
+                    "gotten new video data " + videosList.size.toString(),
+                    Toast.LENGTH_LONG
+                ).show()
+            }
     }
 
 }

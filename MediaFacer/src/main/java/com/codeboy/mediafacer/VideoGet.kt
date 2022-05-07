@@ -1,6 +1,7 @@
 package com.codeboy.mediafacer
 
 import android.content.Context
+import android.database.Cursor
 import android.net.Uri
 import android.provider.MediaStore
 import com.codeboy.mediafacer.models.VideoContent
@@ -52,10 +53,8 @@ internal interface VideoGet {
 
      videoContent.artist = cursor.getString(cursor.getColumnIndexOrThrow(MediaStore.Video.Media.ARTIST))
      allVideo.add(videoContent)
-
     } while (cursor.moveToNext())
    }
-
   } catch (e: Exception) {
    e.printStackTrace()
   }
@@ -68,6 +67,5 @@ internal interface VideoGet {
  fun getVideoFolders(context: Context, contentMedium: Uri){
 
  }
-
 
 }

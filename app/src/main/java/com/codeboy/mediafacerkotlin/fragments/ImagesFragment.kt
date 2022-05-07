@@ -1,5 +1,6 @@
 package com.codeboy.mediafacerkotlin.fragments
 
+import android.annotation.SuppressLint
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
@@ -13,7 +14,6 @@ import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.codeboy.mediafacer.MediaFacer
 import com.codeboy.mediafacer.MediaFacer.Companion.externalImagesContent
-import com.codeboy.mediafacer.MediaFacer.Companion.internalImagesContent
 import com.codeboy.mediafacer.models.ImageContent
 import com.codeboy.mediafacerkotlin.R
 import com.codeboy.mediafacerkotlin.databinding.FragmentImagesBinding
@@ -26,9 +26,9 @@ class ImagesFragment : Fragment() {
     private lateinit var bindings: FragmentImagesBinding
     private var images: MutableLiveData<ArrayList<ImageContent>> = MutableLiveData()
     private var paginationStart = 0
-    private var paginationLimit = 300
+    private var paginationLimit = 150
     private var shouldPaginate = true
-    lateinit var imagesList: ArrayList<ImageContent>
+    private lateinit var imagesList: ArrayList<ImageContent>
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         return inflater.inflate(R.layout.fragment_images, container, false)
@@ -41,6 +41,7 @@ class ImagesFragment : Fragment() {
         initImages()
     }
 
+    @SuppressLint("NotifyDataSetChanged")
     private fun initImages(){
         bindings.imagesList.hasFixedSize()
         bindings.imagesList.setHasFixedSize(true)
@@ -55,9 +56,11 @@ class ImagesFragment : Fragment() {
 
         images.observe(viewLifecycleOwner) {
             adapter.submitList(it)
+            //adapter.notifyItemRangeChanged(paginationStart,it.size-1)
+            adapter.notifyDataSetChanged()
         }
 
-        imagesList = ArrayList<ImageContent>()
+        imagesList = ArrayList()
         loadNewItems()
 
         bindings.imagesList.addOnScrollListener(object: EndlessScrollListener(layoutManager){
@@ -68,17 +71,32 @@ class ImagesFragment : Fragment() {
     }
 
     private fun loadNewItems(){
-        val handler = Handler(Looper.getMainLooper())
-            .post(Runnable {
+        Handler(Looper.getMainLooper())
+            .post {
                 imagesList.addAll(
                     MediaFacer()
-                        .withPagination(paginationStart,paginationLimit,shouldPaginate)
+                        .withPagination(paginationStart, paginationLimit, shouldPaginate)
                         .getImages(requireActivity(), externalImagesContent)
                 )
-                paginationStart = imagesList.size+1
+                paginationStart = imagesList.size + 1
                 images.value = imagesList
-                Toast.makeText(requireActivity(), "gotten new images data "+imagesList.size.toString(), Toast.LENGTH_LONG).show()
-            })
+                Toast.makeText(
+                    requireActivity(),
+                    "gotten new images data " + imagesList.size.toString(),
+                    Toast.LENGTH_LONG
+                ).show()
+            }
     }
+
+
+    //normal RecyclerView.OnScrollListener(), you can use this if you wish
+    /* bindings.imagesList.addOnScrollListener(object: RecyclerView.OnScrollListener() {
+         override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
+             if(layoutManager.findLastVisibleItemPosition() == layoutManager.itemCount-1){
+                 loadNewItems()
+             }
+             super.onScrolled(recyclerView, dx, dy)
+         }
+     })*/
 
 }

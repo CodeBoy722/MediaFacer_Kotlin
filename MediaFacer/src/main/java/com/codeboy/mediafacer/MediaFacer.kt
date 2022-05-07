@@ -4,6 +4,7 @@ import android.annotation.SuppressLint
 import android.content.Context
 import android.database.Cursor
 import android.net.Uri
+import android.os.Build
 import android.provider.MediaStore
 import com.codeboy.mediafacer.models.AudioContent
 import com.codeboy.mediafacer.models.ImageContent
@@ -48,6 +49,7 @@ class MediaFacer(): VideoGet, AudioGet,ImageGet {
         MediaStore.Images.Media.BUCKET_DISPLAY_NAME,
         MediaStore.Images.Media.BUCKET_ID,
         MediaStore.Images.Media._ID,
+        MediaStore.Images.Media.ALBUM,
         MediaStore.Images.Media.DATE_TAKEN,
         MediaStore.Images.Media.DATE_MODIFIED
     )
@@ -90,9 +92,9 @@ class MediaFacer(): VideoGet, AudioGet,ImageGet {
 
                         videoContent.size = cursor.getLong(cursor.getColumnIndexOrThrow(MediaStore.Video.Media.SIZE))
 
-                        val id: Int = cursor.getInt(cursor.getColumnIndexOrThrow(MediaStore.Video.Media._ID))
-
                         videoContent.dateModified = Date(TimeUnit.SECONDS.toMillis(cursor.getLong(cursor.getColumnIndexOrThrow(MediaStore.Video.Media.DATE_MODIFIED))))
+
+                        val id: Int = cursor.getInt(cursor.getColumnIndexOrThrow(MediaStore.Video.Media._ID))
 
                         videoContent.id = id
                         val contentUri = Uri.withAppendedPath(contentMedium, id.toString())
@@ -101,12 +103,11 @@ class MediaFacer(): VideoGet, AudioGet,ImageGet {
                         videoContent.album = cursor.getString(cursor.getColumnIndexOrThrow(MediaStore.Video.Media.ALBUM))
 
                         videoContent.artist = cursor.getString(cursor.getColumnIndexOrThrow(MediaStore.Video.Media.ARTIST))
-                        videos.add(videoContent)
 
+                        videos.add(videoContent)
                         index++
                         if (index == mediaPaginationLimit)
                             break
-
                     } while (cursor.moveToNext())
                 }
            /* } catch (e: Exception) {
@@ -125,9 +126,7 @@ class MediaFacer(): VideoGet, AudioGet,ImageGet {
         if(shouldPaginate){
 
             val audioSelection = MediaStore.Audio.Media.IS_MUSIC + " != 0"
-            val cursor = context.contentResolver.query(contentMedium
-                ,audioProjections
-                ,audioSelection,
+            val cursor = context.contentResolver.query(contentMedium,audioProjections,audioSelection,
                 null,
                 "LOWER (" + MediaStore.Audio.Media.TITLE + ") ASC")!! //"LOWER ("+MediaStore.Audio.Media.TITLE + ") ASC"
             var index = 0
@@ -135,6 +134,7 @@ class MediaFacer(): VideoGet, AudioGet,ImageGet {
                 if (cursor.moveToPosition(mediaPaginationStart)) {
                     do {
                         val audioContent = AudioContent()
+
                         audioContent.name = cursor.getString(cursor.getColumnIndexOrThrow(MediaStore.Audio.Media.DISPLAY_NAME))
 
                         audioContent.title = cursor.getString(cursor.getColumnIndexOrThrow(MediaStore.Audio.Media.TITLE))
@@ -159,11 +159,9 @@ class MediaFacer(): VideoGet, AudioGet,ImageGet {
 
                         audioContent.artist = cursor.getString(cursor.getColumnIndexOrThrow(MediaStore.Audio.Media.ARTIST))
 
-                        try {
+                        try{
                             audioContent.composer = cursor.getString(cursor.getColumnIndexOrThrow(MediaStore.Audio.Media.COMPOSER))
-                        }catch (ex: Exception){
-                          ex.printStackTrace()
-                        }
+                        }catch (ex: Exception){ex.printStackTrace()}
 
                         var genreVolume = ""
                         if(contentMedium == externalAudioContent){
@@ -175,13 +173,12 @@ class MediaFacer(): VideoGet, AudioGet,ImageGet {
                         audioContent.genre = getGenre(cursor.getInt(cursor.getColumnIndexOrThrow(MediaStore.Audio.Media._ID)), genreVolume, context)
 
                         allAudio.add(audioContent)
-
                         index++
                         if (index == mediaPaginationLimit)
                             break
                     } while (cursor.moveToNext())
                 }
-           /* }catch (e: Exception){
+            /*}catch (e: Exception){
                 e.printStackTrace()
             }*/
             cursor.close()
@@ -196,8 +193,7 @@ class MediaFacer(): VideoGet, AudioGet,ImageGet {
         var allImages = ArrayList<ImageContent>()
         if(shouldPaginate){
 
-            val cursor = context.contentResolver.query(contentMedium
-                ,imageProjections
+            val cursor = context.contentResolver.query(contentMedium,imageProjections
                 , null, null,
                 "LOWER (" + MediaStore.Images.Media.DATE_MODIFIED + ") DESC")!!
 
@@ -213,6 +209,12 @@ class MediaFacer(): VideoGet, AudioGet,ImageGet {
 
                         imageContent.dateModified = Date(TimeUnit.SECONDS.toMillis(cursor.getLong(cursor.getColumnIndexOrThrow(MediaStore.Images.Media.DATE_MODIFIED))))
 
+                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
+                            //imageContent.album = cursor.getString(cursor.getColumnIndexOrThrow(MediaStore.Images.Media.ALBUM))
+                        }
+
+                        imageContent.bucketName = cursor.getString(cursor.getColumnIndexOrThrow(MediaStore.Images.Media.BUCKET_DISPLAY_NAME))
+
                         val id: Int = cursor.getInt(cursor.getColumnIndexOrThrow(MediaStore.Images.Media._ID))
                         imageContent.imageId = id
 
@@ -220,15 +222,13 @@ class MediaFacer(): VideoGet, AudioGet,ImageGet {
                         imageContent.imageUri = contentUri.toString()
 
                         allImages.add(imageContent)
-
                         index++
                         if (index == mediaPaginationLimit)
                             break
-
                     } while (cursor.moveToNext())
 
                 }
-           /* } catch (e: Exception) {
+            /*} catch (e: Exception) {
                 e.printStackTrace()
             }*/
             cursor.close()
