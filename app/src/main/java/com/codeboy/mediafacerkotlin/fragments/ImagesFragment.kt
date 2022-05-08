@@ -56,7 +56,7 @@ class ImagesFragment : Fragment() {
 
         images.observe(viewLifecycleOwner) {
             adapter.submitList(it)
-            //adapter.notifyItemRangeChanged(paginationStart,it.size-1)
+            //notifyDataSetChanged on adapter after submitting list to avoid scroll lagging on recyclerview
             adapter.notifyDataSetChanged()
         }
 

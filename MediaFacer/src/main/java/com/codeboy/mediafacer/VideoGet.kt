@@ -20,7 +20,6 @@ internal interface VideoGet {
    MediaStore.Video.Media.SIZE,
    MediaStore.Video.Media._ID,
    MediaStore.Video.Media.ALBUM,
-   MediaStore.Video.Media.DATE_TAKEN,
    MediaStore.Video.Media.DATE_MODIFIED,
    MediaStore.Video.Media.ARTIST
   )
@@ -29,7 +28,7 @@ internal interface VideoGet {
  fun getVideos(context: Context, contentMedium: Uri): ArrayList<VideoContent>{
   val allVideo: ArrayList<VideoContent> = ArrayList()
   val cursor = context.contentResolver.query(contentMedium, videoProjections, null, null,
-   "LOWER (" + MediaStore.Video.Media.DATE_TAKEN + ") DESC")!! //DESC ASC
+   "LOWER (" + MediaStore.Video.Media.DATE_MODIFIED + ") DESC")!! //DESC ASC
   try {
    if(cursor.moveToFirst()){
     do {
@@ -65,6 +64,11 @@ internal interface VideoGet {
 
 
  fun getVideoFolders(context: Context, contentMedium: Uri){
+
+ }
+
+ fun getFolderVideos(){
+
 
  }
 

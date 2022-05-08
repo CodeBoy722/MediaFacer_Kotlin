@@ -2,12 +2,12 @@ package com.codeboy.mediafacer
 
 import android.annotation.SuppressLint
 import android.content.Context
-import android.database.Cursor
 import android.net.Uri
 import android.os.Build
 import android.provider.MediaStore
 import com.codeboy.mediafacer.models.AudioContent
 import com.codeboy.mediafacer.models.ImageContent
+import com.codeboy.mediafacer.models.ImageFolderContent
 import com.codeboy.mediafacer.models.VideoContent
 import java.util.*
 import java.util.concurrent.TimeUnit
@@ -49,7 +49,6 @@ class MediaFacer(): VideoGet, AudioGet,ImageGet {
         MediaStore.Images.Media.BUCKET_DISPLAY_NAME,
         MediaStore.Images.Media.BUCKET_ID,
         MediaStore.Images.Media._ID,
-        MediaStore.Images.Media.ALBUM,
         MediaStore.Images.Media.DATE_TAKEN,
         MediaStore.Images.Media.DATE_MODIFIED
     )
@@ -73,6 +72,74 @@ class MediaFacer(): VideoGet, AudioGet,ImageGet {
         mediaPaginationLimit = limit
         this.shouldPaginate = shouldPaginate
         return this
+    }
+
+    override fun getAudios(context: Context, contentMedium: Uri): ArrayList<AudioContent> {
+        var allAudio = ArrayList<AudioContent>()
+        if(shouldPaginate){
+
+            val audioSelection = MediaStore.Audio.Media.IS_MUSIC + " != 0"
+            val cursor = context.contentResolver.query(contentMedium,audioProjections,audioSelection,
+                null,
+                "LOWER (" + MediaStore.Audio.Media.TITLE + ") ASC")!! //"LOWER ("+MediaStore.Audio.Media.TITLE + ") ASC"
+            var index = 0
+            //try {
+            if (cursor.moveToPosition(mediaPaginationStart)) {
+                do {
+                    val audioContent = AudioContent()
+
+                    audioContent.name = cursor.getString(cursor.getColumnIndexOrThrow(MediaStore.Audio.Media.DISPLAY_NAME))
+
+                    audioContent.title = cursor.getString(cursor.getColumnIndexOrThrow(MediaStore.Audio.Media.TITLE))
+
+                    val id: Long = cursor.getLong(cursor.getColumnIndexOrThrow(MediaStore.Audio.Media._ID))
+                    audioContent.musicId = id
+
+                    val contentUri = Uri.withAppendedPath(contentMedium, id.toString())
+                    audioContent.musicUri = contentUri.toString()
+
+                    audioContent.musicSize = cursor.getLong(cursor.getColumnIndexOrThrow(MediaStore.Audio.Media.SIZE))
+
+                    audioContent.album = cursor.getString(cursor.getColumnIndexOrThrow(MediaStore.Audio.Media.ALBUM))
+
+                    audioContent.duration = cursor.getLong(cursor.getColumnIndexOrThrow(MediaStore.Audio.Media.DURATION))
+
+                    audioContent.dateModified = Date(TimeUnit.SECONDS.toMillis(cursor.getLong(cursor.getColumnIndexOrThrow(MediaStore.Audio.Media.DATE_MODIFIED))))
+
+                    val albumId: Long = cursor.getLong(cursor.getColumnIndexOrThrow(MediaStore.Audio.Media.ALBUM_ID))
+                    val sArtworkUri = Uri.parse("content://media/external/audio/albumart")
+                    audioContent.artUri = Uri.withAppendedPath(sArtworkUri, albumId.toString())
+
+                    audioContent.artist = cursor.getString(cursor.getColumnIndexOrThrow(MediaStore.Audio.Media.ARTIST))
+
+                    try{
+                        audioContent.composer = cursor.getString(cursor.getColumnIndexOrThrow(MediaStore.Audio.Media.COMPOSER))
+                    }catch (ex: Exception){ex.printStackTrace()}
+
+                    var genreVolume = ""
+                    if(contentMedium == externalAudioContent){
+                        genreVolume = "external"
+                    }else if(contentMedium == internalAudioContent){
+                        genreVolume = "internal"
+                    }
+
+                    audioContent.genre = getGenre(cursor.getInt(cursor.getColumnIndexOrThrow(MediaStore.Audio.Media._ID)), genreVolume, context)
+
+                    allAudio.add(audioContent)
+                    index++
+                    if (index == mediaPaginationLimit)
+                        break
+                } while (cursor.moveToNext())
+            }
+            /*}catch (e: Exception){
+                e.printStackTrace()
+            }*/
+            cursor.close()
+            mediaPaginationStart = 0
+            mediaPaginationLimit = 0
+            shouldPaginate = false
+        }else allAudio = super.getAudios(context, contentMedium)
+        return  allAudio
     }
 
     override fun getVideos(context: Context, contentMedium: Uri): ArrayList<VideoContent> {
@@ -121,74 +188,6 @@ class MediaFacer(): VideoGet, AudioGet,ImageGet {
         return videos
     }
 
-    override fun getAudios(context: Context, contentMedium: Uri): ArrayList<AudioContent> {
-        var allAudio = ArrayList<AudioContent>()
-        if(shouldPaginate){
-
-            val audioSelection = MediaStore.Audio.Media.IS_MUSIC + " != 0"
-            val cursor = context.contentResolver.query(contentMedium,audioProjections,audioSelection,
-                null,
-                "LOWER (" + MediaStore.Audio.Media.TITLE + ") ASC")!! //"LOWER ("+MediaStore.Audio.Media.TITLE + ") ASC"
-            var index = 0
-            //try {
-                if (cursor.moveToPosition(mediaPaginationStart)) {
-                    do {
-                        val audioContent = AudioContent()
-
-                        audioContent.name = cursor.getString(cursor.getColumnIndexOrThrow(MediaStore.Audio.Media.DISPLAY_NAME))
-
-                        audioContent.title = cursor.getString(cursor.getColumnIndexOrThrow(MediaStore.Audio.Media.TITLE))
-
-                        val id: Long = cursor.getLong(cursor.getColumnIndexOrThrow(MediaStore.Audio.Media._ID))
-                        audioContent.musicId = id
-
-                        val contentUri = Uri.withAppendedPath(contentMedium, id.toString())
-                        audioContent.musicUri = contentUri.toString()
-
-                        audioContent.musicSize = cursor.getLong(cursor.getColumnIndexOrThrow(MediaStore.Audio.Media.SIZE))
-
-                        audioContent.album = cursor.getString(cursor.getColumnIndexOrThrow(MediaStore.Audio.Media.ALBUM))
-
-                        audioContent.duration = cursor.getLong(cursor.getColumnIndexOrThrow(MediaStore.Audio.Media.DURATION))
-
-                        audioContent.dateModified = Date(TimeUnit.SECONDS.toMillis(cursor.getLong(cursor.getColumnIndexOrThrow(MediaStore.Audio.Media.DATE_MODIFIED))))
-
-                        val albumId: Long = cursor.getLong(cursor.getColumnIndexOrThrow(MediaStore.Audio.Media.ALBUM_ID))
-                        val sArtworkUri = Uri.parse("content://media/external/audio/albumart")
-                        audioContent.artUri = Uri.withAppendedPath(sArtworkUri, albumId.toString())
-
-                        audioContent.artist = cursor.getString(cursor.getColumnIndexOrThrow(MediaStore.Audio.Media.ARTIST))
-
-                        try{
-                            audioContent.composer = cursor.getString(cursor.getColumnIndexOrThrow(MediaStore.Audio.Media.COMPOSER))
-                        }catch (ex: Exception){ex.printStackTrace()}
-
-                        var genreVolume = ""
-                        if(contentMedium == externalAudioContent){
-                            genreVolume = "external"
-                        }else if(contentMedium == internalAudioContent){
-                            genreVolume = "internal"
-                        }
-
-                        audioContent.genre = getGenre(cursor.getInt(cursor.getColumnIndexOrThrow(MediaStore.Audio.Media._ID)), genreVolume, context)
-
-                        allAudio.add(audioContent)
-                        index++
-                        if (index == mediaPaginationLimit)
-                            break
-                    } while (cursor.moveToNext())
-                }
-            /*}catch (e: Exception){
-                e.printStackTrace()
-            }*/
-            cursor.close()
-            mediaPaginationStart = 0
-            mediaPaginationLimit = 0
-            shouldPaginate = false
-        }else allAudio = super.getAudios(context, contentMedium)
-        return  allAudio
-    }
-
     override fun getImages(context: Context, contentMedium: Uri): ArrayList<ImageContent> {
         var allImages = ArrayList<ImageContent>()
         if(shouldPaginate){
@@ -208,10 +207,6 @@ class MediaFacer(): VideoGet, AudioGet,ImageGet {
                         imageContent.size = cursor.getLong(cursor.getColumnIndexOrThrow(MediaStore.Images.Media.SIZE))
 
                         imageContent.dateModified = Date(TimeUnit.SECONDS.toMillis(cursor.getLong(cursor.getColumnIndexOrThrow(MediaStore.Images.Media.DATE_MODIFIED))))
-
-                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
-                            //imageContent.album = cursor.getString(cursor.getColumnIndexOrThrow(MediaStore.Images.Media.ALBUM))
-                        }
 
                         imageContent.bucketName = cursor.getString(cursor.getColumnIndexOrThrow(MediaStore.Images.Media.BUCKET_DISPLAY_NAME))
 
@@ -248,12 +243,24 @@ class MediaFacer(): VideoGet, AudioGet,ImageGet {
         }
     }
 
-    override fun getImageAlbums(context: Context, contentMedium: Uri) {
-        super.getImageAlbums(context, contentMedium)
+    override fun getFolderVideos() {
+        super.getFolderVideos()
     }
 
-    override fun getImageFolders(context: Context, contentMedium: Uri) {
-        super.getImageFolders(context, contentMedium)
+    override fun getImageFolders(context: Context, contentMedium: Uri): java.util.ArrayList<ImageFolderContent> {
+        if(shouldPaginate){
+
+        }else{
+            super.getImageFolders(context, contentMedium)
+        }
+    }
+
+    override fun getFolderImages(context: Context, contentMedium: Uri, bucketId: Int): java.util.ArrayList<ImageContent> {
+        if(shouldPaginate){
+
+        }else{
+            super.getImageFolders(context, contentMedium)
+        }
     }
 
     override fun getAudioAlbums(context: Context, contentMedium: Uri) {

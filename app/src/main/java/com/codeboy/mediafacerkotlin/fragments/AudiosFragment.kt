@@ -57,7 +57,7 @@ class AudiosFragment : Fragment() {
         //observe the LifeData list of items and feed them to recyclerview each time there is an update
         audios.observe(viewLifecycleOwner) {
             audiosAdapter.submitList(it)
-            //audiosAdapter.notifyItemRangeChanged(paginationStart,it.size-1)
+            //notifyDataSetChanged on adapter after submitting list to avoid scroll lagging on recyclerview
             audiosAdapter.notifyDataSetChanged()
         }
 
@@ -73,17 +73,6 @@ class AudiosFragment : Fragment() {
                loadNewItems()
             }
         })
-
-        //normal RecyclerView.OnScrollListener(), you can use this if you wish
-       /* bindings.audiosList.addOnScrollListener(object: RecyclerView.OnScrollListener() {
-
-            override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
-                if(layoutManager.findLastVisibleItemPosition() == layoutManager.itemCount-1){
-
-                }
-                super.onScrolled(recyclerView, dx, dy)
-            }
-        })*/
     }
 
     private fun loadNewItems(){
