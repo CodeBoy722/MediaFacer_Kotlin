@@ -1,10 +1,9 @@
 package com.codeboy.mediafacer
 
-import android.annotation.SuppressLint
 import android.content.Context
 import android.net.Uri
-import android.os.Build
 import android.provider.MediaStore
+import android.widget.Toast
 import com.codeboy.mediafacer.models.*
 import java.util.*
 import java.util.concurrent.TimeUnit
@@ -20,49 +19,10 @@ class MediaFacer(): VideoGet, AudioGet,ImageGet {
         val externalImagesContent: Uri = MediaStore.Images.Media.EXTERNAL_CONTENT_URI
         val internalImagesContent: Uri = MediaStore.Images.Media.INTERNAL_CONTENT_URI
     }
+
     var mediaPaginationStart = 0
     var mediaPaginationLimit = 0
     var shouldPaginate = false
-
-    @SuppressLint("InlinedApi")
-    override val audioProjections = arrayOf(
-        MediaStore.Audio.Media.TITLE,
-        MediaStore.Audio.Media.DISPLAY_NAME,
-        MediaStore.Audio.Media.ARTIST,
-        MediaStore.Audio.Media.ALBUM,
-        MediaStore.Audio.Media.ALBUM_ID,
-        MediaStore.Audio.Media.COMPOSER,
-        MediaStore.Audio.Media.SIZE,
-        MediaStore.Audio.Media._ID,
-        MediaStore.Audio.Media.DURATION,
-        MediaStore.Audio.Media.BUCKET_ID,
-        MediaStore.Audio.Media.DATE_MODIFIED
-    )
-
-    @SuppressLint("InlinedApi")
-    override val imageProjections = arrayOf(
-        MediaStore.Images.Media.DISPLAY_NAME,
-        MediaStore.Images.Media.SIZE,
-        MediaStore.Images.Media.BUCKET_DISPLAY_NAME,
-        MediaStore.Images.Media.BUCKET_ID,
-        MediaStore.Images.Media._ID,
-        MediaStore.Images.Media.DATE_TAKEN,
-        MediaStore.Images.Media.DATE_MODIFIED
-    )
-
-    @SuppressLint("InlinedApi")
-    override val videoProjections = arrayOf(
-        MediaStore.Video.Media.DISPLAY_NAME,
-        MediaStore.Video.Media.DURATION,
-        MediaStore.Video.Media.BUCKET_DISPLAY_NAME,
-        MediaStore.Video.Media.BUCKET_ID,
-        MediaStore.Video.Media.SIZE,
-        MediaStore.Video.Media._ID,
-        MediaStore.Video.Media.ALBUM,
-        MediaStore.Video.Media.DATE_TAKEN,
-        MediaStore.Video.Media.DATE_MODIFIED,
-        MediaStore.Video.Media.ARTIST
-    )
 
     fun withPagination(start: Int, limit: Int,shouldPaginate: Boolean):MediaFacer{
         mediaPaginationStart = start
@@ -240,7 +200,7 @@ class MediaFacer(): VideoGet, AudioGet,ImageGet {
         return videoFolders
     }
 
-    override fun getFolderVideos(context: Context, contentMedium: Uri, bucketId: Int): java.util.ArrayList<VideoContent> {
+    override fun getFolderVideos(context: Context, contentMedium: Uri, bucketId: Int): ArrayList<VideoContent> {
         return super.getFolderVideos(context, contentMedium, bucketId)
     }
 
@@ -267,20 +227,13 @@ class MediaFacer(): VideoGet, AudioGet,ImageGet {
 
 
 
-    override fun getAudioAlbums(context: Context, contentMedium: Uri) {
-        super.getAudioAlbums(context, contentMedium)
-    }
-
-    override fun getAudioArtist(context: Context, contentMedium: Uri) {
-        super.getAudioArtist(context, contentMedium)
-    }
-
-    override fun getAudioBuckets(context: Context, contentMedium: Uri) {
-        super.getAudioBuckets(context, contentMedium)
-    }
-
-    override fun getAudioGenres(context: Context, contentMedium: Uri) {
-        super.getAudioGenres(context, contentMedium)
+    override fun searchAudios(
+        context: Context,
+        contentMedium: Uri,
+        selectionType: String,
+        selectionValue: String
+    ): ArrayList<AudioContent> {
+        return super.searchAudios(context, contentMedium, selectionType, selectionValue)
     }
 
     fun deleteMedia(mediaId: Int){

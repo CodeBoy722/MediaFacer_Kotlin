@@ -29,7 +29,7 @@ internal interface ImageGet {
             , null, null,
             "LOWER (" + MediaStore.Images.Media.DATE_MODIFIED + ") DESC")!!
 
-        try {
+        //try {
             if(cursor.moveToFirst()){
                 do {
                     val imageContent = ImageContent()
@@ -53,9 +53,9 @@ internal interface ImageGet {
                 } while (cursor.moveToNext())
 
             }
-        } catch (e: Exception) {
+        /*} catch (e: Exception) {
             e.printStackTrace()
-        }
+        }*/
         cursor.close()
         return  allImages
     }
@@ -68,7 +68,7 @@ internal interface ImageGet {
             ,imageProjections, null, null,
             "LOWER (" + MediaStore.Images.Media.DATE_MODIFIED + ") DESC")!!
 
-        try {
+        //try {
             if(cursor.moveToFirst()){
                 do{
                     val imageFolder = ImageFolderContent()
@@ -88,9 +88,9 @@ internal interface ImageGet {
                     }
                 }while (cursor.moveToNext())
             }
-        }catch (ex: Exception){
+        /*}catch (ex: Exception){
             ex.printStackTrace()
-        }
+        }*/
         cursor.close()
         return imageFolders
     }
@@ -102,7 +102,7 @@ internal interface ImageGet {
             MediaStore.Images.Media.BUCKET_ID + " like ? ", arrayOf("%$bucketId%"),
             "LOWER (" + MediaStore.Images.Media.DATE_MODIFIED + ") DESC")!!
 
-        try {
+        //try {
             if(cursor.moveToFirst()){
                 do {
                     val imageContent = ImageContent()
@@ -126,9 +126,9 @@ internal interface ImageGet {
                 } while (cursor.moveToNext())
 
             }
-        } catch (e: Exception) {
+        /*} catch (e: Exception) {
             e.printStackTrace()
-        }
+        }*/
         cursor.close()
         return images
     }

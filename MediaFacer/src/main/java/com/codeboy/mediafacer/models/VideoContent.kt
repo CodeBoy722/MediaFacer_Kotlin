@@ -11,6 +11,7 @@ class VideoContent() {
     var size: Long = 0
     var videoUri: String = ""
     var artist: String = ""
+    var filePath: String = ""
     var dateModified: Date = Date()
 
 

@@ -17,6 +17,7 @@ class AudioContent() {
     var duration: Long = 0
     var musicId: Long = 0
     var musicUri: String = ""
+    var filePath: String = ""
     var dateModified: Date = Date()
 
 

@@ -2,32 +2,24 @@ package com.codeboy.mediafacerkotlin.fragments
 
 import android.annotation.SuppressLint
 import android.os.Bundle
-import android.os.Handler
-import android.os.Looper
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Toast
 import androidx.fragment.app.Fragment
-import androidx.lifecycle.MutableLiveData
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.codeboy.mediafacer.MediaFacer
-import com.codeboy.mediafacer.MediaFacer.Companion.externalAudioContent
-import com.codeboy.mediafacer.models.AudioContent
 import com.codeboy.mediafacerkotlin.R
 import com.codeboy.mediafacerkotlin.databinding.FragmentAudiosBinding
 import com.codeboy.mediafacerkotlin.utils.EndlessScrollListener
 import com.codeboy.mediafacerkotlin.viewAdapters.AudioViewAdapter
+import com.codeboy.mediafacerkotlin.viewModels.AudioViewModel
 
 class AudiosFragment : Fragment() {
 
     private lateinit var bindings: FragmentAudiosBinding
-    private var audios: MutableLiveData<ArrayList<AudioContent>> = MutableLiveData()
     private var paginationStart = 0
     private var paginationLimit = 50
     private var shouldPaginate = true
-    private lateinit var audiosList: ArrayList<AudioContent>
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         return inflater.inflate(R.layout.fragment_audios, container, false)
@@ -54,43 +46,27 @@ class AudiosFragment : Fragment() {
         val audiosAdapter = AudioViewAdapter()
         bindings.audiosList.adapter = audiosAdapter
 
+        val model = AudioViewModel()
         //observe the LifeData list of items and feed them to recyclerview each time there is an update
-        audios.observe(viewLifecycleOwner) {
+        model.audios.observe(viewLifecycleOwner) {
             audiosAdapter.submitList(it)
             //notifyDataSetChanged on adapter after submitting list to avoid scroll lagging on recyclerview
+            paginationStart = it.size + 1
             audiosAdapter.notifyDataSetChanged()
         }
 
         //get paginated audio items using MediaFacer, remember to set paginationStart to size+1 of
         //of items gotten from MediaFacer to prepare for getting next page of items when user scroll
-        audiosList = ArrayList()
-        loadNewItems()
+        //audiosList = ArrayList()
+        model.loadNewItems(requireActivity(),paginationStart,paginationLimit,shouldPaginate)
 
         //adding EndlessScrollListener to our recyclerview to auto paginate items when user is
         //scrolling towards end of list
         bindings.audiosList.addOnScrollListener(object: EndlessScrollListener(layoutManager){
-            override fun onLoadMore(page: Int, totalItemsCount: Int, view: RecyclerView?) {
-               loadNewItems()
+            override  fun onLoadMore(page: Int, totalItemsCount: Int, view: RecyclerView?) {
+                model.loadNewItems(requireActivity(),paginationStart,paginationLimit,shouldPaginate)
             }
         })
-    }
-
-    private fun loadNewItems(){
-        Handler(Looper.getMainLooper())
-            .post {
-                audiosList.addAll(
-                    MediaFacer()
-                        .withPagination(paginationStart, paginationLimit, shouldPaginate)
-                        .getAudios(requireActivity(), externalAudioContent)
-                )
-                paginationStart = audiosList.size + 1
-                audios.value = audiosList
-                Toast.makeText(
-                    requireActivity(),
-                    "gotten new audio data " + audiosList.size.toString(),
-                    Toast.LENGTH_LONG
-                ).show()
-            }
     }
 
 }

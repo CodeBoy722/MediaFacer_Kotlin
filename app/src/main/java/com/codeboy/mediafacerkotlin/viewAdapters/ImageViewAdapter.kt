@@ -1,6 +1,7 @@
 package com.codeboy.mediafacerkotlin.viewAdapters
 
 import android.view.LayoutInflater
+import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
@@ -35,13 +36,17 @@ class ImageViewAdapter : ListAdapter<ImageContent, ImageViewAdapter.ImageViewHol
     }
 
 
-    class ImageViewHolder(private val bindings:ImageItemBinding): RecyclerView.ViewHolder(bindings.root){
+    class ImageViewHolder(private val bindings:ImageItemBinding): RecyclerView.ViewHolder(bindings.root), View.OnClickListener{
         lateinit var item: ImageContent
         fun bind(){
             Glide.with(bindings.image)
                 .load(item.imageUri)
                 .apply(RequestOptions().centerCrop())
                 .into(bindings.image)
+        }
+
+        override fun onClick(p0: View?) {
+
         }
     }
 

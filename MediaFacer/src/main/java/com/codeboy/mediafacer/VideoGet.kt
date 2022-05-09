@@ -28,7 +28,7 @@ internal interface VideoGet {
   val allVideo: ArrayList<VideoContent> = ArrayList()
   val cursor = context.contentResolver.query(contentMedium, videoProjections, null, null,
    "LOWER (" + MediaStore.Video.Media.DATE_MODIFIED + ") DESC")!! //DESC ASC
-  try {
+  //try {
    if(cursor.moveToFirst()){
     do {
      val video = VideoContent()
@@ -51,9 +51,9 @@ internal interface VideoGet {
      allVideo.add(video)
     } while (cursor.moveToNext())
    }
-  } catch (e: Exception) {
+  /*} catch (e: Exception) {
    e.printStackTrace()
-  }
+  }*/
   cursor.close()
   return allVideo
  }
@@ -65,7 +65,7 @@ internal interface VideoGet {
   val cursor = context.contentResolver.query(contentMedium, videoProjections,
    null, null, "LOWER (" + MediaStore.Video.Media.DATE_MODIFIED + ") DESC")!! //DESC
 
-  try {
+  //try {
    if(cursor.moveToFirst()){
     do{
 
@@ -87,9 +87,9 @@ internal interface VideoGet {
 
     }while (cursor.moveToNext())
    }
-  }catch (ex: Exception){
+  /*}catch (ex: Exception){
    ex.printStackTrace()
-  }
+  }*/
   cursor.close()
   return videoFolders
  }
@@ -100,7 +100,7 @@ internal interface VideoGet {
    MediaStore.Video.Media.BUCKET_ID + " like ? ", arrayOf("%$bucketId%"),
    "LOWER (" + MediaStore.Video.Media.DATE_MODIFIED + ") DESC")!! //DESC
 
-  try {
+  //try {
    if(cursor.moveToFirst()){
     do {
      val videoContent = VideoContent()
@@ -123,10 +123,9 @@ internal interface VideoGet {
      videos.add(videoContent)
     } while (cursor.moveToNext())
    }
-  } catch (e: Exception) {
+  /*} catch (e: Exception) {
    e.printStackTrace()
-  }
-
+  }*/
   cursor.close()
   return videos
  }
@@ -140,7 +139,7 @@ internal interface VideoGet {
   val cursor = context.contentResolver.query(contentMedium, videoProjections,
    null, null, "LOWER (" + MediaStore.Video.Media.DATE_MODIFIED + ") DESC")!! //DESC
 
-  try {
+  //try {
    if(cursor.moveToFirst()){
     do{
      val videoFolder = VideoFolderContent()
@@ -185,9 +184,9 @@ internal interface VideoGet {
      }
     }while (cursor.moveToNext())
    }
-  }catch (ex: Exception){
+  /*}catch (ex: Exception){
    ex.printStackTrace()
-  }
+  }*/
   cursor.close()
   return absoluteVideoFolders
  }

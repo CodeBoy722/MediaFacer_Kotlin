@@ -2,33 +2,25 @@ package com.codeboy.mediafacerkotlin.fragments
 
 import android.annotation.SuppressLint
 import android.os.Bundle
-import android.os.Handler
-import android.os.Looper
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Toast
 import androidx.fragment.app.Fragment
-import androidx.lifecycle.MutableLiveData
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.codeboy.mediafacer.MediaFacer
-import com.codeboy.mediafacer.MediaFacer.Companion.externalImagesContent
-import com.codeboy.mediafacer.models.ImageContent
 import com.codeboy.mediafacerkotlin.R
 import com.codeboy.mediafacerkotlin.databinding.FragmentImagesBinding
 import com.codeboy.mediafacerkotlin.utils.EndlessScrollListener
 import com.codeboy.mediafacerkotlin.utils.Utils.calculateNoOfColumns
 import com.codeboy.mediafacerkotlin.viewAdapters.ImageViewAdapter
+import com.codeboy.mediafacerkotlin.viewModels.ImageViewModel
 
 class ImagesFragment : Fragment() {
 
     private lateinit var bindings: FragmentImagesBinding
-    private var images: MutableLiveData<ArrayList<ImageContent>> = MutableLiveData()
     private var paginationStart = 0
     private var paginationLimit = 150
     private var shouldPaginate = true
-    private lateinit var imagesList: ArrayList<ImageContent>
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         return inflater.inflate(R.layout.fragment_images, container, false)
@@ -43,34 +35,42 @@ class ImagesFragment : Fragment() {
 
     @SuppressLint("NotifyDataSetChanged")
     private fun initImages(){
+        // init and setup your recyclerview with a layout manager
         bindings.imagesList.hasFixedSize()
         bindings.imagesList.setHasFixedSize(true)
         bindings.imagesList.setItemViewCacheSize(20)
-        val numOfColumns = calculateNoOfColumns(requireActivity(), 100f)
+        val numOfColumns = calculateNoOfColumns(requireActivity(), 85f)
         val layoutManager = GridLayoutManager(requireActivity(),numOfColumns)
         bindings.imagesList.layoutManager = layoutManager
         bindings.imagesList.itemAnimator = null
 
+        //init your adapter and bind it to recyclerview
         val adapter = ImageViewAdapter()
         bindings.imagesList.adapter = adapter
 
-        images.observe(viewLifecycleOwner) {
+        val model = ImageViewModel()
+        //observe the LifeData list of items and feed them to recyclerview each time there is an update
+        model.images.observe(viewLifecycleOwner) {
             adapter.submitList(it)
             //notifyDataSetChanged on adapter after submitting list to avoid scroll lagging on recyclerview
+            paginationStart = it.size + 1
             adapter.notifyDataSetChanged()
         }
 
-        imagesList = ArrayList()
-        loadNewItems()
+        //get paginated audio items using MediaFacer, remember to set paginationStart to size+1 of
+        //of items gotten from MediaFacer to prepare for getting next page of items when user scroll
+        model.loadNewItems(requireActivity(),paginationStart,paginationLimit,shouldPaginate)
 
+        //adding EndlessScrollListener to our recyclerview to auto paginate items when user is
+        //scrolling towards end of list
         bindings.imagesList.addOnScrollListener(object: EndlessScrollListener(layoutManager){
             override fun onLoadMore(page: Int, totalItemsCount: Int, view: RecyclerView?) {
-               loadNewItems()
+                model.loadNewItems(requireActivity(),paginationStart,paginationLimit,shouldPaginate)
             }
         })
     }
 
-    private fun loadNewItems(){
+    /*private fun loadNewItems(){
         Handler(Looper.getMainLooper())
             .post {
                 imagesList.addAll(
@@ -86,17 +86,6 @@ class ImagesFragment : Fragment() {
                     Toast.LENGTH_LONG
                 ).show()
             }
-    }
-
-
-    //normal RecyclerView.OnScrollListener(), you can use this if you wish
-    /* bindings.imagesList.addOnScrollListener(object: RecyclerView.OnScrollListener() {
-         override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
-             if(layoutManager.findLastVisibleItemPosition() == layoutManager.itemCount-1){
-                 loadNewItems()
-             }
-             super.onScrolled(recyclerView, dx, dy)
-         }
-     })*/
+    }*/
 
 }

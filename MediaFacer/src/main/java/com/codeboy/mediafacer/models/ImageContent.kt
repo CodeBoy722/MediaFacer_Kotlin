@@ -9,6 +9,7 @@ class ImageContent() {
     var size: Long = 0
     var imageUri: String = ""
     var imageId = 0
+    var filePath: String = ""
     var dateModified: Date = Date()
 
 }

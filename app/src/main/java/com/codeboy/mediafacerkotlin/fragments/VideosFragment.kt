@@ -2,33 +2,25 @@ package com.codeboy.mediafacerkotlin.fragments
 
 import android.annotation.SuppressLint
 import android.os.Bundle
-import android.os.Handler
-import android.os.Looper
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Toast
 import androidx.fragment.app.Fragment
-import androidx.lifecycle.MutableLiveData
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.codeboy.mediafacer.MediaFacer
-import com.codeboy.mediafacer.MediaFacer.Companion.externalVideoContent
-import com.codeboy.mediafacer.models.VideoContent
 import com.codeboy.mediafacerkotlin.R
 import com.codeboy.mediafacerkotlin.databinding.FragmentVideosBinding
 import com.codeboy.mediafacerkotlin.utils.EndlessScrollListener
 import com.codeboy.mediafacerkotlin.utils.Utils.calculateNoOfColumns
 import com.codeboy.mediafacerkotlin.viewAdapters.VideoViewAdapter
+import com.codeboy.mediafacerkotlin.viewModels.VideoViewModel
 
 class VideosFragment : Fragment() {
 
     private lateinit var bindings: FragmentVideosBinding
-    private var videos: MutableLiveData<ArrayList<VideoContent>> = MutableLiveData()
     private var paginationStart = 0
     private var paginationLimit = 150
     private var shouldPaginate = true
-    private lateinit var videosList: ArrayList<VideoContent>
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         return inflater.inflate(R.layout.fragment_videos, container, false)
@@ -43,7 +35,7 @@ class VideosFragment : Fragment() {
 
     @SuppressLint("NotifyDataSetChanged")
     private fun initVideos(){
-
+        // init and setup your recyclerview with a layout manager
         bindings.videosList.hasFixedSize()
         bindings.videosList.setHasFixedSize(true)
         bindings.videosList.setItemViewCacheSize(20)
@@ -52,27 +44,36 @@ class VideosFragment : Fragment() {
         bindings.videosList.layoutManager = layoutManager
         bindings.videosList.itemAnimator = null
 
+        //init your adapter and bind it to recyclerview
         val adapter = VideoViewAdapter()
         bindings.videosList.adapter = adapter
 
-        videos.observe(viewLifecycleOwner) {
+        val model = VideoViewModel()
+        //observe the LifeData list of items and feed them to recyclerview each time there is an update
+        model.videos.observe(viewLifecycleOwner) {
             adapter.submitList(it)
             //notifyDataSetChanged on adapter after submitting list to avoid scroll lagging on recyclerview
+            paginationStart = it.size+1
             adapter.notifyDataSetChanged()
         }
 
-        //init videoList
-        videosList = ArrayList()
-        loadNewItems()
+        //get paginated audio items using MediaFacer, remember to set paginationStart to size+1 of
+        //of items gotten from MediaFacer to prepare for getting next page of items when user scroll
+        model.loadNewItems(requireActivity(),paginationStart,paginationLimit,shouldPaginate)
 
+        //adding EndlessScrollListener to our recyclerview to auto paginate items when user is
+        //scrolling towards end of list
         bindings.videosList.addOnScrollListener(object: EndlessScrollListener(layoutManager){
             override fun onLoadMore(page: Int, totalItemsCount: Int, view: RecyclerView?) {
-                loadNewItems()
+                model.loadNewItems(requireActivity(),paginationStart,paginationLimit,shouldPaginate)
             }
         })
     }
 
-    private fun loadNewItems(){
+
+
+
+    /*private fun loadNewItems(){
         Handler(Looper.getMainLooper())
             .post {
                 videosList.addAll(
@@ -82,12 +83,12 @@ class VideosFragment : Fragment() {
                 )
                 paginationStart = videosList.size + 1
                 videos.value = videosList
-                Toast.makeText(
+                *//*Toast.makeText(
                     requireActivity(),
                     "gotten new video data " + videosList.size.toString(),
                     Toast.LENGTH_LONG
-                ).show()
+                ).show()*//*
             }
-    }
+    }*/
 
 }

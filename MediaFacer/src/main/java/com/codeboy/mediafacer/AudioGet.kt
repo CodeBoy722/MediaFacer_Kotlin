@@ -1,11 +1,13 @@
 package com.codeboy.mediafacer
 
+import android.annotation.SuppressLint
 import android.content.Context
 import android.database.Cursor
 import android.net.Uri
 import android.provider.MediaStore
 import com.codeboy.mediafacer.MediaFacer.Companion.externalAudioContent
 import com.codeboy.mediafacer.MediaFacer.Companion.internalAudioContent
+import com.codeboy.mediafacer.models.AudioAlbumContent
 import com.codeboy.mediafacer.models.AudioContent
 import java.util.*
 import java.util.concurrent.TimeUnit
@@ -15,6 +17,7 @@ import kotlin.collections.ArrayList
 internal interface AudioGet {
 
  val audioProjections: Array<String>
+  @SuppressLint("InlinedApi")
   get() = arrayOf(
    MediaStore.Audio.Media.TITLE,
    MediaStore.Audio.Media.DISPLAY_NAME,
@@ -29,6 +32,15 @@ internal interface AudioGet {
    MediaStore.Audio.Media.DATE_MODIFIED
   )
 
+ val searchSelectionTypeAlbum: String
+  get() = MediaStore.Audio.Media.ALBUM
+
+ val searchSelectionTypeArtist: String
+  get() = MediaStore.Audio.Media.ARTIST
+
+ val searchSelectionTypeTitle: String
+  get() = MediaStore.Audio.Media.TITLE
+
  fun getAudios(context: Context, contentMedium: Uri): ArrayList<AudioContent>{
   val allAudio: ArrayList<AudioContent> = ArrayList()
   val audioSelection = MediaStore.Audio.Media.IS_MUSIC + " != 0"
@@ -37,7 +49,7 @@ internal interface AudioGet {
    ,audioSelection,
    null,
    "LOWER (" + MediaStore.Audio.Media.TITLE + ") ASC")!! //"LOWER ("+MediaStore.Audio.Media.TITLE + ") ASC"
-  try {
+  //try {
    if (cursor.moveToFirst()) {
     do {
      val audioContent = AudioContent()
@@ -82,15 +94,30 @@ internal interface AudioGet {
     } while (cursor.moveToNext())
    }
 
-  }catch (e: Exception){
+ /* }catch (e: Exception){
    e.printStackTrace()
-  }
+  }*/
   cursor.close()
   return allAudio
  }
 
- fun getAudioAlbums(context: Context, contentMedium: Uri){
+ fun getAudioAlbums(context: Context, contentMedium: Uri): ArrayList<AudioAlbumContent>{
+  val albums = ArrayList<AudioAlbumContent>()
 
+  return albums
+ }
+
+ fun getAlbumAudios(context: Context, contentMedium: Uri, album: String):ArrayList<AudioContent>{
+  val audios = ArrayList<AudioContent>()
+
+  return audios
+ }
+
+ //this method does not support pagination
+ fun getAbsoluteAudioAlbums(context: Context, contentMedium: Uri): ArrayList<AudioAlbumContent>{
+  val albums = ArrayList<AudioAlbumContent>()
+
+  return albums
  }
 
  fun getAudioArtist(context: Context, contentMedium: Uri){
@@ -103,6 +130,17 @@ internal interface AudioGet {
 
  fun getAudioGenres(context: Context, contentMedium: Uri){
 
+ }
+
+ fun searchAudios(context: Context, contentMedium: Uri, selectionType: String, selectionValue: String): ArrayList<AudioContent>{
+  val foundAudios = ArrayList<AudioContent>()
+  val cursor = context.contentResolver.query(contentMedium, audioProjections,
+   "$selectionType like ? ",
+   arrayOf("%$selectionValue%"),
+   "LOWER (" + MediaStore.Audio.Media.TITLE + ") ASC")!!
+
+  cursor.close()
+  return foundAudios
  }
 
 
