@@ -5,10 +5,7 @@ import android.content.Context
 import android.net.Uri
 import android.os.Build
 import android.provider.MediaStore
-import com.codeboy.mediafacer.models.AudioContent
-import com.codeboy.mediafacer.models.ImageContent
-import com.codeboy.mediafacer.models.ImageFolderContent
-import com.codeboy.mediafacer.models.VideoContent
+import com.codeboy.mediafacer.models.*
 import java.util.*
 import java.util.concurrent.TimeUnit
 import kotlin.collections.ArrayList
@@ -167,8 +164,6 @@ class MediaFacer(): VideoGet, AudioGet,ImageGet {
                         val contentUri = Uri.withAppendedPath(contentMedium, id.toString())
                         videoContent.videoUri = contentUri.toString()
 
-                        videoContent.album = cursor.getString(cursor.getColumnIndexOrThrow(MediaStore.Video.Media.ALBUM))
-
                         videoContent.artist = cursor.getString(cursor.getColumnIndexOrThrow(MediaStore.Video.Media.ARTIST))
 
                         videos.add(videoContent)
@@ -235,33 +230,42 @@ class MediaFacer(): VideoGet, AudioGet,ImageGet {
     }
 
 
-    override fun getVideoFolders(context: Context, contentMedium: Uri) {
+    override fun getVideoFolders(context: Context, contentMedium: Uri): ArrayList<VideoFolderContent> {
+        var videoFolders = ArrayList<VideoFolderContent>()
         if(shouldPaginate){
 
         }else{
-            super.getVideoFolders(context, contentMedium)
+            videoFolders = super.getVideoFolders(context, contentMedium)
         }
+        return videoFolders
     }
 
-    override fun getFolderVideos() {
-        super.getFolderVideos()
+    override fun getFolderVideos(context: Context, contentMedium: Uri, bucketId: Int): java.util.ArrayList<VideoContent> {
+        return super.getFolderVideos(context, contentMedium, bucketId)
     }
 
-    override fun getImageFolders(context: Context, contentMedium: Uri): java.util.ArrayList<ImageFolderContent> {
+    override fun getImageFolders(context: Context, contentMedium: Uri): ArrayList<ImageFolderContent> {
+        var imageFolders = ArrayList<ImageFolderContent>()
         if(shouldPaginate){
 
         }else{
-            super.getImageFolders(context, contentMedium)
+            imageFolders = super.getImageFolders(context, contentMedium)
         }
+        return imageFolders
     }
 
-    override fun getFolderImages(context: Context, contentMedium: Uri, bucketId: Int): java.util.ArrayList<ImageContent> {
+    override fun getFolderImages(context: Context, contentMedium: Uri, bucketId: Int): ArrayList<ImageContent> {
+        var folderImages = ArrayList<ImageContent>()
         if(shouldPaginate){
 
         }else{
-            super.getImageFolders(context, contentMedium)
+            folderImages = super.getFolderImages(context, contentMedium, bucketId)
         }
+        return folderImages
     }
+
+
+
 
     override fun getAudioAlbums(context: Context, contentMedium: Uri) {
         super.getAudioAlbums(context, contentMedium)

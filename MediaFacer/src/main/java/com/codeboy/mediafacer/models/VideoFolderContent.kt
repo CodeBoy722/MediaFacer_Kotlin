@@ -1,10 +1,9 @@
 package com.codeboy.mediafacer.models
 
-class VideoFolderContent {
-
-    private val videos: ArrayList<VideoContent> = ArrayList()
-    private val folderName: String = ""
-    private val folderPath: String = ""
-    private val bucketId = 0
-
+class VideoFolderContent() {
+    var videos: ArrayList<VideoContent> = ArrayList()
+    var videoFolderSize = videos.size
+    var folderName: String = ""
+    var folderPath: String = ""
+    var bucketId = 0
 }

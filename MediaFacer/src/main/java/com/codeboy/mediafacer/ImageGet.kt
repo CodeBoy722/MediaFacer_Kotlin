@@ -75,10 +75,9 @@ internal interface ImageGet {
                     val folderName: String = cursor.getString(cursor.getColumnIndexOrThrow(MediaStore.Images.Media.BUCKET_DISPLAY_NAME))
                     val bucketId: Int = cursor.getInt(cursor.getColumnIndexOrThrow(MediaStore.Images.Media.BUCKET_ID))
 
-                    val folder: String = cursor.getString(cursor.getColumnIndexOrThrow(MediaStore.Images.Media.BUCKET_DISPLAY_NAME))
                     val dataPath: String = cursor.getString(cursor.getColumnIndexOrThrow(MediaStore.Images.Media.DATA))
-                    var folderPath = dataPath.substring(0, dataPath.lastIndexOf("$folder/"))
-                    folderPath = "$folderPath$folder/"
+                    var folderPath = dataPath.substring(0, dataPath.lastIndexOf("$folderName/"))
+                    folderPath = "$folderPath$folderName/"
 
                     if(!folderIds.contains(bucketId)){
                         folderIds.add(bucketId)
@@ -176,12 +175,12 @@ internal interface ImageGet {
                         imageFolder.bucketId = bucketId
                         imageFolder.folderName = folderName
                         imageFolder.folderPath = folderPath
-                        imageFolder.photos.add(image)
+                        imageFolder.images.add(image)
                         absolutePictureFolders.add(imageFolder)
                     }else{
                         for (folderX in absolutePictureFolders) {
                             if (folderX.bucketId == bucketId) {
-                                folderX.photos.add(image)
+                                folderX.images.add(image)
                             }
                         }
                     }

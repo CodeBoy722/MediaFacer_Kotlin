@@ -5,7 +5,6 @@ import java.util.*
 class ImageContent() {
 
     var name: String = ""
-    var album: String = ""
     var bucketName: String = ""
     var size: Long = 0
     var imageUri: String = ""
