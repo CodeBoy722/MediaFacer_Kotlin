@@ -71,19 +71,21 @@ internal interface ImageGet {
         //try {
             if(cursor.moveToFirst()){
                 do{
-                    val imageFolder = ImageFolderContent()
-                    val folderName: String = cursor.getString(cursor.getColumnIndexOrThrow(MediaStore.Images.Media.BUCKET_DISPLAY_NAME))
                     val bucketId: Int = cursor.getInt(cursor.getColumnIndexOrThrow(MediaStore.Images.Media.BUCKET_ID))
-
-                    val dataPath: String = cursor.getString(cursor.getColumnIndexOrThrow(MediaStore.Images.Media.DATA))
-                    var folderPath = dataPath.substring(0, dataPath.lastIndexOf("$folderName/"))
-                    folderPath = "$folderPath$folderName/"
 
                     if(!folderIds.contains(bucketId)){
                         folderIds.add(bucketId)
+                        val imageFolder = ImageFolderContent()
+
+                        val folderName: String = cursor.getString(cursor.getColumnIndexOrThrow(MediaStore.Images.Media.BUCKET_DISPLAY_NAME))
+                        val dataPath: String = cursor.getString(cursor.getColumnIndexOrThrow(MediaStore.Images.Media.DATA))
+                        var folderPath = dataPath.substring(0, dataPath.lastIndexOf("$folderName/"))
+                        folderPath = "$folderPath$folderName/"
+
                         imageFolder.bucketId = bucketId
                         imageFolder.folderName = folderName
                         imageFolder.folderPath = folderPath
+                        imageFolder.images = getFolderImages(context,contentMedium,bucketId)
                         imageFolders.add(imageFolder)
                     }
                 }while (cursor.moveToNext())
@@ -95,7 +97,7 @@ internal interface ImageGet {
         return imageFolders
     }
 
-    fun getFolderImages(context: Context, contentMedium: Uri, bucketId: Int): ArrayList<ImageContent>{
+    private fun getFolderImages(context: Context, contentMedium: Uri, bucketId: Int): ArrayList<ImageContent>{
         val images: ArrayList<ImageContent> = ArrayList()
 
         val cursor = context.contentResolver.query(contentMedium, imageProjections,
@@ -124,7 +126,6 @@ internal interface ImageGet {
                     images.add(imageContent)
 
                 } while (cursor.moveToNext())
-
             }
         /*} catch (e: Exception) {
             e.printStackTrace()
@@ -143,7 +144,7 @@ internal interface ImageGet {
             ,imageProjections, null, null,
             "LOWER (" + MediaStore.Images.Media.DATE_MODIFIED + ") DESC")!!
 
-        try {
+        //try {
             if(cursor.moveToFirst()){
                 do{
                     val imageFolder = ImageFolderContent()
@@ -186,9 +187,9 @@ internal interface ImageGet {
                     }
                 }while (cursor.moveToNext())
             }
-        }catch (ex: Exception){
+        /*}catch (ex: Exception){
             ex.printStackTrace()
-        }
+        }*/
         cursor.close()
         return absolutePictureFolders
     }

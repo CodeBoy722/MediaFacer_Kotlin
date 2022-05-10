@@ -3,13 +3,12 @@ package com.codeboy.mediafacer
 import android.content.Context
 import android.net.Uri
 import android.provider.MediaStore
-import android.widget.Toast
 import com.codeboy.mediafacer.models.*
 import java.util.*
 import java.util.concurrent.TimeUnit
 import kotlin.collections.ArrayList
 
-class MediaFacer(): VideoGet, AudioGet,ImageGet {
+class MediaFacer(): VideoGet, AudioGet, ImageGet {
 
     companion object {
         val externalAudioContent: Uri = MediaStore.Audio.Media.EXTERNAL_CONTENT_URI
@@ -189,49 +188,33 @@ class MediaFacer(): VideoGet, AudioGet,ImageGet {
         return allImages
     }
 
-
     override fun getVideoFolders(context: Context, contentMedium: Uri): ArrayList<VideoFolderContent> {
         var videoFolders = ArrayList<VideoFolderContent>()
         if(shouldPaginate){
-
-        }else{
-            videoFolders = super.getVideoFolders(context, contentMedium)
-        }
+            //todo
+        }else videoFolders = super.getVideoFolders(context, contentMedium)
         return videoFolders
-    }
-
-    override fun getFolderVideos(context: Context, contentMedium: Uri, bucketId: Int): ArrayList<VideoContent> {
-        return super.getFolderVideos(context, contentMedium, bucketId)
     }
 
     override fun getImageFolders(context: Context, contentMedium: Uri): ArrayList<ImageFolderContent> {
         var imageFolders = ArrayList<ImageFolderContent>()
         if(shouldPaginate){
-
-        }else{
-            imageFolders = super.getImageFolders(context, contentMedium)
-        }
+            //todo
+        }else imageFolders = super.getImageFolders(context, contentMedium)
         return imageFolders
     }
 
-    override fun getFolderImages(context: Context, contentMedium: Uri, bucketId: Int): ArrayList<ImageContent> {
-        var folderImages = ArrayList<ImageContent>()
+    override fun getAudioAlbums(context: Context, contentMedium: Uri): ArrayList<AudioAlbumContent> {
+        var albums = ArrayList<AudioAlbumContent>()
         if(shouldPaginate){
-
-        }else{
-            folderImages = super.getFolderImages(context, contentMedium, bucketId)
-        }
-        return folderImages
+            //todo
+        }else albums = super.getAudioAlbums(context, contentMedium)
+        return albums
     }
 
 
 
-
-    override fun searchAudios(
-        context: Context,
-        contentMedium: Uri,
-        selectionType: String,
-        selectionValue: String
+    override fun searchAudios(context: Context, contentMedium: Uri, selectionType: String, selectionValue: String
     ): ArrayList<AudioContent> {
         return super.searchAudios(context, contentMedium, selectionType, selectionValue)
     }
