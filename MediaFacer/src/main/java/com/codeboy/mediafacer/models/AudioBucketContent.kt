@@ -4,7 +4,7 @@ class AudioBucketContent() {
 
     var bucketName: String = ""
     var bucketPath: String = ""
-    var bucketId = 0
+    var bucketId: String = ""
     var audios = ArrayList<AudioContent>()
 
 }

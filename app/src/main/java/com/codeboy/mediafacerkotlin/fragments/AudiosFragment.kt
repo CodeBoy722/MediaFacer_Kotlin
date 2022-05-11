@@ -46,6 +46,7 @@ class AudiosFragment : Fragment() {
         val audiosAdapter = AudioViewAdapter()
         bindings.audiosList.adapter = audiosAdapter
 
+        //init viewModel
         val model = AudioViewModel()
         //observe the LifeData list of items and feed them to recyclerview each time there is an update
         model.audios.observe(viewLifecycleOwner) {

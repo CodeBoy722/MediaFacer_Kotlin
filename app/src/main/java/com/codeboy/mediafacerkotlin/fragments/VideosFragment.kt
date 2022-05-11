@@ -48,6 +48,7 @@ class VideosFragment : Fragment() {
         val adapter = VideoViewAdapter()
         bindings.videosList.adapter = adapter
 
+        //init viewModel
         val model = VideoViewModel()
         //observe the LifeData list of items and feed them to recyclerview each time there is an update
         model.videos.observe(viewLifecycleOwner) {

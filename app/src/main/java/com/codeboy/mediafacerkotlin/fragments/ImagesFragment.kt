@@ -48,6 +48,7 @@ class ImagesFragment : Fragment() {
         val adapter = ImageViewAdapter()
         bindings.imagesList.adapter = adapter
 
+        //init viewModel
         val model = ImageViewModel()
         //observe the LifeData list of items and feed them to recyclerview each time there is an update
         model.images.observe(viewLifecycleOwner) {

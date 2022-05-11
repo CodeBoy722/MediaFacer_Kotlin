@@ -23,14 +23,14 @@ internal interface ImageGet {
 
     fun getImages(context: Context, contentMedium: Uri): ArrayList<ImageContent>{
         val allImages = ArrayList<ImageContent>()
-
         val cursor = context.contentResolver.query(contentMedium
             ,imageProjections
             , null, null,
             "LOWER (" + MediaStore.Images.Media.DATE_MODIFIED + ") DESC")!!
 
         //try {
-            if(cursor.moveToFirst()){
+        when {
+            cursor.moveToFirst() -> {
                 do {
                     val imageContent = ImageContent()
 
@@ -53,6 +53,7 @@ internal interface ImageGet {
                 } while (cursor.moveToNext())
 
             }
+        }
         /*} catch (e: Exception) {
             e.printStackTrace()
         }*/
@@ -63,33 +64,36 @@ internal interface ImageGet {
     fun getImageFolders(context: Context, contentMedium: Uri): ArrayList<ImageFolderContent>{
         val imageFolders: ArrayList<ImageFolderContent> = ArrayList()
         val folderIds: ArrayList<Int> = ArrayList()
-
         val cursor = context.contentResolver.query(contentMedium
             ,imageProjections, null, null,
             "LOWER (" + MediaStore.Images.Media.DATE_MODIFIED + ") DESC")!!
 
         //try {
-            if(cursor.moveToFirst()){
+        when {
+            cursor.moveToFirst() -> {
                 do{
                     val bucketId: Int = cursor.getInt(cursor.getColumnIndexOrThrow(MediaStore.Images.Media.BUCKET_ID))
 
-                    if(!folderIds.contains(bucketId)){
-                        folderIds.add(bucketId)
-                        val imageFolder = ImageFolderContent()
+                    when {
+                        !folderIds.contains(bucketId) -> {
+                            folderIds.add(bucketId)
+                            val imageFolder = ImageFolderContent()
 
-                        val folderName: String = cursor.getString(cursor.getColumnIndexOrThrow(MediaStore.Images.Media.BUCKET_DISPLAY_NAME))
-                        val dataPath: String = cursor.getString(cursor.getColumnIndexOrThrow(MediaStore.Images.Media.DATA))
-                        var folderPath = dataPath.substring(0, dataPath.lastIndexOf("$folderName/"))
-                        folderPath = "$folderPath$folderName/"
+                            val folderName: String = cursor.getString(cursor.getColumnIndexOrThrow(MediaStore.Images.Media.BUCKET_DISPLAY_NAME))
+                            val dataPath: String = cursor.getString(cursor.getColumnIndexOrThrow(MediaStore.Images.Media.DATA))
+                            var folderPath = dataPath.substring(0, dataPath.lastIndexOf("$folderName/"))
+                            folderPath = "$folderPath$folderName/"
 
-                        imageFolder.bucketId = bucketId
-                        imageFolder.folderName = folderName
-                        imageFolder.folderPath = folderPath
-                        imageFolder.images = getFolderImages(context,contentMedium,bucketId)
-                        imageFolders.add(imageFolder)
+                            imageFolder.bucketId = bucketId
+                            imageFolder.folderName = folderName
+                            imageFolder.folderPath = folderPath
+                            imageFolder.images = getFolderImages(context,contentMedium,bucketId)
+                            imageFolders.add(imageFolder)
+                        }
                     }
                 }while (cursor.moveToNext())
             }
+        }
         /*}catch (ex: Exception){
             ex.printStackTrace()
         }*/
@@ -97,15 +101,15 @@ internal interface ImageGet {
         return imageFolders
     }
 
-    private fun getFolderImages(context: Context, contentMedium: Uri, bucketId: Int): ArrayList<ImageContent>{
+    fun getFolderImages(context: Context, contentMedium: Uri, bucketId: Int): ArrayList<ImageContent>{
         val images: ArrayList<ImageContent> = ArrayList()
-
         val cursor = context.contentResolver.query(contentMedium, imageProjections,
             MediaStore.Images.Media.BUCKET_ID + " like ? ", arrayOf("%$bucketId%"),
             "LOWER (" + MediaStore.Images.Media.DATE_MODIFIED + ") DESC")!!
 
         //try {
-            if(cursor.moveToFirst()){
+        when {
+            cursor.moveToFirst() -> {
                 do {
                     val imageContent = ImageContent()
 
@@ -127,6 +131,7 @@ internal interface ImageGet {
 
                 } while (cursor.moveToNext())
             }
+        }
         /*} catch (e: Exception) {
             e.printStackTrace()
         }*/
