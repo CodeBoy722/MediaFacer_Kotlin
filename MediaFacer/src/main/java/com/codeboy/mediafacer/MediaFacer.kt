@@ -70,10 +70,6 @@ class MediaFacer(): VideoGet, AudioGet, ImageGet {
 
                             audioContent.artist = cursor.getString(cursor.getColumnIndexOrThrow(MediaStore.Audio.Media.ARTIST))
 
-                            try{
-                                audioContent.composer = cursor.getString(cursor.getColumnIndexOrThrow(MediaStore.Audio.Media.COMPOSER))
-                            }catch (ex: Exception){ex.printStackTrace()}
-
                             var genreVolume = ""
                             if(contentMedium == externalAudioContent){
                                 genreVolume = "external"

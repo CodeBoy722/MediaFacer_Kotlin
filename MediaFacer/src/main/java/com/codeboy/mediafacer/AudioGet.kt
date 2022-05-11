@@ -78,11 +78,6 @@ internal interface AudioGet {
         audio.artUri = Uri.withAppendedPath(sArtworkUri, albumId.toString())
 
         audio.artist = cursor.getString(cursor.getColumnIndexOrThrow(MediaStore.Audio.Media.ARTIST))
-        try {
-         audio.composer = cursor.getString(cursor.getColumnIndexOrThrow(MediaStore.Audio.Media.COMPOSER))
-        } catch (ex: Exception) {
-         ex.printStackTrace()
-        }
 
         var genreVolume = ""
         if (contentMedium == externalAudioContent) {
@@ -184,12 +179,6 @@ internal interface AudioGet {
         audio.artUri = Uri.withAppendedPath(sArtworkUri, albumId.toString())
 
         audio.artist = cursor.getString(cursor.getColumnIndexOrThrow(MediaStore.Audio.Media.ARTIST))
-        try {
-         audio.composer =
-          cursor.getString(cursor.getColumnIndexOrThrow(MediaStore.Audio.Media.COMPOSER))
-        } catch (ex: Exception) {
-         ex.printStackTrace()
-        }
 
         var genreVolume = ""
         if (contentMedium == externalAudioContent) {
@@ -304,11 +293,6 @@ internal interface AudioGet {
                folderAudio.artUri = Uri.withAppendedPath(sArtworkUri, albumId.toString())
 
                folderAudio.artist = cursor.getString(cursor.getColumnIndexOrThrow(MediaStore.Audio.Media.ARTIST))
-               try {
-                folderAudio.composer = cursor.getString(cursor.getColumnIndexOrThrow(MediaStore.Audio.Media.COMPOSER))
-               } catch (ex: Exception) {
-                ex.printStackTrace()
-               }
 
                var genreVolume = ""
                if (contentMedium == externalAudioContent) {
@@ -346,11 +330,6 @@ internal interface AudioGet {
                folderAudio.artUri = Uri.withAppendedPath(sArtworkUri, albumId.toString())
 
                folderAudio.artist = cursor.getString(cursor.getColumnIndexOrThrow(MediaStore.Audio.Media.ARTIST))
-               try {
-                folderAudio.composer = cursor.getString(cursor.getColumnIndexOrThrow(MediaStore.Audio.Media.COMPOSER))
-               } catch (ex: Exception) {
-                ex.printStackTrace()
-               }
 
                var genreVolume = ""
                if (contentMedium == externalAudioContent) {
@@ -439,11 +418,6 @@ internal interface AudioGet {
         audio.artUri = artUri
 
         audio.artist = cursor.getString(cursor.getColumnIndexOrThrow(MediaStore.Audio.Media.ARTIST))
-        try {
-         audio.composer = cursor.getString(cursor.getColumnIndexOrThrow(MediaStore.Audio.Media.COMPOSER))
-        } catch (ex: Exception) {
-         ex.printStackTrace()
-        }
 
         var genreVolume = ""
         if (contentMedium == externalAudioContent) {
@@ -524,11 +498,6 @@ internal interface AudioGet {
         audio.artUri = Uri.withAppendedPath(sArtworkUri, albumId.toString())
 
         audio.artist = cursor.getString(cursor.getColumnIndexOrThrow(MediaStore.Audio.Media.ARTIST))
-        try {
-         audio.composer = cursor.getString(cursor.getColumnIndexOrThrow(MediaStore.Audio.Media.COMPOSER))
-        } catch (ex: Exception) {
-         ex.printStackTrace()
-        }
 
         var genreVolume = ""
         if (contentMedium == externalAudioContent) {

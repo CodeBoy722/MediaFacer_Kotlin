@@ -11,7 +11,6 @@ class AudioContent() {
     var artist: String = ""
     var album: String = ""
     var genre: String = ""
-    var composer: String = ""
     var artUri: Uri = Uri.EMPTY
     var musicSize: Long = 0
     var duration: Long = 0
@@ -27,7 +26,6 @@ class AudioContent() {
             .putString(MediaMetadata.METADATA_KEY_ARTIST, artist)
             .putString(MediaMetadata.METADATA_KEY_ALBUM, album)
             .putString(MediaMetadata.METADATA_KEY_TITLE, title)
-            .putString(MediaMetadata.METADATA_KEY_COMPOSER,composer)
             .putString(MediaMetadata.METADATA_KEY_GENRE,genre)
             .putString(MediaMetadata.METADATA_KEY_ALBUM_ART_URI, artUri.toString())
             .putString(MediaMetadata.METADATA_KEY_ART_URI, artUri.toString())
