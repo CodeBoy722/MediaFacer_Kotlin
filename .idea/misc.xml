@@ -4,7 +4,6 @@
     <option name="filePathToZoomLevelMap">
       <map>
         <entry key="..\:/Android_Projects/MediaFacerKotlin/app/src/main/res/layout/activity_main.xml" value="0.27291666666666664" />
-        <entry key="..\:/Android_Projects/MediaFacer_Kotlin/MediaFacer/src/main/res/layout/fragment_audio_select.xml" value="0.27291666666666664" />
         <entry key="..\:/Android_Projects/MediaFacer_Kotlin/MediaFacer/src/main/res/layout/fragment_media_facer_media_picker.xml" value="0.25" />
         <entry key="..\:/Android_Projects/MediaFacer_Kotlin/app/src/main/res/drawable-v24/circle.xml" value="0.1695" />
         <entry key="..\:/Android_Projects/MediaFacer_Kotlin/app/src/main/res/drawable-v24/circle_green.xml" value="0.1695" />
@@ -18,6 +17,7 @@
         <entry key="..\:/Android_Projects/MediaFacer_Kotlin/app/src/main/res/layout/image_item.xml" value="0.27291666666666664" />
         <entry key="..\:/Android_Projects/MediaFacer_Kotlin/app/src/main/res/layout/video_item.xml" value="0.25" />
         <entry key="..\:/Android_Projects/MediaFacer_Kotlin/app/src/main/res/menu/menu_bottom.xml" value="0.27291666666666664" />
+        <entry key="..\:/Users/mofor/StudioProjects/MediaFacer_Kotlin/app/src/main/res/layout/fragment_audios.xml" value="0.25" />
         <entry key="..\:/Users/mofor/StudioProjects/MediaFacer_Kotlin/app/src/main/res/layout/video_item.xml" value="0.32065217391304346" />
       </map>
     </option>

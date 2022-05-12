@@ -37,7 +37,6 @@ class MediaFacer: VideoGet, AudioGet, ImageGet {
         when {
             shouldPaginate -> {
 
-                val audioSelection = Audio.Media.IS_MUSIC + " != 0"
                 val cursor = context.contentResolver.query(contentMedium,audioProjections,audioSelection,
                     null,
                     "LOWER (" + Audio.Media.TITLE + ") ASC")!! //"LOWER ("+Audio.Media.TITLE + ") ASC"
@@ -46,31 +45,31 @@ class MediaFacer: VideoGet, AudioGet, ImageGet {
                 when {
                     cursor.moveToPosition(mediaPaginationStart) -> {
                         do {
-                            val audioContent = AudioContent()
+                            val audio = AudioContent()
 
-                            audioContent.name = cursor.getString(cursor.getColumnIndexOrThrow(Audio.Media.DISPLAY_NAME))
+                            audio.name = cursor.getString(cursor.getColumnIndexOrThrow(Audio.Media.DISPLAY_NAME))
 
-                            audioContent.title = cursor.getString(cursor.getColumnIndexOrThrow(Audio.Media.TITLE))
+                            audio.title = cursor.getString(cursor.getColumnIndexOrThrow(Audio.Media.TITLE))
 
-                            val id: Int = cursor.getInt(cursor.getColumnIndexOrThrow(Audio.Media._ID))
-                            audioContent.musicId = id
+                            val id: Long = cursor.getLong(cursor.getColumnIndexOrThrow(Audio.Media._ID))
+                            audio.musicId = id
 
                             val contentUri = Uri.withAppendedPath(contentMedium, id.toString())
-                            audioContent.musicUri = contentUri.toString()
+                            audio.musicUri = contentUri.toString()
 
-                            audioContent.musicSize = cursor.getLong(cursor.getColumnIndexOrThrow(Audio.Media.SIZE))
+                            audio.musicSize = cursor.getLong(cursor.getColumnIndexOrThrow(Audio.Media.SIZE))
 
-                            audioContent.album = cursor.getString(cursor.getColumnIndexOrThrow(Audio.Media.ALBUM))
+                            audio.album = cursor.getString(cursor.getColumnIndexOrThrow(Audio.Media.ALBUM))
 
-                            audioContent.duration = cursor.getLong(cursor.getColumnIndexOrThrow(Audio.Media.DURATION))
+                            audio.duration = cursor.getLong(cursor.getColumnIndexOrThrow(Audio.Media.DURATION))
 
-                            audioContent.dateModified = Date(TimeUnit.SECONDS.toMillis(cursor.getLong(cursor.getColumnIndexOrThrow(Audio.Media.DATE_MODIFIED))))
+                            audio.dateModified = Date(TimeUnit.SECONDS.toMillis(cursor.getLong(cursor.getColumnIndexOrThrow(Audio.Media.DATE_MODIFIED))))
 
                             val albumId: Long = cursor.getLong(cursor.getColumnIndexOrThrow(Audio.Media.ALBUM_ID))
                             val sArtworkUri = Uri.parse("content://media/external/audio/albumart")
-                            audioContent.artUri = Uri.withAppendedPath(sArtworkUri, albumId.toString())
+                            audio.artUri = Uri.withAppendedPath(sArtworkUri, albumId.toString())
 
-                            audioContent.artist = cursor.getString(cursor.getColumnIndexOrThrow(Audio.Media.ARTIST))
+                            audio.artist = cursor.getString(cursor.getColumnIndexOrThrow(Audio.Media.ARTIST))
 
                             var genreVolume = ""
                             if(contentMedium == externalAudioContent){
@@ -79,9 +78,9 @@ class MediaFacer: VideoGet, AudioGet, ImageGet {
                                 genreVolume = "internal"
                             }
 
-                            audioContent.genre = getGenre(cursor.getInt(cursor.getColumnIndexOrThrow(Audio.Media._ID)), genreVolume, context)
+                            audio.genre = getGenre(cursor.getInt(cursor.getColumnIndexOrThrow(Audio.Media._ID)), genreVolume, context)
 
-                            allAudio.add(audioContent)
+                            allAudio.add(audio)
                             index++
                             if (index == mediaPaginationLimit)
                                 break
@@ -89,8 +88,8 @@ class MediaFacer: VideoGet, AudioGet, ImageGet {
                     }
                 }
                 /*}catch (e: Exception){
-                    e.printStackTrace()
-                }*/
+                            e.printStackTrace()
+                        }*/
                 cursor.close()
                 mediaPaginationStart = 0
                 mediaPaginationLimit = 0

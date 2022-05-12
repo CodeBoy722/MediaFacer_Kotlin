@@ -64,7 +64,7 @@ internal interface AudioGet {
         audio.name = cursor.getString(cursor.getColumnIndexOrThrow(Audio.Media.DISPLAY_NAME))
         audio.title = cursor.getString(cursor.getColumnIndexOrThrow(Audio.Media.TITLE))
 
-        val id: Int = cursor.getInt(cursor.getColumnIndexOrThrow(Audio.Media._ID))
+        val id: Long = cursor.getLong(cursor.getColumnIndexOrThrow(Audio.Media._ID))
         audio.musicId = id
 
         val contentUri = Uri.withAppendedPath(contentMedium, id.toString())
@@ -88,7 +88,7 @@ internal interface AudioGet {
          genreVolume = "internal"
         }
 
-        audio.genre = getGenre(id, genreVolume, context)
+        audio.genre = getGenre(id.toInt(), genreVolume, context)
         allAudio.add(audio)
        } while (cursor.moveToNext())
       }
@@ -163,7 +163,7 @@ internal interface AudioGet {
         audio.name = cursor.getString(cursor.getColumnIndexOrThrow(Audio.Media.DISPLAY_NAME))
         audio.title = cursor.getString(cursor.getColumnIndexOrThrow(Audio.Media.TITLE))
 
-        val id: Int = cursor.getInt(cursor.getColumnIndexOrThrow(Audio.Media._ID))
+        val id: Long = cursor.getLong(cursor.getColumnIndexOrThrow(Audio.Media._ID))
         audio.musicId = id
 
         val contentUri = Uri.withAppendedPath(contentMedium, id.toString())
@@ -279,7 +279,7 @@ internal interface AudioGet {
                folderAudio.name = cursor.getString(cursor.getColumnIndexOrThrow(Audio.Media.DISPLAY_NAME))
                folderAudio.title = cursor.getString(cursor.getColumnIndexOrThrow(Audio.Media.TITLE))
 
-               val id: Int = cursor.getInt(cursor.getColumnIndexOrThrow(Audio.Media._ID))
+               val id: Long = cursor.getLong(cursor.getColumnIndexOrThrow(Audio.Media._ID))
                folderAudio.musicId = id
 
                val contentUri = Uri.withAppendedPath(contentMedium, id.toString())
@@ -316,7 +316,7 @@ internal interface AudioGet {
                folderAudio.name = cursor.getString(cursor.getColumnIndexOrThrow(Audio.Media.DISPLAY_NAME))
                folderAudio.title = cursor.getString(cursor.getColumnIndexOrThrow(Audio.Media.TITLE))
 
-               val id: Int = cursor.getInt(cursor.getColumnIndexOrThrow(Audio.Media._ID))
+               val id: Long = cursor.getLong(cursor.getColumnIndexOrThrow(Audio.Media._ID))
                folderAudio.musicId = id
 
                val contentUri = Uri.withAppendedPath(contentMedium, id.toString())
@@ -403,7 +403,7 @@ internal interface AudioGet {
         audio.name = cursor.getString(cursor.getColumnIndexOrThrow(Audio.Media.DISPLAY_NAME))
         audio.title = cursor.getString(cursor.getColumnIndexOrThrow(Audio.Media.TITLE))
 
-        val id: Int = cursor.getInt(cursor.getColumnIndexOrThrow(Audio.Media._ID))
+        val id: Long = cursor.getLong(cursor.getColumnIndexOrThrow(Audio.Media._ID))
         audio.musicId = id
 
         val contentUri = Uri.withAppendedPath(contentMedium, id.toString())
@@ -528,7 +528,7 @@ internal interface AudioGet {
     audio.name = cursor.getString(cursor.getColumnIndexOrThrow(Audio.Media.DISPLAY_NAME))
     audio.title = cursor.getString(cursor.getColumnIndexOrThrow(Audio.Media.TITLE))
 
-    val id: Int = cursor.getInt(cursor.getColumnIndexOrThrow(Audio.Media._ID))
+    val id: Long = cursor.getLong(cursor.getColumnIndexOrThrow(Audio.Media._ID))
     audio.musicId = id
 
     val contentUri = Uri.withAppendedPath(contentMedium, id.toString())
@@ -569,7 +569,7 @@ internal interface AudioGet {
         audio.name = cursor.getString(cursor.getColumnIndexOrThrow(Audio.Media.DISPLAY_NAME))
         audio.title = cursor.getString(cursor.getColumnIndexOrThrow(Audio.Media.TITLE))
 
-        val id: Int = cursor.getInt(cursor.getColumnIndexOrThrow(Audio.Media._ID))
+        val id: Long = cursor.getLong(cursor.getColumnIndexOrThrow(Audio.Media._ID))
         audio.musicId = id
 
         val contentUri = Uri.withAppendedPath(contentMedium, id.toString())
