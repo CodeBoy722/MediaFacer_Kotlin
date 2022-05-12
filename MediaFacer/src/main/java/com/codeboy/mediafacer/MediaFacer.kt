@@ -2,21 +2,23 @@ package com.codeboy.mediafacer
 
 import android.content.Context
 import android.net.Uri
-import android.provider.MediaStore
+import android.provider.MediaStore.Audio
+import android.provider.MediaStore.Images
+import android.provider.MediaStore.Video
 import com.codeboy.mediafacer.models.*
 import java.util.*
 import java.util.concurrent.TimeUnit
 import kotlin.collections.ArrayList
 
-class MediaFacer(): VideoGet, AudioGet, ImageGet {
+class MediaFacer: VideoGet, AudioGet, ImageGet {
 
     companion object {
-        val externalAudioContent: Uri = MediaStore.Audio.Media.EXTERNAL_CONTENT_URI
-        val internalAudioContent: Uri = MediaStore.Audio.Media.INTERNAL_CONTENT_URI
-        val externalVideoContent: Uri = MediaStore.Video.Media.EXTERNAL_CONTENT_URI
-        val internalVideoContent: Uri = MediaStore.Video.Media.INTERNAL_CONTENT_URI
-        val externalImagesContent: Uri = MediaStore.Images.Media.EXTERNAL_CONTENT_URI
-        val internalImagesContent: Uri = MediaStore.Images.Media.INTERNAL_CONTENT_URI
+        val externalAudioContent: Uri = Audio.Media.EXTERNAL_CONTENT_URI
+        val internalAudioContent: Uri = Audio.Media.INTERNAL_CONTENT_URI
+        val externalVideoContent: Uri = Video.Media.EXTERNAL_CONTENT_URI
+        val internalVideoContent: Uri = Video.Media.INTERNAL_CONTENT_URI
+        val externalImagesContent: Uri = Images.Media.EXTERNAL_CONTENT_URI
+        val internalImagesContent: Uri = Images.Media.INTERNAL_CONTENT_URI
     }
 
     var mediaPaginationStart = 0
@@ -35,10 +37,10 @@ class MediaFacer(): VideoGet, AudioGet, ImageGet {
         when {
             shouldPaginate -> {
 
-                val audioSelection = MediaStore.Audio.Media.IS_MUSIC + " != 0"
+                val audioSelection = Audio.Media.IS_MUSIC + " != 0"
                 val cursor = context.contentResolver.query(contentMedium,audioProjections,audioSelection,
                     null,
-                    "LOWER (" + MediaStore.Audio.Media.TITLE + ") ASC")!! //"LOWER ("+MediaStore.Audio.Media.TITLE + ") ASC"
+                    "LOWER (" + Audio.Media.TITLE + ") ASC")!! //"LOWER ("+Audio.Media.TITLE + ") ASC"
                 var index = 0
                 //try {
                 when {
@@ -46,29 +48,29 @@ class MediaFacer(): VideoGet, AudioGet, ImageGet {
                         do {
                             val audioContent = AudioContent()
 
-                            audioContent.name = cursor.getString(cursor.getColumnIndexOrThrow(MediaStore.Audio.Media.DISPLAY_NAME))
+                            audioContent.name = cursor.getString(cursor.getColumnIndexOrThrow(Audio.Media.DISPLAY_NAME))
 
-                            audioContent.title = cursor.getString(cursor.getColumnIndexOrThrow(MediaStore.Audio.Media.TITLE))
+                            audioContent.title = cursor.getString(cursor.getColumnIndexOrThrow(Audio.Media.TITLE))
 
-                            val id: Long = cursor.getLong(cursor.getColumnIndexOrThrow(MediaStore.Audio.Media._ID))
+                            val id: Int = cursor.getInt(cursor.getColumnIndexOrThrow(Audio.Media._ID))
                             audioContent.musicId = id
 
                             val contentUri = Uri.withAppendedPath(contentMedium, id.toString())
                             audioContent.musicUri = contentUri.toString()
 
-                            audioContent.musicSize = cursor.getLong(cursor.getColumnIndexOrThrow(MediaStore.Audio.Media.SIZE))
+                            audioContent.musicSize = cursor.getLong(cursor.getColumnIndexOrThrow(Audio.Media.SIZE))
 
-                            audioContent.album = cursor.getString(cursor.getColumnIndexOrThrow(MediaStore.Audio.Media.ALBUM))
+                            audioContent.album = cursor.getString(cursor.getColumnIndexOrThrow(Audio.Media.ALBUM))
 
-                            audioContent.duration = cursor.getLong(cursor.getColumnIndexOrThrow(MediaStore.Audio.Media.DURATION))
+                            audioContent.duration = cursor.getLong(cursor.getColumnIndexOrThrow(Audio.Media.DURATION))
 
-                            audioContent.dateModified = Date(TimeUnit.SECONDS.toMillis(cursor.getLong(cursor.getColumnIndexOrThrow(MediaStore.Audio.Media.DATE_MODIFIED))))
+                            audioContent.dateModified = Date(TimeUnit.SECONDS.toMillis(cursor.getLong(cursor.getColumnIndexOrThrow(Audio.Media.DATE_MODIFIED))))
 
-                            val albumId: Long = cursor.getLong(cursor.getColumnIndexOrThrow(MediaStore.Audio.Media.ALBUM_ID))
+                            val albumId: Long = cursor.getLong(cursor.getColumnIndexOrThrow(Audio.Media.ALBUM_ID))
                             val sArtworkUri = Uri.parse("content://media/external/audio/albumart")
                             audioContent.artUri = Uri.withAppendedPath(sArtworkUri, albumId.toString())
 
-                            audioContent.artist = cursor.getString(cursor.getColumnIndexOrThrow(MediaStore.Audio.Media.ARTIST))
+                            audioContent.artist = cursor.getString(cursor.getColumnIndexOrThrow(Audio.Media.ARTIST))
 
                             var genreVolume = ""
                             if(contentMedium == externalAudioContent){
@@ -77,7 +79,7 @@ class MediaFacer(): VideoGet, AudioGet, ImageGet {
                                 genreVolume = "internal"
                             }
 
-                            audioContent.genre = getGenre(cursor.getInt(cursor.getColumnIndexOrThrow(MediaStore.Audio.Media._ID)), genreVolume, context)
+                            audioContent.genre = getGenre(cursor.getInt(cursor.getColumnIndexOrThrow(Audio.Media._ID)), genreVolume, context)
 
                             allAudio.add(audioContent)
                             index++
@@ -104,7 +106,7 @@ class MediaFacer(): VideoGet, AudioGet, ImageGet {
         when {
             shouldPaginate -> {
                 val cursor = context.contentResolver.query(contentMedium, videoProjections, null, null,
-                    "LOWER (" + MediaStore.Video.Media.DATE_MODIFIED + ") DESC")!! //DESC ASC
+                    "LOWER (" + Video.Media.DATE_MODIFIED + ") DESC")!! //DESC ASC
                 var index = 0
                 //try {
                 when {
@@ -112,21 +114,21 @@ class MediaFacer(): VideoGet, AudioGet, ImageGet {
                         do {
                             val videoContent = VideoContent()
 
-                            videoContent.name = cursor.getString(cursor.getColumnIndexOrThrow(MediaStore.Video.Media.DISPLAY_NAME))
+                            videoContent.name = cursor.getString(cursor.getColumnIndexOrThrow(Video.Media.DISPLAY_NAME))
 
-                            videoContent.duration = cursor.getLong(cursor.getColumnIndexOrThrow(MediaStore.Video.Media.DURATION))
+                            videoContent.duration = cursor.getLong(cursor.getColumnIndexOrThrow(Video.Media.DURATION))
 
-                            videoContent.size = cursor.getLong(cursor.getColumnIndexOrThrow(MediaStore.Video.Media.SIZE))
+                            videoContent.size = cursor.getLong(cursor.getColumnIndexOrThrow(Video.Media.SIZE))
 
-                            videoContent.dateModified = Date(TimeUnit.SECONDS.toMillis(cursor.getLong(cursor.getColumnIndexOrThrow(MediaStore.Video.Media.DATE_MODIFIED))))
+                            videoContent.dateModified = Date(TimeUnit.SECONDS.toMillis(cursor.getLong(cursor.getColumnIndexOrThrow(Video.Media.DATE_MODIFIED))))
 
-                            val id: Int = cursor.getInt(cursor.getColumnIndexOrThrow(MediaStore.Video.Media._ID))
+                            val id: Int = cursor.getInt(cursor.getColumnIndexOrThrow(Video.Media._ID))
 
                             videoContent.id = id
                             val contentUri = Uri.withAppendedPath(contentMedium, id.toString())
                             videoContent.videoUri = contentUri.toString()
 
-                            videoContent.artist = cursor.getString(cursor.getColumnIndexOrThrow(MediaStore.Video.Media.ARTIST))
+                            videoContent.artist = cursor.getString(cursor.getColumnIndexOrThrow(Video.Media.ARTIST))
 
                             videos.add(videoContent)
                             index++
@@ -155,7 +157,7 @@ class MediaFacer(): VideoGet, AudioGet, ImageGet {
 
                 val cursor = context.contentResolver.query(contentMedium,imageProjections
                     , null, null,
-                    "LOWER (" + MediaStore.Images.Media.DATE_MODIFIED + ") DESC")!!
+                    "LOWER (" + Images.Media.DATE_MODIFIED + ") DESC")!!
 
                 var index = 0
                 //try {
@@ -164,15 +166,15 @@ class MediaFacer(): VideoGet, AudioGet, ImageGet {
                         do {
                             val imageContent = ImageContent()
 
-                            imageContent.name = cursor.getString(cursor.getColumnIndexOrThrow(MediaStore.Images.Media.DISPLAY_NAME))
+                            imageContent.name = cursor.getString(cursor.getColumnIndexOrThrow(Images.Media.DISPLAY_NAME))
 
-                            imageContent.size = cursor.getLong(cursor.getColumnIndexOrThrow(MediaStore.Images.Media.SIZE))
+                            imageContent.size = cursor.getLong(cursor.getColumnIndexOrThrow(Images.Media.SIZE))
 
-                            imageContent.dateModified = Date(TimeUnit.SECONDS.toMillis(cursor.getLong(cursor.getColumnIndexOrThrow(MediaStore.Images.Media.DATE_MODIFIED))))
+                            imageContent.dateModified = Date(TimeUnit.SECONDS.toMillis(cursor.getLong(cursor.getColumnIndexOrThrow(Images.Media.DATE_MODIFIED))))
 
-                            imageContent.bucketName = cursor.getString(cursor.getColumnIndexOrThrow(MediaStore.Images.Media.BUCKET_DISPLAY_NAME))
+                            imageContent.bucketName = cursor.getString(cursor.getColumnIndexOrThrow(Images.Media.BUCKET_DISPLAY_NAME))
 
-                            val id: Int = cursor.getInt(cursor.getColumnIndexOrThrow(MediaStore.Images.Media._ID))
+                            val id: Int = cursor.getInt(cursor.getColumnIndexOrThrow(Images.Media._ID))
                             imageContent.imageId = id
 
                             val contentUri = Uri.withAppendedPath(contentMedium, id.toString())
@@ -224,15 +226,35 @@ class MediaFacer(): VideoGet, AudioGet, ImageGet {
     }
 
     override fun getBuckets(context: Context, contentMedium: Uri, ): ArrayList<AudioBucketContent> {
-        return super.getBuckets(context, contentMedium)
+        var audioBuckets = ArrayList<AudioBucketContent>()
+        if (shouldPaginate){
+            //todo
+        }else audioBuckets = super.getBuckets(context, contentMedium)
+        return audioBuckets
     }
 
     override fun getArtists(context: Context, contentMedium: Uri, ): java.util.ArrayList<AudioArtistContent> {
-        return super.getArtists(context, contentMedium)
+       var audioArtists = ArrayList<AudioArtistContent>()
+        if (shouldPaginate){
+            //todo
+        }else audioArtists = super.getArtists(context, contentMedium)
+        return audioArtists
+    }
+
+    override fun getGenres(context: Context, contentMedium: Uri, ): java.util.ArrayList<AudioGenreContent> {
+        var audioGenres = ArrayList<AudioGenreContent>()
+        if(shouldPaginate){
+            //todo
+        }else audioGenres = super.getGenres(context, contentMedium)
+        return audioGenres
     }
 
     override fun searchAudios(context: Context, contentMedium: Uri, selectionType: String, selectionValue: String): ArrayList<AudioContent> {
-        return super.searchAudios(context, contentMedium, selectionType, selectionValue)
+        var foundAudios = ArrayList<AudioContent>()
+        if (shouldPaginate){
+            //todo
+        }else foundAudios = super.searchAudios(context, contentMedium, selectionType, selectionValue)
+        return foundAudios
     }
 
     fun deleteMedia(mediaId: Int){
@@ -259,7 +281,7 @@ class MediaFacer(): VideoGet, AudioGet, ImageGet {
 
    /* fun setVideoObserver(appContext: Context){
         appContext.contentResolver.registerContentObserver(
-            MediaStore.Video.Media.INTERNAL_CONTENT_URI, true,
+            Video.Media.INTERNAL_CONTENT_URI, true,
             object : ContentObserver(Handler(Looper.getMainLooper())) {
                 override fun onChange(selfChange: Boolean) {
                     Log.d("MediaFacer", "Internal Media has been added or changed")
@@ -270,7 +292,7 @@ class MediaFacer(): VideoGet, AudioGet, ImageGet {
         )
 
         appContext.contentResolver.registerContentObserver(
-            MediaStore.Video.Media.EXTERNAL_CONTENT_URI, true,
+            Video.Media.EXTERNAL_CONTENT_URI, true,
             object : ContentObserver(Handler(Looper.getMainLooper())) {
                 override fun onChange(selfChange: Boolean) {
                     Log.d("MediaFacer", "External Media has been added or changed")
@@ -283,7 +305,7 @@ class MediaFacer(): VideoGet, AudioGet, ImageGet {
 
     fun setAudioObserver(appContext: Context){
         appContext.contentResolver.registerContentObserver(
-            MediaStore.Audio.Media.INTERNAL_CONTENT_URI, true,
+            Audio.Media.INTERNAL_CONTENT_URI, true,
             object : ContentObserver(Handler(Looper.getMainLooper())) {
                 override fun onChange(selfChange: Boolean) {
                     Log.d("MediaFacer", "Internal Media has been added or changed")
@@ -294,7 +316,7 @@ class MediaFacer(): VideoGet, AudioGet, ImageGet {
         )
 
         appContext.contentResolver.registerContentObserver(
-            MediaStore.Audio.Media.EXTERNAL_CONTENT_URI, true,
+            Audio.Media.EXTERNAL_CONTENT_URI, true,
             object : ContentObserver(Handler(Looper.getMainLooper())) {
                 override fun onChange(selfChange: Boolean) {
                     Log.d("MediaFacer", "External Media has been added or changed")
@@ -307,7 +329,7 @@ class MediaFacer(): VideoGet, AudioGet, ImageGet {
 
     fun setImageObserver(appContext: Context){
         appContext.contentResolver.registerContentObserver(
-            MediaStore.Images.Media.INTERNAL_CONTENT_URI, true,
+            Images.Media.INTERNAL_CONTENT_URI, true,
             object : ContentObserver(Handler(Looper.getMainLooper())) {
                 override fun onChange(selfChange: Boolean) {
                     Log.d("MediaFacer", "Internal Media has been added or changed")
@@ -318,7 +340,7 @@ class MediaFacer(): VideoGet, AudioGet, ImageGet {
         )
 
         appContext.contentResolver.registerContentObserver(
-            MediaStore.Images.Media.EXTERNAL_CONTENT_URI, true,
+            Images.Media.EXTERNAL_CONTENT_URI, true,
             object : ContentObserver(Handler(Looper.getMainLooper())) {
                 override fun onChange(selfChange: Boolean) {
                     Log.d("MediaFacer", "External Media has been added or changed")

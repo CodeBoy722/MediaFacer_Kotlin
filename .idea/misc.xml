@@ -4,6 +4,7 @@
     <option name="filePathToZoomLevelMap">
       <map>
         <entry key="..\:/Android_Projects/MediaFacerKotlin/app/src/main/res/layout/activity_main.xml" value="0.27291666666666664" />
+        <entry key="..\:/Android_Projects/MediaFacer_Kotlin/MediaFacer/src/main/res/layout/fragment_audio_select.xml" value="0.27291666666666664" />
         <entry key="..\:/Android_Projects/MediaFacer_Kotlin/MediaFacer/src/main/res/layout/fragment_media_facer_media_picker.xml" value="0.25" />
         <entry key="..\:/Android_Projects/MediaFacer_Kotlin/app/src/main/res/drawable-v24/circle.xml" value="0.1695" />
         <entry key="..\:/Android_Projects/MediaFacer_Kotlin/app/src/main/res/drawable-v24/circle_green.xml" value="0.1695" />

@@ -5,5 +5,6 @@ class AudioGenreContent {
     var audios = ArrayList<AudioContent>()
     var genreName: String = ""
     var genreId: String = ""
+    var numOfSongs = audios.size
 
 }
