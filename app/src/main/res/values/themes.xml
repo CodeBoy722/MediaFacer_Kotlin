@@ -15,7 +15,7 @@
     </style>
 
     <style name="bottom_menu">
-        <item name="android:background">@color/material_dynamic_neutral90</item>
+        <item name="android:background">@color/bottom_background</item>
     </style>
 
 </resources>

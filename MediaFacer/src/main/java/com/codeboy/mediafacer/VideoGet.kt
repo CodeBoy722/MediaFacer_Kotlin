@@ -2,7 +2,9 @@ package com.codeboy.mediafacer
 
 import android.content.Context
 import android.net.Uri
+import android.os.Build
 import android.provider.MediaStore.Video
+import android.widget.Toast
 import com.codeboy.mediafacer.models.VideoContent
 import com.codeboy.mediafacer.models.VideoFolderContent
 import java.util.*
@@ -75,15 +77,22 @@ internal interface VideoGet {
         if(!folderIds.contains(bucketId)){
          folderIds.add(bucketId)
          val videoFolder = VideoFolderContent()
-
          val folderName: String = cursor.getString(cursor.getColumnIndexOrThrow(Video.Media.BUCKET_DISPLAY_NAME))
-         val dataPath: String = cursor.getString(cursor.getColumnIndexOrThrow(Video.Media.DATA))
-         var folderPath = dataPath.substring(0, dataPath.lastIndexOf("$folderName/"))
-         folderPath = "$folderPath$folderName/"
+
+         when {
+             Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q -> {
+              //todo
+             }
+             else -> {
+             /* val dataPath: String = cursor.getString(cursor.getColumnIndexOrThrow(Video.Media.DATA))
+              var folderPath = dataPath.substring(0, dataPath.lastIndexOf("$folderName/"))
+              folderPath = "$folderPath$folderName/"
+              videoFolder.folderPath = folderPath*/
+             }
+         }
 
          videoFolder.bucketId = bucketId
          videoFolder.folderName = folderName
-         videoFolder.folderPath = folderPath
          videoFolder.videos = getFolderVideos(context,contentMedium,bucketId)
          videoFolders.add(videoFolder)
         }

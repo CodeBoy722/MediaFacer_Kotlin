@@ -2,32 +2,58 @@ package com.codeboy.mediafacerkotlin
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.os.Handler
+import android.os.Looper
 import android.provider.MediaStore
+import android.widget.Toast
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import androidx.viewpager2.widget.ViewPager2
 import com.codeboy.mediafacer.MediaFacer
+import com.codeboy.mediafacer.MediaFacer.Companion.externalAudioContent
+import com.codeboy.mediafacer.MediaFacer.Companion.externalImagesContent
 import com.codeboy.mediafacer.MediaFacer.Companion.externalVideoContent
+import com.codeboy.mediafacer.models.*
 import com.codeboy.mediafacerkotlin.databinding.ActivityMainBinding
 import com.codeboy.mediafacerkotlin.fragments.AudiosFragment
 import com.codeboy.mediafacerkotlin.fragments.ImagesFragment
 import com.codeboy.mediafacerkotlin.fragments.MediaTools
 import com.codeboy.mediafacerkotlin.fragments.VideosFragment
 import com.codeboy.mediafacerkotlin.viewAdapters.MainPagerFragmentAdapter
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.async
 
 class MainActivity : AppCompatActivity() {
 
     lateinit var bindings: ActivityMainBinding
+    var folderList = ArrayList<AudioGenreContent>()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_main)
         bindings = DataBindingUtil.setContentView(this, R.layout.activity_main)
         bindings.lifecycleOwner = this
-        setUpBottomMenu()
+        //setUpBottomMenu()
+        testFacer()
     }
 
+    private fun testFacer(){
+        var folders = ArrayList<AudioGenreContent>()
+        CoroutineScope(Dispatchers.Main).async {
+            folders = MediaFacer().getGenres(this@MainActivity, externalAudioContent)
+        }.invokeOnCompletion {
+            Handler(Looper.getMainLooper())
+                .post{
+                    folderList = folders
+                    Toast.makeText(
+                        this@MainActivity,
+                        "genres " + folders.size.toString(),
+                        Toast.LENGTH_LONG
+                    ).show()
+                }
+        }
 
+    }
 
     private fun setUpBottomMenu(){
         val introFragmentList = ArrayList<Fragment>()

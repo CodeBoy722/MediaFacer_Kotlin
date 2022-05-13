@@ -63,8 +63,8 @@ internal interface ImageGet {
     fun getImageFolders(context: Context, contentMedium: Uri): ArrayList<ImageFolderContent>{
         val imageFolders: ArrayList<ImageFolderContent> = ArrayList()
         val folderIds: ArrayList<Int> = ArrayList()
-        val cursor = context.contentResolver.query(contentMedium
-            ,imageProjections, null, null,
+        val cursor = context.contentResolver.query(contentMedium,imageProjections,
+            null, null,
             "LOWER (" + Images.Media.DATE_MODIFIED + ") DESC")!!
 
         //try {
@@ -79,13 +79,13 @@ internal interface ImageGet {
                             val imageFolder = ImageFolderContent()
 
                             val folderName: String = cursor.getString(cursor.getColumnIndexOrThrow(Images.Media.BUCKET_DISPLAY_NAME))
-                            val dataPath: String = cursor.getString(cursor.getColumnIndexOrThrow(Images.Media.DATA))
+                           /* val dataPath: String = cursor.getString(cursor.getColumnIndexOrThrow(Images.Media.DATA))
                             var folderPath = dataPath.substring(0, dataPath.lastIndexOf("$folderName/"))
                             folderPath = "$folderPath$folderName/"
+                            imageFolder.folderPath = folderPath*/
 
                             imageFolder.bucketId = bucketId
                             imageFolder.folderName = folderName
-                            imageFolder.folderPath = folderPath
                             imageFolder.images = getFolderImages(context,contentMedium,bucketId)
                             imageFolders.add(imageFolder)
                         }

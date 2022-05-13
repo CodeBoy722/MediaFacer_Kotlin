@@ -104,12 +104,9 @@ internal interface AudioGet {
  fun getAlbums(context: Context, contentMedium: Uri): ArrayList<AudioAlbumContent> {
   val albums = ArrayList<AudioAlbumContent>()
   val albumIds = ArrayList<String>()
-  val cursor = context.contentResolver.query(
-   contentMedium,
-   audioProjections,
-   audioSelection,
+  val cursor = context.contentResolver.query(contentMedium, audioProjections, audioSelection,
    null,
-   "LOWER (" + Audio.Media.DATE_MODIFIED + ") ASC")!!
+   "LOWER (" + Audio.Media.ALBUM + ") ASC")!!
 
   //try {
   when {
@@ -466,11 +463,12 @@ internal interface AudioGet {
   return artistAlbums
  }
 
+ //this function will fail because some genres dont have id
  fun getGenres(context: Context, contentMedium: Uri): ArrayList<AudioGenreContent> {
   val genres = ArrayList<AudioGenreContent>()
   val genreNames = ArrayList<String>()
-  val cursor = context.contentResolver
-   .query(contentMedium, audioProjections, audioSelection, null,
+  val cursor = context.contentResolver.query(contentMedium, audioProjections, audioSelection,
+   null,
     "LOWER (" + Audio.Media.TITLE + ") ASC")!!
 
   when {

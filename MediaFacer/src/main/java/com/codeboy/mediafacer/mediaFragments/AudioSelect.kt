@@ -1,4 +1,4 @@
-package com.codeboy.mediafacer.models.mediaFragments
+package com.codeboy.mediafacer.mediaFragments
 
 import android.os.Bundle
 import androidx.fragment.app.Fragment
