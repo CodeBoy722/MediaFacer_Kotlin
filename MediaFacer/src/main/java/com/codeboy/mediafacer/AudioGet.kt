@@ -515,41 +515,92 @@ internal interface AudioGet {
 
  fun getGenreAudios(context: Context, contentMedium: Uri, volume: String, genreId: String, genreName: String): ArrayList<AudioContent>{
   val audios = ArrayList<AudioContent>()
-  val genreAudiosUri = Audio.Genres.Members.getContentUri("external", genreId.toLong())
-  val cursor = context.contentResolver.query(genreAudiosUri, audioProjections, null, null,
-   "LOWER (" + Audio.Media.TITLE + ") ASC")!!
+  when {
+      genreId.trim().isEmpty() -> {
+       val cursor = context.contentResolver.query(contentMedium, audioProjections, audioSelection, null,
+        "LOWER (" + Audio.Media.TITLE + ") ASC")!! //"LOWER ("+Audio.Media.TITLE + ") ASC"
+       //try {
+       when {
+        cursor.moveToFirst() -> {
+         do {
+          val audio = AudioContent()
+          audio.name = cursor.getString(cursor.getColumnIndexOrThrow(Audio.Media.DISPLAY_NAME))
+          audio.title = cursor.getString(cursor.getColumnIndexOrThrow(Audio.Media.TITLE))
 
-  if(cursor.moveToFirst()){
-   do {
+          val id: Long = cursor.getLong(cursor.getColumnIndexOrThrow(Audio.Media._ID))
+          audio.musicId = id
 
-    val audio = AudioContent()
-    audio.name = cursor.getString(cursor.getColumnIndexOrThrow(Audio.Media.DISPLAY_NAME))
-    audio.title = cursor.getString(cursor.getColumnIndexOrThrow(Audio.Media.TITLE))
+          val contentUri = Uri.withAppendedPath(contentMedium, id.toString())
+          audio.musicUri = contentUri.toString()
 
-    val id: Long = cursor.getLong(cursor.getColumnIndexOrThrow(Audio.Media._ID))
-    audio.musicId = id
+          audio.musicSize = cursor.getLong(cursor.getColumnIndexOrThrow(Audio.Media.SIZE))
+          audio.album = cursor.getString(cursor.getColumnIndexOrThrow(Audio.Media.ALBUM))
+          audio.duration = cursor.getLong(cursor.getColumnIndexOrThrow(Audio.Media.DURATION))
+          audio.dateModified = Date(TimeUnit.SECONDS.toMillis(cursor.getLong(cursor.getColumnIndexOrThrow(Audio.Media.DATE_MODIFIED))))
 
-    val contentUri = Uri.withAppendedPath(contentMedium, id.toString())
-    audio.musicUri = contentUri.toString()
+          val albumId: Long = cursor.getLong(cursor.getColumnIndexOrThrow(Audio.Media.ALBUM_ID))
+          val sArtworkUri = Uri.parse("content://media/external/audio/albumart")
+          audio.artUri = Uri.withAppendedPath(sArtworkUri, albumId.toString())
 
-    audio.musicSize = cursor.getLong(cursor.getColumnIndexOrThrow(Audio.Media.SIZE))
-    audio.album = cursor.getString(cursor.getColumnIndexOrThrow(Audio.Media.ALBUM))
-    audio.duration = cursor.getLong(cursor.getColumnIndexOrThrow(Audio.Media.DURATION))
-    audio.dateModified = Date(TimeUnit.SECONDS.toMillis(cursor.getLong(cursor.getColumnIndexOrThrow(Audio.Media.DATE_MODIFIED))))
+          audio.artist = cursor.getString(cursor.getColumnIndexOrThrow(Audio.Media.ARTIST))
 
-    val albumId: Long = cursor.getLong(cursor.getColumnIndexOrThrow(Audio.Media.ALBUM_ID))
-    val sArtworkUri = Uri.parse("content://media/external/audio/albumart")
-    audio.artUri = Uri.withAppendedPath(sArtworkUri, albumId.toString())
+          var genreVolume = ""
+          if (contentMedium == externalAudioContent) {
+           genreVolume = "external"
+          } else if (contentMedium == internalAudioContent) {
+           genreVolume = "internal"
+          }
 
-    audio.artist = cursor.getString(cursor.getColumnIndexOrThrow(Audio.Media.ARTIST))
-    audio.genre = genreName
+          val genre = getGenre(id.toInt(), genreVolume, context)
+          audio.genre = genre
+          if(genre == "unknown"){
+           audios.add(audio)
+          }
+         } while (cursor.moveToNext())
+        }
+       }
+       cursor.close()
+      }
+      else -> {
 
-    audios.add(audio)
+       val genreAudiosUri = Audio.Genres.Members.getContentUri("external", genreId.toLong())
+       val cursor = context.contentResolver.query(genreAudiosUri, audioProjections, null, null,
+        "LOWER (" + Audio.Media.TITLE + ") ASC")!!
 
-   }while (cursor.moveToNext())
+       when {
+        cursor.moveToFirst() -> {
+         do {
+
+          val audio = AudioContent()
+          audio.name = cursor.getString(cursor.getColumnIndexOrThrow(Audio.Media.DISPLAY_NAME))
+          audio.title = cursor.getString(cursor.getColumnIndexOrThrow(Audio.Media.TITLE))
+
+          val id: Long = cursor.getLong(cursor.getColumnIndexOrThrow(Audio.Media._ID))
+          audio.musicId = id
+
+          val contentUri = Uri.withAppendedPath(contentMedium, id.toString())
+          audio.musicUri = contentUri.toString()
+
+          audio.musicSize = cursor.getLong(cursor.getColumnIndexOrThrow(Audio.Media.SIZE))
+          audio.album = cursor.getString(cursor.getColumnIndexOrThrow(Audio.Media.ALBUM))
+          audio.duration = cursor.getLong(cursor.getColumnIndexOrThrow(Audio.Media.DURATION))
+          audio.dateModified = Date(TimeUnit.SECONDS.toMillis(cursor.getLong(cursor.getColumnIndexOrThrow(Audio.Media.DATE_MODIFIED))))
+
+          val albumId: Long = cursor.getLong(cursor.getColumnIndexOrThrow(Audio.Media.ALBUM_ID))
+          val sArtworkUri = Uri.parse("content://media/external/audio/albumart")
+          audio.artUri = Uri.withAppendedPath(sArtworkUri, albumId.toString())
+
+          audio.artist = cursor.getString(cursor.getColumnIndexOrThrow(Audio.Media.ARTIST))
+          audio.genre = genreName
+
+          audios.add(audio)
+
+         }while (cursor.moveToNext())
+        }
+       }
+       cursor.close()
+      }
   }
-
-  cursor.close()
   return audios
  }
 
