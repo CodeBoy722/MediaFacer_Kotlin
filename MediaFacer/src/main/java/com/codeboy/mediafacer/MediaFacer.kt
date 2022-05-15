@@ -47,6 +47,8 @@ class MediaFacer: VideoGet, AudioGet, ImageGet {
                         do {
                             val audio = AudioContent()
 
+                            audio.filePath = cursor.getString(cursor.getColumnIndexOrThrow(Audio.Media.DATA))
+
                             audio.name = cursor.getString(cursor.getColumnIndexOrThrow(Audio.Media.DISPLAY_NAME))
 
                             audio.title = cursor.getString(cursor.getColumnIndexOrThrow(Audio.Media.TITLE))
@@ -111,25 +113,27 @@ class MediaFacer: VideoGet, AudioGet, ImageGet {
                 when {
                     cursor.moveToPosition(mediaPaginationStart) -> {
                         do {
-                            val videoContent = VideoContent()
+                            val video = VideoContent()
 
-                            videoContent.name = cursor.getString(cursor.getColumnIndexOrThrow(Video.Media.DISPLAY_NAME))
+                            video.filePath = cursor.getString(cursor.getColumnIndexOrThrow(Video.Media.DATA))
 
-                            videoContent.duration = cursor.getLong(cursor.getColumnIndexOrThrow(Video.Media.DURATION))
+                            video.name = cursor.getString(cursor.getColumnIndexOrThrow(Video.Media.DISPLAY_NAME))
 
-                            videoContent.size = cursor.getLong(cursor.getColumnIndexOrThrow(Video.Media.SIZE))
+                            video.duration = cursor.getLong(cursor.getColumnIndexOrThrow(Video.Media.DURATION))
 
-                            videoContent.dateModified = Date(TimeUnit.SECONDS.toMillis(cursor.getLong(cursor.getColumnIndexOrThrow(Video.Media.DATE_MODIFIED))))
+                            video.size = cursor.getLong(cursor.getColumnIndexOrThrow(Video.Media.SIZE))
+
+                            video.dateModified = Date(TimeUnit.SECONDS.toMillis(cursor.getLong(cursor.getColumnIndexOrThrow(Video.Media.DATE_MODIFIED))))
 
                             val id: Int = cursor.getInt(cursor.getColumnIndexOrThrow(Video.Media._ID))
 
-                            videoContent.id = id
+                            video.id = id
                             val contentUri = Uri.withAppendedPath(contentMedium, id.toString())
-                            videoContent.videoUri = contentUri.toString()
+                            video.videoUri = contentUri.toString()
 
-                            videoContent.artist = cursor.getString(cursor.getColumnIndexOrThrow(Video.Media.ARTIST))
+                            video.artist = cursor.getString(cursor.getColumnIndexOrThrow(Video.Media.ARTIST))
 
-                            videos.add(videoContent)
+                            videos.add(video)
                             index++
                             if (index == mediaPaginationLimit)
                                 break
@@ -164,6 +168,8 @@ class MediaFacer: VideoGet, AudioGet, ImageGet {
                     cursor.moveToPosition(mediaPaginationStart) -> {
                         do {
                             val imageContent = ImageContent()
+
+                            imageContent.filePath = cursor.getString(cursor.getColumnIndexOrThrow(Images.Media.DATA))
 
                             imageContent.name = cursor.getString(cursor.getColumnIndexOrThrow(Images.Media.DISPLAY_NAME))
 

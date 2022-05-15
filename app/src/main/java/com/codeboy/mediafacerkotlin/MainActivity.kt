@@ -27,27 +27,27 @@ import kotlinx.coroutines.async
 class MainActivity : AppCompatActivity() {
 
     lateinit var bindings: ActivityMainBinding
-    var folderList = ArrayList<AudioGenreContent>()
+    var folderList = ArrayList<AudioBucketContent>()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         bindings = DataBindingUtil.setContentView(this, R.layout.activity_main)
         bindings.lifecycleOwner = this
-        //setUpBottomMenu()
-        testFacer()
+        setUpBottomMenu()
+        //testFacer()
     }
 
     private fun testFacer(){
-        var folders = ArrayList<AudioGenreContent>()
+        var folders = ArrayList<AudioBucketContent>()
         CoroutineScope(Dispatchers.Main).async {
-            folders = MediaFacer().getGenres(this@MainActivity, externalAudioContent)
+            folders = MediaFacer().getBuckets(this@MainActivity, externalAudioContent)
         }.invokeOnCompletion {
             Handler(Looper.getMainLooper())
                 .post{
                     folderList = folders
                     Toast.makeText(
                         this@MainActivity,
-                        "genres " + folders.size.toString(),
+                        "buckets " + folders.size.toString(),
                         Toast.LENGTH_LONG
                     ).show()
                 }

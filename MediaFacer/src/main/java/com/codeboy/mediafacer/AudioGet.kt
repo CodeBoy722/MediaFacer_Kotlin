@@ -29,6 +29,9 @@ internal interface AudioGet {
    Audio.Media._ID,
    Audio.Media.DURATION,
    Audio.Media.BUCKET_ID,
+   Audio.Media.DATA,
+   Audio.Media.BUCKET_DISPLAY_NAME,
+
    Audio.Media.DATE_MODIFIED)
 
  val artistProjection: Array<String>
@@ -61,6 +64,7 @@ internal interface AudioGet {
       cursor.moveToFirst() -> {
        do {
         val audio = AudioContent()
+        audio.filePath = cursor.getString(cursor.getColumnIndexOrThrow(Audio.Media.DATA))
         audio.name = cursor.getString(cursor.getColumnIndexOrThrow(Audio.Media.DISPLAY_NAME))
         audio.title = cursor.getString(cursor.getColumnIndexOrThrow(Audio.Media.TITLE))
 
@@ -157,6 +161,7 @@ internal interface AudioGet {
       cursor.moveToFirst() -> {
        do {
         val audio = AudioContent()
+        audio.filePath = cursor.getString(cursor.getColumnIndexOrThrow(Audio.Media.DATA))
         audio.name = cursor.getString(cursor.getColumnIndexOrThrow(Audio.Media.DISPLAY_NAME))
         audio.title = cursor.getString(cursor.getColumnIndexOrThrow(Audio.Media.TITLE))
 
@@ -217,14 +222,21 @@ internal interface AudioGet {
             Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q -> {
              val bucketIdOrPath = cursor.getString(cursor.getColumnIndexOrThrow(Audio.Media.BUCKET_ID))
              val folderNameQ = cursor.getString(cursor.getColumnIndexOrThrow(Audio.Media.BUCKET_DISPLAY_NAME))
+             val dataPath: String = cursor.getString(cursor.getColumnIndexOrThrow(Audio.Media.DATA))
 
+             var folderPath = dataPath.substring(0, dataPath.lastIndexOf("$folderNameQ/"))
+             folderPath = "$folderPath$folderNameQ/"
+
+             audioBucket.bucketPath = folderPath
              audioBucket.bucketId = bucketIdOrPath
              audioBucket.bucketName = folderNameQ
 
              when {
                  !bucketIdsOrPaths.contains(bucketIdOrPath) -> {
+                  bucketIdsOrPaths.add(bucketIdOrPath)
                   val folderAudios = getBucketAudios(context,contentMedium,bucketIdOrPath,"id")
                   audioBucket.audios = folderAudios
+                  buckets.add(audioBucket)
                  }
              }
             }
@@ -242,8 +254,10 @@ internal interface AudioGet {
 
           when {
               !bucketIdsOrPaths.contains(folderPath) -> {
+               bucketIdsOrPaths.add(folderPath)
                val folderAudios = getBucketAudios(context,contentMedium,folderPath,"path")
                audioBucket.audios = folderAudios
+               buckets.add(audioBucket)
               }
           }
          }
@@ -264,89 +278,98 @@ internal interface AudioGet {
   val cursor = context.contentResolver.query(contentMedium, audioProjections, audioSelection, null,
    "LOWER (" + Audio.Media.TITLE + ") ASC")!!
 
-  try {
-   when {
-       cursor.moveToFirst() -> {
-        do {
-         val folderAudio = AudioContent()
-         when (type) {
-             "id" -> {
-              val bucketId = cursor.getString(cursor.getColumnIndexOrThrow(Audio.Media.BUCKET_ID))
-              if(bucketId == bucketIdOrPath){
-               folderAudio.name = cursor.getString(cursor.getColumnIndexOrThrow(Audio.Media.DISPLAY_NAME))
-               folderAudio.title = cursor.getString(cursor.getColumnIndexOrThrow(Audio.Media.TITLE))
+  when (type) {
+   "id" -> {
+    when {
+     cursor.moveToFirst() -> {
+      do {
+       val folderAudio = AudioContent()
+       val bucketId = cursor.getString(cursor.getColumnIndexOrThrow(Audio.Media.BUCKET_ID))
 
-               val id: Long = cursor.getLong(cursor.getColumnIndexOrThrow(Audio.Media._ID))
-               folderAudio.musicId = id
+       if(bucketId == bucketIdOrPath){
+        folderAudio.filePath = cursor.getString(cursor.getColumnIndexOrThrow(Audio.Media.DATA))
+        folderAudio.name = cursor.getString(cursor.getColumnIndexOrThrow(Audio.Media.DISPLAY_NAME))
+        folderAudio.title = cursor.getString(cursor.getColumnIndexOrThrow(Audio.Media.TITLE))
 
-               val contentUri = Uri.withAppendedPath(contentMedium, id.toString())
-               folderAudio.musicUri = contentUri.toString()
+        val id: Long = cursor.getLong(cursor.getColumnIndexOrThrow(Audio.Media._ID))
+        folderAudio.musicId = id
 
-               folderAudio.musicSize = cursor.getLong(cursor.getColumnIndexOrThrow(Audio.Media.SIZE))
-               folderAudio.album = cursor.getString(cursor.getColumnIndexOrThrow(Audio.Media.ALBUM))
-               folderAudio.duration = cursor.getLong(cursor.getColumnIndexOrThrow(Audio.Media.DURATION))
-               folderAudio.dateModified = Date(TimeUnit.SECONDS.toMillis(cursor.getLong(cursor.getColumnIndexOrThrow(Audio.Media.DATE_MODIFIED))))
+        val contentUri = Uri.withAppendedPath(contentMedium, id.toString())
+        folderAudio.musicUri = contentUri.toString()
 
-               val albumId: Long = cursor.getLong(cursor.getColumnIndexOrThrow(Audio.Media.ALBUM_ID))
-               val sArtworkUri = Uri.parse("content://media/external/audio/albumart")
-               folderAudio.artUri = Uri.withAppendedPath(sArtworkUri, albumId.toString())
+        folderAudio.musicSize = cursor.getLong(cursor.getColumnIndexOrThrow(Audio.Media.SIZE))
+        folderAudio.album = cursor.getString(cursor.getColumnIndexOrThrow(Audio.Media.ALBUM))
+        folderAudio.duration = cursor.getLong(cursor.getColumnIndexOrThrow(Audio.Media.DURATION))
+        folderAudio.dateModified = Date(TimeUnit.SECONDS.toMillis(cursor.getLong(cursor.getColumnIndexOrThrow(Audio.Media.DATE_MODIFIED))))
 
-               folderAudio.artist = cursor.getString(cursor.getColumnIndexOrThrow(Audio.Media.ARTIST))
+        val albumId: Long = cursor.getLong(cursor.getColumnIndexOrThrow(Audio.Media.ALBUM_ID))
+        val sArtworkUri = Uri.parse("content://media/external/audio/albumart")
+        folderAudio.artUri = Uri.withAppendedPath(sArtworkUri, albumId.toString())
 
-               var genreVolume = ""
-               if (contentMedium == externalAudioContent) {
-                genreVolume = "external"
-               } else if (contentMedium == internalAudioContent) {
-                genreVolume = "internal"
-               }
+        folderAudio.artist = cursor.getString(cursor.getColumnIndexOrThrow(Audio.Media.ARTIST))
 
-               folderAudio.genre = getGenre(cursor.getInt(cursor.getColumnIndexOrThrow(Audio.Media._ID)), genreVolume, context)
-              }
-             }
-             "path" -> {
-              val dataPath: String = cursor.getString(cursor.getColumnIndexOrThrow(Audio.Media.DATA))
-              val path = File(dataPath)
-              val parent = File(path.parent!!)
-              val folderName = parent.name
-
-              if(folderName == bucketIdOrPath){
-               folderAudio.name = cursor.getString(cursor.getColumnIndexOrThrow(Audio.Media.DISPLAY_NAME))
-               folderAudio.title = cursor.getString(cursor.getColumnIndexOrThrow(Audio.Media.TITLE))
-
-               val id: Long = cursor.getLong(cursor.getColumnIndexOrThrow(Audio.Media._ID))
-               folderAudio.musicId = id
-
-               val contentUri = Uri.withAppendedPath(contentMedium, id.toString())
-               folderAudio.musicUri = contentUri.toString()
-
-               folderAudio.musicSize = cursor.getLong(cursor.getColumnIndexOrThrow(Audio.Media.SIZE))
-               folderAudio.album = cursor.getString(cursor.getColumnIndexOrThrow(Audio.Media.ALBUM))
-               folderAudio.duration = cursor.getLong(cursor.getColumnIndexOrThrow(Audio.Media.DURATION))
-               folderAudio.dateModified = Date(TimeUnit.SECONDS.toMillis(cursor.getLong(cursor.getColumnIndexOrThrow(Audio.Media.DATE_MODIFIED))))
-
-               val albumId: Long = cursor.getLong(cursor.getColumnIndexOrThrow(Audio.Media.ALBUM_ID))
-               val sArtworkUri = Uri.parse("content://media/external/audio/albumart")
-               folderAudio.artUri = Uri.withAppendedPath(sArtworkUri, albumId.toString())
-
-               folderAudio.artist = cursor.getString(cursor.getColumnIndexOrThrow(Audio.Media.ARTIST))
-
-               var genreVolume = ""
-               if (contentMedium == externalAudioContent) {
-                genreVolume = "external"
-               } else if (contentMedium == internalAudioContent) {
-                genreVolume = "internal"
-               }
-
-               folderAudio.genre = getGenre(cursor.getInt(cursor.getColumnIndexOrThrow(Audio.Media._ID)), genreVolume, context)
-              }
-             }
-         }
-         audios.add(folderAudio)
-        }while (cursor.moveToNext())
+        var genreVolume = ""
+        if (contentMedium == externalAudioContent) {
+         genreVolume = "external"
+        } else if (contentMedium == internalAudioContent) {
+         genreVolume = "internal"
+        }
+        folderAudio.genre = getGenre(cursor.getInt(cursor.getColumnIndexOrThrow(Audio.Media._ID)), genreVolume, context)
+        audios.add(folderAudio)
        }
+      }while (cursor.moveToNext())
+     }
+    }
    }
-  }catch (ex: Exception){
-   ex.printStackTrace()
+   "path" -> {
+    when {
+     cursor.moveToFirst() -> {
+      do {
+       val folderAudio = AudioContent()
+       val dataPath: String = cursor.getString(cursor.getColumnIndexOrThrow(Audio.Media.DATA))
+       val path = File(dataPath)
+       val parent = File(path.parent!!)
+       val folderName = parent.name
+
+       var folderPath = dataPath.substring(0, dataPath.lastIndexOf("$folderName/"))
+       folderPath = "$folderPath$folderName/"
+
+       if(folderPath == bucketIdOrPath){
+        folderAudio.filePath = dataPath
+        folderAudio.name = cursor.getString(cursor.getColumnIndexOrThrow(Audio.Media.DISPLAY_NAME))
+        folderAudio.title = cursor.getString(cursor.getColumnIndexOrThrow(Audio.Media.TITLE))
+
+        val id: Long = cursor.getLong(cursor.getColumnIndexOrThrow(Audio.Media._ID))
+        folderAudio.musicId = id
+
+        val contentUri = Uri.withAppendedPath(contentMedium, id.toString())
+        folderAudio.musicUri = contentUri.toString()
+
+        folderAudio.musicSize = cursor.getLong(cursor.getColumnIndexOrThrow(Audio.Media.SIZE))
+        folderAudio.album = cursor.getString(cursor.getColumnIndexOrThrow(Audio.Media.ALBUM))
+        folderAudio.duration = cursor.getLong(cursor.getColumnIndexOrThrow(Audio.Media.DURATION))
+        folderAudio.dateModified = Date(TimeUnit.SECONDS.toMillis(cursor.getLong(cursor.getColumnIndexOrThrow(Audio.Media.DATE_MODIFIED))))
+
+        val albumId: Long = cursor.getLong(cursor.getColumnIndexOrThrow(Audio.Media.ALBUM_ID))
+        val sArtworkUri = Uri.parse("content://media/external/audio/albumart")
+        folderAudio.artUri = Uri.withAppendedPath(sArtworkUri, albumId.toString())
+
+        folderAudio.artist = cursor.getString(cursor.getColumnIndexOrThrow(Audio.Media.ARTIST))
+
+        var genreVolume = ""
+        if (contentMedium == externalAudioContent) {
+         genreVolume = "external"
+        } else if (contentMedium == internalAudioContent) {
+         genreVolume = "internal"
+        }
+
+        folderAudio.genre = getGenre(cursor.getInt(cursor.getColumnIndexOrThrow(Audio.Media._ID)), genreVolume, context)
+        audios.add(folderAudio)
+       }
+      }while (cursor.moveToNext())
+     }
+    }
+   }
   }
 
   cursor.close()
@@ -397,6 +420,7 @@ internal interface AudioGet {
        do {
         val album = AudioAlbumContent()
         val audio = AudioContent()
+        audio.filePath = cursor.getString(cursor.getColumnIndexOrThrow(Audio.Media.DATA))
         audio.name = cursor.getString(cursor.getColumnIndexOrThrow(Audio.Media.DISPLAY_NAME))
         audio.title = cursor.getString(cursor.getColumnIndexOrThrow(Audio.Media.TITLE))
 
@@ -463,7 +487,6 @@ internal interface AudioGet {
   return artistAlbums
  }
 
- //this function will fail because some genres dont have id
  fun getGenres(context: Context, contentMedium: Uri): ArrayList<AudioGenreContent> {
   val genres = ArrayList<AudioGenreContent>()
   val genreNames = ArrayList<String>()
@@ -524,6 +547,7 @@ internal interface AudioGet {
         cursor.moveToFirst() -> {
          do {
           val audio = AudioContent()
+          audio.filePath = cursor.getString(cursor.getColumnIndexOrThrow(Audio.Media.DATA))
           audio.name = cursor.getString(cursor.getColumnIndexOrThrow(Audio.Media.DISPLAY_NAME))
           audio.title = cursor.getString(cursor.getColumnIndexOrThrow(Audio.Media.TITLE))
 
@@ -615,6 +639,7 @@ internal interface AudioGet {
       cursor.moveToFirst() -> {
        do {
         val audio = AudioContent()
+        audio.filePath = cursor.getString(cursor.getColumnIndexOrThrow(Audio.Media.DATA))
         audio.name = cursor.getString(cursor.getColumnIndexOrThrow(Audio.Media.DISPLAY_NAME))
         audio.title = cursor.getString(cursor.getColumnIndexOrThrow(Audio.Media.TITLE))
 

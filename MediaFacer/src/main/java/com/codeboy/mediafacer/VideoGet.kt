@@ -2,9 +2,7 @@ package com.codeboy.mediafacer
 
 import android.content.Context
 import android.net.Uri
-import android.os.Build
 import android.provider.MediaStore.Video
-import android.widget.Toast
 import com.codeboy.mediafacer.models.VideoContent
 import com.codeboy.mediafacer.models.VideoFolderContent
 import java.util.*
@@ -22,6 +20,7 @@ internal interface VideoGet {
    Video.Media._ID,
    Video.Media.ALBUM,
    Video.Media.DATE_MODIFIED,
+   Video.Media.DATA,
    Video.Media.ARTIST
   )
 
@@ -35,6 +34,8 @@ internal interface VideoGet {
       cursor.moveToFirst() -> {
        do {
         val video = VideoContent()
+
+        video.filePath = cursor.getString(cursor.getColumnIndexOrThrow(Video.Media.DATA))
 
         video.name = cursor.getString(cursor.getColumnIndexOrThrow(Video.Media.DISPLAY_NAME))
 
@@ -79,17 +80,10 @@ internal interface VideoGet {
          val videoFolder = VideoFolderContent()
          val folderName: String = cursor.getString(cursor.getColumnIndexOrThrow(Video.Media.BUCKET_DISPLAY_NAME))
 
-         when {
-             Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q -> {
-              //todo
-             }
-             else -> {
-             /* val dataPath: String = cursor.getString(cursor.getColumnIndexOrThrow(Video.Media.DATA))
-              var folderPath = dataPath.substring(0, dataPath.lastIndexOf("$folderName/"))
-              folderPath = "$folderPath$folderName/"
-              videoFolder.folderPath = folderPath*/
-             }
-         }
+         val dataPath: String = cursor.getString(cursor.getColumnIndexOrThrow(Video.Media.DATA))
+         var folderPath = dataPath.substring(0, dataPath.lastIndexOf("$folderName/"))
+         folderPath = "$folderPath$folderName/"
+         videoFolder.folderPath = folderPath
 
          videoFolder.bucketId = bucketId
          videoFolder.folderName = folderName
@@ -116,24 +110,26 @@ internal interface VideoGet {
   when {
       cursor.moveToFirst() -> {
        do {
-        val videoContent = VideoContent()
+        val video = VideoContent()
 
-        videoContent.name = cursor.getString(cursor.getColumnIndexOrThrow(Video.Media.DISPLAY_NAME))
+        video.filePath = cursor.getString(cursor.getColumnIndexOrThrow(Video.Media.DATA))
 
-        videoContent.duration = cursor.getLong(cursor.getColumnIndexOrThrow(Video.Media.DURATION))
+        video.name = cursor.getString(cursor.getColumnIndexOrThrow(Video.Media.DISPLAY_NAME))
 
-        videoContent.size = cursor.getLong(cursor.getColumnIndexOrThrow(Video.Media.SIZE))
+        video.duration = cursor.getLong(cursor.getColumnIndexOrThrow(Video.Media.DURATION))
 
-        videoContent.dateModified = Date(TimeUnit.SECONDS.toMillis(cursor.getLong(cursor.getColumnIndexOrThrow(Video.Media.DATE_MODIFIED))))
+        video.size = cursor.getLong(cursor.getColumnIndexOrThrow(Video.Media.SIZE))
+
+        video.dateModified = Date(TimeUnit.SECONDS.toMillis(cursor.getLong(cursor.getColumnIndexOrThrow(Video.Media.DATE_MODIFIED))))
 
         val id: Int = cursor.getInt(cursor.getColumnIndexOrThrow(Video.Media._ID))
 
-        videoContent.id = id
+        video.id = id
         val contentUri = Uri.withAppendedPath(contentMedium, id.toString())
-        videoContent.videoUri = contentUri.toString()
+        video.videoUri = contentUri.toString()
 
-        videoContent.artist = cursor.getString(cursor.getColumnIndexOrThrow(Video.Media.ARTIST))
-        videos.add(videoContent)
+        video.artist = cursor.getString(cursor.getColumnIndexOrThrow(Video.Media.ARTIST))
+        videos.add(video)
        } while (cursor.moveToNext())
       }
   }

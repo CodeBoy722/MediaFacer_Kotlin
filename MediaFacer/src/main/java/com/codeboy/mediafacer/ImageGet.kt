@@ -17,6 +17,7 @@ internal interface ImageGet {
             Images.Media.BUCKET_DISPLAY_NAME,
             Images.Media.BUCKET_ID,
             Images.Media._ID,
+            Images.Media.DATA,
             Images.Media.DATE_MODIFIED
         )
 
@@ -32,6 +33,8 @@ internal interface ImageGet {
             cursor.moveToFirst() -> {
                 do {
                     val imageContent = ImageContent()
+
+                    imageContent.filePath = cursor.getString(cursor.getColumnIndexOrThrow(Images.Media.DATA))
 
                     imageContent.name = cursor.getString(cursor.getColumnIndexOrThrow(Images.Media.DISPLAY_NAME))
 
@@ -79,10 +82,10 @@ internal interface ImageGet {
                             val imageFolder = ImageFolderContent()
 
                             val folderName: String = cursor.getString(cursor.getColumnIndexOrThrow(Images.Media.BUCKET_DISPLAY_NAME))
-                           /* val dataPath: String = cursor.getString(cursor.getColumnIndexOrThrow(Images.Media.DATA))
+                            val dataPath: String = cursor.getString(cursor.getColumnIndexOrThrow(Images.Media.DATA))
                             var folderPath = dataPath.substring(0, dataPath.lastIndexOf("$folderName/"))
                             folderPath = "$folderPath$folderName/"
-                            imageFolder.folderPath = folderPath*/
+                            imageFolder.folderPath = folderPath
 
                             imageFolder.bucketId = bucketId
                             imageFolder.folderName = folderName
@@ -111,6 +114,8 @@ internal interface ImageGet {
             cursor.moveToFirst() -> {
                 do {
                     val imageContent = ImageContent()
+
+                    imageContent.filePath = cursor.getString(cursor.getColumnIndexOrThrow(Images.Media.DATA))
 
                     imageContent.name = cursor.getString(cursor.getColumnIndexOrThrow(Images.Media.DISPLAY_NAME))
 
