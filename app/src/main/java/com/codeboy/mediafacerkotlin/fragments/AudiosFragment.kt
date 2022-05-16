@@ -12,14 +12,16 @@ import androidx.recyclerview.widget.RecyclerView
 import com.codeboy.mediafacerkotlin.R
 import com.codeboy.mediafacerkotlin.databinding.FragmentAudiosBinding
 import com.codeboy.mediafacerkotlin.utils.EndlessScrollListener
+import com.codeboy.mediafacerkotlin.viewAdapters.AudioBucketViewAdapter
 import com.codeboy.mediafacerkotlin.viewAdapters.AudioViewAdapter
+import com.codeboy.mediafacerkotlin.viewModels.AudioBucketViewModel
 import com.codeboy.mediafacerkotlin.viewModels.AudioViewModel
 
 class AudiosFragment : Fragment() {
 
     private lateinit var bindings: FragmentAudiosBinding
     private var paginationStart = 0
-    private var paginationLimit = 50
+    private var paginationLimit = 12
     private var shouldPaginate = true
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
@@ -30,7 +32,8 @@ class AudiosFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
         bindings = FragmentAudiosBinding.bind(view)
         bindings.lifecycleOwner = viewLifecycleOwner
-        initAudios()
+        //initAudios()
+        initAudioBuckets()
     }
 
     @SuppressLint("NotifyDataSetChanged")
@@ -74,6 +77,40 @@ class AudiosFragment : Fragment() {
                 model.loadNewItems(requireActivity(),paginationStart,paginationLimit,shouldPaginate)
             }
         })
+    }
+
+    @SuppressLint("NotifyDataSetChanged")
+    private fun initAudioBuckets(){
+        bindings.audiosList.hasFixedSize()
+        bindings.audiosList.setHasFixedSize(true)
+        bindings.audiosList.setItemViewCacheSize(20)
+        val layoutManager = LinearLayoutManager(requireActivity(), RecyclerView.VERTICAL, false)
+        bindings.audiosList.layoutManager = layoutManager
+        bindings.audiosList.itemAnimator = null
+
+        val audiosBucketAdapter = AudioBucketViewAdapter()
+        bindings.audiosList.adapter = audiosBucketAdapter
+
+        val model = AudioBucketViewModel()
+        model.audioBuckets.observe(viewLifecycleOwner) {
+            audiosBucketAdapter.submitList(it)
+            paginationStart = it.size //+ 1
+            Toast.makeText(
+                requireActivity(),
+                "audio buckets " + it.size.toString(),
+                Toast.LENGTH_LONG
+            ).show()
+            audiosBucketAdapter.notifyDataSetChanged()
+        }
+
+        model.loadNewItems(requireActivity(),paginationStart,paginationLimit,shouldPaginate)
+
+        bindings.audiosList.addOnScrollListener(object: EndlessScrollListener(layoutManager){
+            override  fun onLoadMore(page: Int, totalItemsCount: Int, view: RecyclerView?) {
+                model.loadNewItems(requireActivity(),paginationStart,paginationLimit,shouldPaginate)
+            }
+        })
+
     }
 
 }

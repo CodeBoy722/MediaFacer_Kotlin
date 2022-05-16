@@ -363,32 +363,35 @@ class MediaFacer: VideoGet, AudioGet, ImageGet {
             }
             var index = 0
             when {
-                cursor.moveToPosition(mediaPaginationStart) -> {
+                cursor.moveToFirst() -> {
                     do {
                         val audioBucket = AudioBucketContent()
                         when {
                             Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q -> {
                                 val bucketIdOrPath = cursor.getString(cursor.getColumnIndexOrThrow(Audio.Media.BUCKET_ID))
-                                val folderNameQ = cursor.getString(cursor.getColumnIndexOrThrow(Audio.Media.BUCKET_DISPLAY_NAME))
-                                val dataPath: String = cursor.getString(cursor.getColumnIndexOrThrow(Audio.Media.DATA))
-
-                                var folderPath = dataPath.substring(0, dataPath.lastIndexOf("$folderNameQ/"))
-                                folderPath = "$folderPath$folderNameQ/"
-
-                                audioBucket.bucketPath = folderPath
-                                audioBucket.bucketId = bucketIdOrPath
-                                audioBucket.bucketName = folderNameQ
-
                                 when {
                                     !bucketIdsOrPaths.contains(bucketIdOrPath) -> {
                                         bucketIdsOrPaths.add(bucketIdOrPath)
-                                        val folderAudios = getBucketAudios(context,contentMedium,bucketIdOrPath,"id")
-                                        audioBucket.audios = folderAudios
-                                        audioBuckets.add(audioBucket)
+                                        when {
+                                            bucketIdsOrPaths.size-1  >= mediaPaginationStart -> {
+                                                val folderNameQ = cursor.getString(cursor.getColumnIndexOrThrow(Audio.Media.BUCKET_DISPLAY_NAME))
+                                                val dataPath: String = cursor.getString(cursor.getColumnIndexOrThrow(Audio.Media.DATA))
+                                                var folderPath = dataPath.substring(0, dataPath.lastIndexOf("$folderNameQ/"))
+                                                folderPath = "$folderPath$folderNameQ/"
 
-                                        index++
-                                        if (index == mediaPaginationLimit)
-                                            break
+                                                audioBucket.bucketPath = folderPath
+                                                audioBucket.bucketId = bucketIdOrPath
+                                                audioBucket.bucketName = folderNameQ
+
+                                                val folderAudios = getBucketAudios(context,contentMedium,bucketIdOrPath,"id")
+                                                audioBucket.audios = folderAudios
+                                                audioBuckets.add(audioBucket)
+
+                                                index++
+                                                if (index == mediaPaginationLimit)
+                                                    break
+                                            }
+                                        }
                                     }
                                 }
                             }
@@ -401,19 +404,22 @@ class MediaFacer: VideoGet, AudioGet, ImageGet {
                                 var folderPath = dataPath.substring(0, dataPath.lastIndexOf("$folderName/"))
                                 folderPath = "$folderPath$folderName/"
 
-                                audioBucket.bucketPath = folderPath
-                                audioBucket.bucketName = folderName
-
                                 when {
                                     !bucketIdsOrPaths.contains(folderPath) -> {
                                         bucketIdsOrPaths.add(folderPath)
-                                        val folderAudios = getBucketAudios(context,contentMedium,folderPath,"path")
-                                        audioBucket.audios = folderAudios
-                                        audioBuckets.add(audioBucket)
+                                        when {
+                                            bucketIdsOrPaths.size-1 >= mediaPaginationStart -> {
+                                                audioBucket.bucketPath = folderPath
+                                                audioBucket.bucketName = folderName
+                                                val folderAudios = getBucketAudios(context,contentMedium,folderPath,"path")
+                                                audioBucket.audios = folderAudios
+                                                audioBuckets.add(audioBucket)
 
-                                        index++
-                                        if (index == mediaPaginationLimit)
-                                            break
+                                                index++
+                                                if (index == mediaPaginationLimit)
+                                                    break
+                                            }
+                                        }
                                     }
                                 }
                             }
