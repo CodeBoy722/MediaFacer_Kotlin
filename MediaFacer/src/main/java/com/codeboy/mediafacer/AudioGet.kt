@@ -31,8 +31,23 @@ internal interface AudioGet {
    Audio.Media.BUCKET_ID,
    Audio.Media.DATA,
    Audio.Media.BUCKET_DISPLAY_NAME,
-
    Audio.Media.DATE_MODIFIED)
+
+ val audioProjectionsBelowQ : Array<String>
+ get() = arrayOf(
+  Audio.Media.TITLE,
+  Audio.Media.DISPLAY_NAME,
+  Audio.Media.ARTIST,
+  Audio.Media.ARTIST_ID,
+  Audio.Media.ALBUM,
+  Audio.Media.ALBUM_ID,
+  Audio.Media.COMPOSER,
+  Audio.Media.SIZE,
+  Audio.Media._ID,
+  Audio.Media.DATA,
+  Audio.Media.DURATION,
+  Audio.Media.DATE_MODIFIED
+ )
 
  val artistProjection: Array<String>
   get() = arrayOf(Audio.Media.ARTIST,
@@ -210,8 +225,14 @@ internal interface AudioGet {
  fun getBuckets(context: Context, contentMedium: Uri): ArrayList<AudioBucketContent> {
   val buckets = ArrayList<AudioBucketContent>()
   val bucketIdsOrPaths = ArrayList<String>()
-  val cursor = context.contentResolver.query(contentMedium, audioProjections, audioSelection, null,
-   "LOWER (" + Audio.Media.TITLE + ") ASC")!!
+
+  val cursor = if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q){
+   context.contentResolver.query(contentMedium, audioProjections, audioSelection, null,
+    "LOWER (" + Audio.Media.TITLE + ") ASC")!!
+  }else{
+   context.contentResolver.query(contentMedium, audioProjectionsBelowQ, audioSelection, null,
+    "LOWER (" + Audio.Media.TITLE + ") ASC")!!
+  }
 
   //try {
   when {
@@ -275,8 +296,13 @@ internal interface AudioGet {
  @SuppressLint("InlinedApi")
  private fun getBucketAudios(context: Context, contentMedium: Uri, bucketIdOrPath: String, type: String): ArrayList<AudioContent> {
   val audios = ArrayList<AudioContent>()
-  val cursor = context.contentResolver.query(contentMedium, audioProjections, audioSelection, null,
-   "LOWER (" + Audio.Media.TITLE + ") ASC")!!
+  val cursor = if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q){
+   context.contentResolver.query(contentMedium, audioProjections, audioSelection, null,
+    "LOWER (" + Audio.Media.TITLE + ") ASC")!!
+  }else{
+   context.contentResolver.query(contentMedium, audioProjectionsBelowQ, audioSelection, null,
+    "LOWER (" + Audio.Media.TITLE + ") ASC")!!
+  }
 
   when (type) {
    "id" -> {
