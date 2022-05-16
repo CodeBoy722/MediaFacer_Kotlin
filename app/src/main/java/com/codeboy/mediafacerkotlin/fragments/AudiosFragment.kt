@@ -53,7 +53,7 @@ class AudiosFragment : Fragment() {
         model.audios.observe(viewLifecycleOwner) {
             audiosAdapter.submitList(it)
             //notifyDataSetChanged on adapter after submitting list to avoid scroll lagging on recyclerview
-            paginationStart = it.size + 1
+            paginationStart = it.size //+ 1
             Toast.makeText(
                 requireActivity(),
                 "gotten new music data " + it.size.toString(),

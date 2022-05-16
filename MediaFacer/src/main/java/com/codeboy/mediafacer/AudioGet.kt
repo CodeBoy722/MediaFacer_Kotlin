@@ -72,8 +72,14 @@ internal interface AudioGet {
 
  fun getAudios(context: Context, contentMedium: Uri): ArrayList<AudioContent> {
   val allAudio: ArrayList<AudioContent> = ArrayList()
-  val cursor = context.contentResolver.query(contentMedium, audioProjections, audioSelection, null,
+  val cursor = if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q){
+  context.contentResolver.query(contentMedium, audioProjections, audioSelection, null,
    "LOWER (" + Audio.Media.TITLE + ") ASC")!! //"LOWER ("+Audio.Media.TITLE + ") ASC"
+  }else{
+   context.contentResolver.query(contentMedium, audioProjectionsBelowQ, audioSelection, null,
+    "LOWER (" + Audio.Media.TITLE + ") ASC")!! //"LOWER ("+Audio.Media.TITLE + ") ASC"
+  }
+
   //try {
   when {
       cursor.moveToFirst() -> {
@@ -123,53 +129,60 @@ internal interface AudioGet {
  fun getAlbums(context: Context, contentMedium: Uri): ArrayList<AudioAlbumContent> {
   val albums = ArrayList<AudioAlbumContent>()
   val albumIds = ArrayList<String>()
-  val cursor = context.contentResolver.query(contentMedium, audioProjections, audioSelection,
-   null,
-   "LOWER (" + Audio.Media.ALBUM + ") ASC")!!
-
-  //try {
-  when {
-      cursor.moveToFirst() -> {
-       do {
-        val albumId = cursor.getString(cursor.getColumnIndexOrThrow(Audio.Media.ALBUM_ID))
-
-        if (!albumIds.contains(albumId)) {
-         val album = AudioAlbumContent()
-         val albumName = cursor.getString(cursor.getColumnIndexOrThrow(Audio.Media.ALBUM))
-         album.albumName = albumName
-
-         val albumArtist = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
-          cursor.getString(cursor.getColumnIndexOrThrow(Audio.Media.ALBUM_ARTIST))
-         } else {
-          cursor.getString(cursor.getColumnIndexOrThrow(Audio.Media.ALBUM))
-         }
-         album.albumArtist = albumArtist
-
-         albumIds.add(albumId)
-         val sArtworkUri = Uri.parse("content://media/external/audio/albumart")
-         val imageUri = Uri.withAppendedPath(sArtworkUri, albumId.toString())
-         album.albumArtUri = imageUri
-         album.albumId = albumId
-
-         val audios = getAlbumAudios(context, contentMedium, albumId)
-         album.albumAudios = audios
-         albums.add(album)
-        }
-       } while (cursor.moveToNext())
-      }
+  val cursor = if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q){
+  context.contentResolver.query(contentMedium, audioProjections, audioSelection, null,
+     "LOWER (" + Audio.Media.ALBUM + ") ASC")!!
+  }else{
+   context.contentResolver.query(contentMedium, audioProjectionsBelowQ, audioSelection,null,
+    "LOWER (" + Audio.Media.ALBUM + ") ASC")!!
   }
-  /* }catch (ex: Exception){
-    ex.printStackTrace()
-   }*/
+
+  when {
+   cursor.moveToFirst() -> {
+    do {
+     val albumId = cursor.getString(cursor.getColumnIndexOrThrow(Audio.Media.ALBUM_ID))
+     when {
+         !albumIds.contains(albumId) -> {
+          val album = AudioAlbumContent()
+          val albumName = cursor.getString(cursor.getColumnIndexOrThrow(Audio.Media.ALBUM))
+          album.albumName = albumName
+
+          val albumArtist = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
+           cursor.getString(cursor.getColumnIndexOrThrow(Audio.Media.ALBUM_ARTIST))
+          } else {
+           cursor.getString(cursor.getColumnIndexOrThrow(Audio.Media.ALBUM))
+          }
+          album.albumArtist = albumArtist
+
+          albumIds.add(albumId)
+          val sArtworkUri = Uri.parse("content://media/external/audio/albumart")
+          val imageUri = Uri.withAppendedPath(sArtworkUri, albumId.toString())
+          album.albumArtUri = imageUri
+          album.albumId = albumId
+
+          val audios = getAlbumAudios(context, contentMedium, albumId)
+          album.albumAudios = audios
+          albums.add(album)
+         }
+     }
+    } while (cursor.moveToNext())
+   }
+  }
   cursor.close()
   return albums
  }
 
  fun getAlbumAudios(context: Context, contentMedium: Uri, album: String): ArrayList<AudioContent> {
   val albumAudios = ArrayList<AudioContent>()
-  val cursor = context.contentResolver.query(contentMedium, audioProjections,
-   Audio.Media.ALBUM_ID + " like ? ", arrayOf("%$album%"),
-   "LOWER (" + Audio.Media.TITLE + ") ASC")!! //"LOWER ("+Audio.Media.TITLE + ") ASC"
+  val cursor = if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q){
+   context.contentResolver.query(contentMedium, audioProjections,
+    Audio.Media.ALBUM_ID + " like ? ", arrayOf("%$album%"),
+    "LOWER (" + Audio.Media.TITLE + ") ASC")!! //"LOWER ("+Audio.Media.TITLE + ") ASC"
+  }else{
+   context.contentResolver.query(contentMedium, audioProjectionsBelowQ,
+    Audio.Media.ALBUM_ID + " like ? ", arrayOf("%$album%"),
+    "LOWER (" + Audio.Media.TITLE + ") ASC")!! //"LOWER ("+Audio.Media.TITLE + ") ASC"
+  }
 
   //try {
   when {
@@ -225,7 +238,6 @@ internal interface AudioGet {
  fun getBuckets(context: Context, contentMedium: Uri): ArrayList<AudioBucketContent> {
   val buckets = ArrayList<AudioBucketContent>()
   val bucketIdsOrPaths = ArrayList<String>()
-
   val cursor = if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q){
    context.contentResolver.query(contentMedium, audioProjections, audioSelection, null,
     "LOWER (" + Audio.Media.TITLE + ") ASC")!!
@@ -234,67 +246,63 @@ internal interface AudioGet {
     "LOWER (" + Audio.Media.TITLE + ") ASC")!!
   }
 
-  //try {
   when {
-      cursor.moveToFirst() -> {
-       do {
-        val audioBucket = AudioBucketContent()
-        when {
-            Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q -> {
-             val bucketIdOrPath = cursor.getString(cursor.getColumnIndexOrThrow(Audio.Media.BUCKET_ID))
-             val folderNameQ = cursor.getString(cursor.getColumnIndexOrThrow(Audio.Media.BUCKET_DISPLAY_NAME))
-             val dataPath: String = cursor.getString(cursor.getColumnIndexOrThrow(Audio.Media.DATA))
+   cursor.moveToFirst() -> {
+    do {
+     val audioBucket = AudioBucketContent()
+     when {
+      Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q -> {
+       val bucketIdOrPath = cursor.getString(cursor.getColumnIndexOrThrow(Audio.Media.BUCKET_ID))
+       val folderNameQ = cursor.getString(cursor.getColumnIndexOrThrow(Audio.Media.BUCKET_DISPLAY_NAME))
+       val dataPath: String = cursor.getString(cursor.getColumnIndexOrThrow(Audio.Media.DATA))
 
-             var folderPath = dataPath.substring(0, dataPath.lastIndexOf("$folderNameQ/"))
-             folderPath = "$folderPath$folderNameQ/"
+       var folderPath = dataPath.substring(0, dataPath.lastIndexOf("$folderNameQ/"))
+       folderPath = "$folderPath$folderNameQ/"
 
-             audioBucket.bucketPath = folderPath
-             audioBucket.bucketId = bucketIdOrPath
-             audioBucket.bucketName = folderNameQ
+       audioBucket.bucketPath = folderPath
+       audioBucket.bucketId = bucketIdOrPath
+       audioBucket.bucketName = folderNameQ
 
-             when {
-                 !bucketIdsOrPaths.contains(bucketIdOrPath) -> {
-                  bucketIdsOrPaths.add(bucketIdOrPath)
-                  val folderAudios = getBucketAudios(context,contentMedium,bucketIdOrPath,"id")
-                  audioBucket.audios = folderAudios
-                  buckets.add(audioBucket)
-                 }
-             }
-            }
-         else -> {
-          val dataPath: String = cursor.getString(cursor.getColumnIndexOrThrow(Audio.Media.DATA))
-          val path = File(dataPath)
-          val parent = File(path.parent!!)
-          val folderName = parent.name
-
-          var folderPath = dataPath.substring(0, dataPath.lastIndexOf("$folderName/"))
-          folderPath = "$folderPath$folderName/"
-
-          audioBucket.bucketPath = folderPath
-          audioBucket.bucketName = folderName
-
-          when {
-              !bucketIdsOrPaths.contains(folderPath) -> {
-               bucketIdsOrPaths.add(folderPath)
-               val folderAudios = getBucketAudios(context,contentMedium,folderPath,"path")
-               audioBucket.audios = folderAudios
-               buckets.add(audioBucket)
-              }
-          }
-         }
+       when {
+        !bucketIdsOrPaths.contains(bucketIdOrPath) -> {
+         bucketIdsOrPaths.add(bucketIdOrPath)
+         val folderAudios = getBucketAudios(context,contentMedium,bucketIdOrPath,"id")
+         audioBucket.audios = folderAudios
+         buckets.add(audioBucket)
         }
-       } while (cursor.moveToNext())
+       }
       }
+      else -> {
+       val dataPath: String = cursor.getString(cursor.getColumnIndexOrThrow(Audio.Media.DATA))
+       val path = File(dataPath)
+       val parent = File(path.parent!!)
+       val folderName = parent.name
+
+       var folderPath = dataPath.substring(0, dataPath.lastIndexOf("$folderName/"))
+       folderPath = "$folderPath$folderName/"
+
+       audioBucket.bucketPath = folderPath
+       audioBucket.bucketName = folderName
+
+       when {
+        !bucketIdsOrPaths.contains(folderPath) -> {
+         bucketIdsOrPaths.add(folderPath)
+         val folderAudios = getBucketAudios(context,contentMedium,folderPath,"path")
+         audioBucket.audios = folderAudios
+         buckets.add(audioBucket)
+        }
+       }
+      }
+     }
+    } while (cursor.moveToNext())
+   }
   }
-  /*} catch (ex: Exception) {
-   ex.printStackTrace()
-  }*/
   cursor.close()
   return buckets
  }
 
  @SuppressLint("InlinedApi")
- private fun getBucketAudios(context: Context, contentMedium: Uri, bucketIdOrPath: String, type: String): ArrayList<AudioContent> {
+ fun getBucketAudios(context: Context, contentMedium: Uri, bucketIdOrPath: String, type: String): ArrayList<AudioContent> {
   val audios = ArrayList<AudioContent>()
   val cursor = if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q){
    context.contentResolver.query(contentMedium, audioProjections, audioSelection, null,
@@ -408,25 +416,21 @@ internal interface AudioGet {
   val cursor = context.contentResolver.query(contentMedium, artistProjection, audioSelection, null,
    "LOWER (" + Audio.Artists.ARTIST + ") ASC")!!
 
-  try {
-   when {
-       cursor.moveToFirst() -> {
-        do {
-         val artist = AudioArtistContent()
-         val artistName: String = cursor.getString(cursor.getColumnIndexOrThrow(Audio.Artists.ARTIST))
-         when {
-             !artistNames.contains(artistName) -> {
-              artistNames.add(artistName)
-              artist.artistName = artistName
-              artist.albums = getArtistAlbums(context,contentMedium,artistName)
-              artists.add(artist)
-             }
-         }
-        }while (cursor.moveToNext())
-       }
+  when {
+   cursor.moveToFirst() -> {
+    do {
+     val artist = AudioArtistContent()
+     val artistName: String = cursor.getString(cursor.getColumnIndexOrThrow(Audio.Artists.ARTIST))
+     when {
+      !artistNames.contains(artistName) -> {
+       artistNames.add(artistName)
+       artist.artistName = artistName
+       artist.albums = getArtistAlbums(context,contentMedium,artistName)
+       artists.add(artist)
+      }
+     }
+    }while (cursor.moveToNext())
    }
-  }catch (ex: Exception){
-   ex.printStackTrace()
   }
 
   cursor.close()
@@ -436,10 +440,17 @@ internal interface AudioGet {
  fun getArtistAlbums(context: Context, contentMedium: Uri, artistName: String): ArrayList<AudioAlbumContent>{
   val artistAlbums = ArrayList<AudioAlbumContent>()
   val albumIds = ArrayList<String>()
-  val cursor = context.contentResolver.query(contentMedium, audioProjections,
-   Audio.Artists.ARTIST + " like ? ",
-   arrayOf("%$artistName%"),
-   "LOWER (" + Audio.Artists.ARTIST + ") ASC")!!
+  val cursor = if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q){
+   context.contentResolver.query(contentMedium, audioProjections,
+    Audio.Artists.ARTIST + " like ? ",
+    arrayOf("%$artistName%"),
+    "LOWER (" + Audio.Artists.ARTIST + ") ASC")!!
+  }else{
+   context.contentResolver.query(contentMedium, audioProjectionsBelowQ,
+    Audio.Artists.ARTIST + " like ? ",
+    arrayOf("%$artistName%"),
+    "LOWER (" + Audio.Artists.ARTIST + ") ASC")!!
+  }
 
   when {
       cursor.moveToFirst() -> {
@@ -516,9 +527,13 @@ internal interface AudioGet {
  fun getGenres(context: Context, contentMedium: Uri): ArrayList<AudioGenreContent> {
   val genres = ArrayList<AudioGenreContent>()
   val genreNames = ArrayList<String>()
-  val cursor = context.contentResolver.query(contentMedium, audioProjections, audioSelection,
-   null,
-    "LOWER (" + Audio.Media.TITLE + ") ASC")!!
+  val cursor = if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q){
+   context.contentResolver.query(contentMedium, audioProjections, audioSelection, null,
+    "LOWER (" + Audio.Media.TITLE + ") ASC")!! //"LOWER ("+Audio.Media.TITLE + ") ASC"
+  }else{
+   context.contentResolver.query(contentMedium, audioProjectionsBelowQ, audioSelection, null,
+    "LOWER (" + Audio.Media.TITLE + ") ASC")!! //"LOWER ("+Audio.Media.TITLE + ") ASC"
+  }
 
   when {
       cursor.moveToFirst() -> {
@@ -612,7 +627,6 @@ internal interface AudioGet {
        cursor.close()
       }
       else -> {
-
        val genreAudiosUri = Audio.Genres.Members.getContentUri("external", genreId.toLong())
        val cursor = context.contentResolver.query(genreAudiosUri, audioProjections, null, null,
         "LOWER (" + Audio.Media.TITLE + ") ASC")!!
@@ -656,10 +670,17 @@ internal interface AudioGet {
 
  fun searchAudios(context: Context, contentMedium: Uri, selectionType: String, selectionValue: String): ArrayList<AudioContent> {
   val foundAudios = ArrayList<AudioContent>()
-  val cursor = context.contentResolver.query(contentMedium, audioProjections,
-   "$selectionType like ? ",
-   arrayOf("%$selectionValue%"),
-   "LOWER (" + Audio.Media.TITLE + ") ASC")!!
+  val cursor = if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q){
+   context.contentResolver.query(contentMedium, audioProjections,
+    "$selectionType like ? ",
+    arrayOf("%$selectionValue%"),
+    "LOWER (" + Audio.Media.TITLE + ") ASC")!!
+  }else{
+   context.contentResolver.query(contentMedium, audioProjectionsBelowQ,
+    "$selectionType like ? ",
+    arrayOf("%$selectionValue%"),
+    "LOWER (" + Audio.Media.TITLE + ") ASC")!!
+  }
 
   when {
       cursor.moveToFirst() -> {

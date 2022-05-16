@@ -54,7 +54,7 @@ class ImagesFragment : Fragment() {
         model.images.observe(viewLifecycleOwner) {
             adapter.submitList(it)
             //notifyDataSetChanged on adapter after submitting list to avoid scroll lagging on recyclerview
-            paginationStart = it.size + 1
+            paginationStart = it.size //+ 1
             adapter.notifyDataSetChanged()
         }
 

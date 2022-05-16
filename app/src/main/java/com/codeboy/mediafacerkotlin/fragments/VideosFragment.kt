@@ -54,7 +54,7 @@ class VideosFragment : Fragment() {
         model.videos.observe(viewLifecycleOwner) {
             adapter.submitList(it)
             //notifyDataSetChanged on adapter after submitting list to avoid scroll lagging on recyclerview
-            paginationStart = it.size+1
+            paginationStart = it.size //+ 1
             adapter.notifyDataSetChanged()
         }
 
@@ -71,7 +71,9 @@ class VideosFragment : Fragment() {
         })
     }
 
+    private fun initVideoFolders(){
 
+    }
 
 
     /*private fun loadNewItems(){

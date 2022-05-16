@@ -70,7 +70,6 @@ internal interface ImageGet {
             null, null,
             "LOWER (" + Images.Media.DATE_MODIFIED + ") DESC")!!
 
-        //try {
         when {
             cursor.moveToFirst() -> {
                 do{
@@ -96,9 +95,6 @@ internal interface ImageGet {
                 }while (cursor.moveToNext())
             }
         }
-        /*}catch (ex: Exception){
-            ex.printStackTrace()
-        }*/
         cursor.close()
         return imageFolders
     }
@@ -153,7 +149,6 @@ internal interface ImageGet {
             ,imageProjections, null, null,
             "LOWER (" + Images.Media.DATE_MODIFIED + ") DESC")!!
 
-        //try {
             if(cursor.moveToFirst()){
                 do{
                     val imageFolder = ImageFolderContent()
@@ -196,9 +191,6 @@ internal interface ImageGet {
                     }
                 }while (cursor.moveToNext())
             }
-        /*}catch (ex: Exception){
-            ex.printStackTrace()
-        }*/
         cursor.close()
         return absolutePictureFolders
     }

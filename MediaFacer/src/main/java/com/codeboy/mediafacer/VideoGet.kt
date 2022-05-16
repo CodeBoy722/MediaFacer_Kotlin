@@ -69,38 +69,36 @@ internal interface VideoGet {
   val cursor = context.contentResolver.query(contentMedium, videoProjections,
    null, null, "LOWER (" + Video.Media.DATE_MODIFIED + ") DESC")!! //DESC
 
-  //try {
   when {
-      cursor.moveToFirst() -> {
-       do{
-        val bucketId: Int = cursor.getInt(cursor.getColumnIndexOrThrow(Video.Media.BUCKET_ID))
+   cursor.moveToFirst() -> {
+    do{
+     val bucketId: Int = cursor.getInt(cursor.getColumnIndexOrThrow(Video.Media.BUCKET_ID))
 
-        if(!folderIds.contains(bucketId)){
-         folderIds.add(bucketId)
-         val videoFolder = VideoFolderContent()
-         val folderName: String = cursor.getString(cursor.getColumnIndexOrThrow(Video.Media.BUCKET_DISPLAY_NAME))
+     when {
+         !folderIds.contains(bucketId) -> {
+          folderIds.add(bucketId)
+          val videoFolder = VideoFolderContent()
+          val folderName: String = cursor.getString(cursor.getColumnIndexOrThrow(Video.Media.BUCKET_DISPLAY_NAME))
 
-         val dataPath: String = cursor.getString(cursor.getColumnIndexOrThrow(Video.Media.DATA))
-         var folderPath = dataPath.substring(0, dataPath.lastIndexOf("$folderName/"))
-         folderPath = "$folderPath$folderName/"
-         videoFolder.folderPath = folderPath
+          val dataPath: String = cursor.getString(cursor.getColumnIndexOrThrow(Video.Media.DATA))
+          var folderPath = dataPath.substring(0, dataPath.lastIndexOf("$folderName/"))
+          folderPath = "$folderPath$folderName/"
+          videoFolder.folderPath = folderPath
 
-         videoFolder.bucketId = bucketId
-         videoFolder.folderName = folderName
-         videoFolder.videos = getFolderVideos(context,contentMedium,bucketId)
-         videoFolders.add(videoFolder)
-        }
-       }while (cursor.moveToNext())
-      }
+          videoFolder.bucketId = bucketId
+          videoFolder.folderName = folderName
+          videoFolder.videos = getFolderVideos(context,contentMedium,bucketId)
+          videoFolders.add(videoFolder)
+         }
+     }
+    }while (cursor.moveToNext())
+   }
   }
-  /*}catch (ex: Exception){
-   ex.printStackTrace()
-  }*/
   cursor.close()
   return videoFolders
  }
 
- private fun getFolderVideos(context: Context, contentMedium: Uri, bucketId: Int): ArrayList<VideoContent>{
+ fun getFolderVideos(context: Context, contentMedium: Uri, bucketId: Int): ArrayList<VideoContent>{
   val videos: ArrayList<VideoContent> = ArrayList()
   val cursor = context.contentResolver.query(contentMedium, videoProjections,
    Video.Media.BUCKET_ID + " like ? ", arrayOf("%$bucketId%"),
