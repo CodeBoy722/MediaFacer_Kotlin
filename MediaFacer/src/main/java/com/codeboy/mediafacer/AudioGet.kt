@@ -143,6 +143,7 @@ internal interface AudioGet {
      val albumId = cursor.getString(cursor.getColumnIndexOrThrow(Audio.Media.ALBUM_ID))
      when {
          !albumIds.contains(albumId) -> {
+          albumIds.add(albumId)
           val album = AudioAlbumContent()
           val albumName = cursor.getString(cursor.getColumnIndexOrThrow(Audio.Media.ALBUM))
           album.albumName = albumName
@@ -154,7 +155,6 @@ internal interface AudioGet {
           }
           album.albumArtist = albumArtist
 
-          albumIds.add(albumId)
           val sArtworkUri = Uri.parse("content://media/external/audio/albumart")
           val imageUri = Uri.withAppendedPath(sArtworkUri, albumId.toString())
           album.albumArtUri = imageUri
@@ -474,7 +474,7 @@ internal interface AudioGet {
 
         val albumId: String = cursor.getString(cursor.getColumnIndexOrThrow(Audio.Media.ALBUM_ID))
         val sArtworkUri = Uri.parse("content://media/external/audio/albumart")
-        val artUri = Uri.withAppendedPath(sArtworkUri, albumId.toString())
+        val artUri = Uri.withAppendedPath(sArtworkUri, albumId)
         audio.artUri = artUri
 
         audio.artist = cursor.getString(cursor.getColumnIndexOrThrow(Audio.Media.ARTIST))

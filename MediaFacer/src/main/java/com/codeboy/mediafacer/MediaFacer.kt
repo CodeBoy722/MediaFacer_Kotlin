@@ -24,9 +24,9 @@ class MediaFacer: VideoGet, AudioGet, ImageGet {
         val internalImagesContent: Uri = Images.Media.INTERNAL_CONTENT_URI
     }
 
-    var mediaPaginationStart = 0
-    var mediaPaginationLimit = 0
-    var shouldPaginate = false
+    private var mediaPaginationStart = 0
+    private var mediaPaginationLimit = 0
+    private var shouldPaginate = false
 
     fun withPagination(start: Int, limit: Int,shouldPaginate: Boolean):MediaFacer{
         mediaPaginationStart = start
@@ -47,7 +47,6 @@ class MediaFacer: VideoGet, AudioGet, ImageGet {
                     context.contentResolver.query(contentMedium,audioProjectionsBelowQ,audioSelection, null,
                         "LOWER (" + Audio.Media.TITLE + ") ASC")!! //"LOWER ("+Audio.Media.TITLE + ") ASC"
                 }
-
                 var index = 0
                 when {
                     cursor.moveToPosition(mediaPaginationStart) -> {
@@ -96,7 +95,6 @@ class MediaFacer: VideoGet, AudioGet, ImageGet {
                         } while (cursor.moveToNext())
                     }
                 }
-
                 cursor.close()
                 mediaPaginationStart = 0
                 mediaPaginationLimit = 0
@@ -114,7 +112,6 @@ class MediaFacer: VideoGet, AudioGet, ImageGet {
                 val cursor = context.contentResolver.query(contentMedium, videoProjections, null, null,
                     "LOWER (" + Video.Media.DATE_MODIFIED + ") DESC")!! //DESC ASC
                 var index = 0
-                //try {
                 when {
                     cursor.moveToPosition(mediaPaginationStart) -> {
                         do {
@@ -145,9 +142,6 @@ class MediaFacer: VideoGet, AudioGet, ImageGet {
                         } while (cursor.moveToNext())
                     }
                 }
-                /* } catch (e: Exception) {
-                    e.printStackTrace()
-                }*/
                 cursor.close()
                 mediaPaginationStart = 0
                 mediaPaginationLimit = 0
@@ -168,7 +162,6 @@ class MediaFacer: VideoGet, AudioGet, ImageGet {
                     "LOWER (" + Images.Media.DATE_MODIFIED + ") DESC")!!
 
                 var index = 0
-                //try {
                 when {
                     cursor.moveToPosition(mediaPaginationStart) -> {
                         do {
@@ -198,9 +191,6 @@ class MediaFacer: VideoGet, AudioGet, ImageGet {
 
                     }
                 }
-                /*} catch (e: Exception) {
-                    e.printStackTrace()
-                }*/
                 cursor.close()
                 mediaPaginationStart = 0
                 mediaPaginationLimit = 0
@@ -264,28 +254,31 @@ class MediaFacer: VideoGet, AudioGet, ImageGet {
                 "LOWER (" + Images.Media.DATE_MODIFIED + ") DESC")!!
             var index = 0
             when {
-                cursor.moveToPosition(mediaPaginationStart) -> {
+                cursor.moveToFirst() -> {
                     do{
                         val bucketId: Int = cursor.getInt(cursor.getColumnIndexOrThrow(Images.Media.BUCKET_ID))
                         when {
                             !folderIds.contains(bucketId) -> {
                                 folderIds.add(bucketId)
-                                val imageFolder = ImageFolderContent()
+                                when {
+                                    (folderIds.size-1) >= mediaPaginationStart -> {
+                                        val imageFolder = ImageFolderContent()
+                                        val folderName: String = cursor.getString(cursor.getColumnIndexOrThrow(Images.Media.BUCKET_DISPLAY_NAME))
+                                        val dataPath: String = cursor.getString(cursor.getColumnIndexOrThrow(Images.Media.DATA))
+                                        var folderPath = dataPath.substring(0, dataPath.lastIndexOf("$folderName/"))
+                                        folderPath = "$folderPath$folderName/"
+                                        imageFolder.folderPath = folderPath
 
-                                val folderName: String = cursor.getString(cursor.getColumnIndexOrThrow(Images.Media.BUCKET_DISPLAY_NAME))
-                                val dataPath: String = cursor.getString(cursor.getColumnIndexOrThrow(Images.Media.DATA))
-                                var folderPath = dataPath.substring(0, dataPath.lastIndexOf("$folderName/"))
-                                folderPath = "$folderPath$folderName/"
-                                imageFolder.folderPath = folderPath
+                                        imageFolder.bucketId = bucketId
+                                        imageFolder.folderName = folderName
+                                        imageFolder.images = getFolderImages(context,contentMedium,bucketId)
+                                        imageFolders.add(imageFolder)
 
-                                imageFolder.bucketId = bucketId
-                                imageFolder.folderName = folderName
-                                imageFolder.images = getFolderImages(context,contentMedium,bucketId)
-                                imageFolders.add(imageFolder)
-
-                                index++
-                                if (index == mediaPaginationLimit)
-                                    break
+                                        index++
+                                        if (index == mediaPaginationLimit)
+                                            break
+                                    }
+                                }
                             }
                         }
                     }while (cursor.moveToNext())
@@ -310,35 +303,39 @@ class MediaFacer: VideoGet, AudioGet, ImageGet {
             }
             var index = 0
             when {
-                cursor.moveToPosition(mediaPaginationStart) -> {
+                cursor.moveToFirst() -> {
                     do {
                         val albumId = cursor.getString(cursor.getColumnIndexOrThrow(Audio.Media.ALBUM_ID))
                         when {
                             !albumIds.contains(albumId) -> {
-                                val album = AudioAlbumContent()
-                                val albumName = cursor.getString(cursor.getColumnIndexOrThrow(Audio.Media.ALBUM))
-                                album.albumName = albumName
-
-                                val albumArtist = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
-                                    cursor.getString(cursor.getColumnIndexOrThrow(Audio.Media.ALBUM_ARTIST))
-                                } else {
-                                    cursor.getString(cursor.getColumnIndexOrThrow(Audio.Media.ALBUM))
-                                }
-                                album.albumArtist = albumArtist
-
                                 albumIds.add(albumId)
-                                val sArtworkUri = Uri.parse("content://media/external/audio/albumart")
-                                val imageUri = Uri.withAppendedPath(sArtworkUri, albumId.toString())
-                                album.albumArtUri = imageUri
-                                album.albumId = albumId
+                                when {
+                                    (albumIds.size-1) >= mediaPaginationStart -> {
+                                        val album = AudioAlbumContent()
+                                        val albumName = cursor.getString(cursor.getColumnIndexOrThrow(Audio.Media.ALBUM))
+                                        album.albumName = albumName
 
-                                val audios = getAlbumAudios(context, contentMedium, albumId)
-                                album.albumAudios = audios
-                                albums.add(album)
+                                        val albumArtist = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
+                                            cursor.getString(cursor.getColumnIndexOrThrow(Audio.Media.ALBUM_ARTIST))
+                                        } else {
+                                            cursor.getString(cursor.getColumnIndexOrThrow(Audio.Media.ALBUM))
+                                        }
+                                        album.albumArtist = albumArtist
 
-                                index++
-                                if (index == mediaPaginationLimit)
-                                    break
+                                        val sArtworkUri = Uri.parse("content://media/external/audio/albumart")
+                                        val imageUri = Uri.withAppendedPath(sArtworkUri, albumId.toString())
+                                        album.albumArtUri = imageUri
+                                        album.albumId = albumId
+
+                                        val audios = getAlbumAudios(context, contentMedium, albumId)
+                                        album.albumAudios = audios
+                                        albums.add(album)
+
+                                        index++
+                                        if (index == mediaPaginationLimit)
+                                            break
+                                    }
+                                }
                             }
                         }
                     } while (cursor.moveToNext())
@@ -349,7 +346,7 @@ class MediaFacer: VideoGet, AudioGet, ImageGet {
         return albums
     }
 
-    override fun getBuckets(context: Context, contentMedium: Uri, ): ArrayList<AudioBucketContent> {
+    override fun getBuckets(context: Context, contentMedium: Uri): ArrayList<AudioBucketContent> {
         var audioBuckets = ArrayList<AudioBucketContent>()
         if (shouldPaginate){
 
@@ -432,7 +429,7 @@ class MediaFacer: VideoGet, AudioGet, ImageGet {
         return audioBuckets
     }
 
-    override fun getArtists(context: Context, contentMedium: Uri, ): java.util.ArrayList<AudioArtistContent> {
+    override fun getArtists(context: Context, contentMedium: Uri): java.util.ArrayList<AudioArtistContent> {
        var audioArtists = ArrayList<AudioArtistContent>()
         if (shouldPaginate){
             val artistNames = ArrayList<String>()
@@ -440,20 +437,24 @@ class MediaFacer: VideoGet, AudioGet, ImageGet {
                 "LOWER (" + Audio.Artists.ARTIST + ") ASC")!!
             var index = 0
             when {
-                cursor.moveToPosition(mediaPaginationStart) -> {
+                cursor.moveToFirst() -> {
                     do {
                         val artist = AudioArtistContent()
                         val artistName: String = cursor.getString(cursor.getColumnIndexOrThrow(Audio.Artists.ARTIST))
                         when {
                             !artistNames.contains(artistName) -> {
                                 artistNames.add(artistName)
-                                artist.artistName = artistName
-                                artist.albums = getArtistAlbums(context,contentMedium,artistName)
-                                audioArtists.add(artist)
+                                when {
+                                    (artistNames.size-1) >= mediaPaginationStart -> {
+                                        artist.artistName = artistName
+                                        artist.albums = getArtistAlbums(context,contentMedium,artistName)
+                                        audioArtists.add(artist)
 
-                                index++
-                                if (index == mediaPaginationLimit)
-                                    break
+                                        index++
+                                        if (index == mediaPaginationLimit)
+                                            break
+                                    }
+                                }
                             }
                         }
                     }while (cursor.moveToNext())
@@ -464,10 +465,9 @@ class MediaFacer: VideoGet, AudioGet, ImageGet {
         return audioArtists
     }
 
-    override fun getGenres(context: Context, contentMedium: Uri, ): java.util.ArrayList<AudioGenreContent> {
+    override fun getGenres(context: Context, contentMedium: Uri): java.util.ArrayList<AudioGenreContent> {
         var audioGenres = ArrayList<AudioGenreContent>()
         if(shouldPaginate){
-
             val genreNames = ArrayList<String>()
             val cursor = if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q){
                 context.contentResolver.query(contentMedium, audioProjections, audioSelection, null,
@@ -478,9 +478,8 @@ class MediaFacer: VideoGet, AudioGet, ImageGet {
             }
             var index = 0
             when {
-                cursor.moveToPosition(mediaPaginationStart) -> {
+                cursor.moveToFirst() -> {
                     do {
-                        val audioGenre = AudioGenreContent()
                         val id: Int = cursor.getInt(cursor.getColumnIndexOrThrow(Audio.Media._ID))
                         var genreVolume = ""
                         if (contentMedium == externalAudioContent) {
@@ -504,16 +503,23 @@ class MediaFacer: VideoGet, AudioGet, ImageGet {
                             }
                         }
 
-                        if(!genreNames.contains(genre)){
-                            genreNames.add(genre)
-                            audioGenre.genreName = genre
-                            audioGenre.genreId = genreId
-                            audioGenre.audios = getGenreAudios(context,contentMedium,genreVolume,genreId,genre)
-                            audioGenres.add(audioGenre)
+                        when {
+                            !genreNames.contains(genre) -> {
+                                genreNames.add(genre)
+                                when {
+                                    genreNames.size-1 >= mediaPaginationStart -> {
+                                        val audioGenre = AudioGenreContent()
+                                        audioGenre.genreName = genre
+                                        audioGenre.genreId = genreId
+                                        audioGenre.audios = getGenreAudios(context,contentMedium,genreVolume,genreId,genre)
+                                        audioGenres.add(audioGenre)
 
-                            index++
-                            if (index == mediaPaginationLimit)
-                                break
+                                        index++
+                                        if (index == mediaPaginationLimit)
+                                            break
+                                    }
+                                }
+                            }
                         }
                     }while (cursor.moveToNext())
                 }
