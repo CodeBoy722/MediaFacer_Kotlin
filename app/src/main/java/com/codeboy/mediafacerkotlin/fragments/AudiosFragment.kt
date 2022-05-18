@@ -95,11 +95,11 @@ class AudiosFragment : Fragment() {
         model.audioBuckets.observe(viewLifecycleOwner) {
             audiosBucketAdapter.submitList(it)
             paginationStart = it.size //+ 1
-            Toast.makeText(
+            /*Toast.makeText(
                 requireActivity(),
                 "audio buckets " + it.size.toString(),
                 Toast.LENGTH_LONG
-            ).show()
+            ).show()*/
             audiosBucketAdapter.notifyDataSetChanged()
         }
 

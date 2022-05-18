@@ -5,21 +5,25 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.GridLayoutManager
+import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.codeboy.mediafacerkotlin.R
 import com.codeboy.mediafacerkotlin.databinding.FragmentImagesBinding
 import com.codeboy.mediafacerkotlin.utils.EndlessScrollListener
 import com.codeboy.mediafacerkotlin.utils.Utils.calculateNoOfColumns
+import com.codeboy.mediafacerkotlin.viewAdapters.ImageFolderAdapter
 import com.codeboy.mediafacerkotlin.viewAdapters.ImageViewAdapter
+import com.codeboy.mediafacerkotlin.viewModels.ImageFolderViewModel
 import com.codeboy.mediafacerkotlin.viewModels.ImageViewModel
 
 class ImagesFragment : Fragment() {
 
     private lateinit var bindings: FragmentImagesBinding
     private var paginationStart = 0
-    private var paginationLimit = 150
+    private var paginationLimit = 10
     private var shouldPaginate = true
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
@@ -30,7 +34,8 @@ class ImagesFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
         bindings = FragmentImagesBinding.bind(view)
         bindings.lifecycleOwner = viewLifecycleOwner
-        initImages()
+        //initImages()
+        initImageFolders()
     }
 
     @SuppressLint("NotifyDataSetChanged")
@@ -69,6 +74,40 @@ class ImagesFragment : Fragment() {
                 model.loadNewItems(requireActivity(),paginationStart,paginationLimit,shouldPaginate)
             }
         })
+    }
+
+    @SuppressLint("NotifyDataSetChanged")
+    private fun initImageFolders(){
+        bindings.imagesList.hasFixedSize()
+        bindings.imagesList.setHasFixedSize(true)
+        bindings.imagesList.setItemViewCacheSize(20)
+        val layoutManager = LinearLayoutManager(requireActivity(),LinearLayoutManager.VERTICAL,false)
+        bindings.imagesList.layoutManager = layoutManager
+        bindings.imagesList.itemAnimator = null
+
+        val adapter = ImageFolderAdapter()
+        bindings.imagesList.adapter = adapter
+
+        val model = ImageFolderViewModel()
+        model.imageFolders.observe(viewLifecycleOwner) {
+            adapter.submitList(it)
+            paginationStart = it.size //+ 1
+            Toast.makeText(
+                requireActivity(),
+                "Image Folders " + it.size.toString(),
+                Toast.LENGTH_LONG
+            ).show()
+            adapter.notifyDataSetChanged()
+        }
+
+        model.loadNewItems(requireActivity(),paginationStart,paginationLimit,shouldPaginate)
+
+        bindings.imagesList.addOnScrollListener(object: EndlessScrollListener(layoutManager){
+            override fun onLoadMore(page: Int, totalItemsCount: Int, view: RecyclerView?) {
+                model.loadNewItems(requireActivity(),paginationStart,paginationLimit,shouldPaginate)
+            }
+        })
+
     }
 
     /*private fun loadNewItems(){

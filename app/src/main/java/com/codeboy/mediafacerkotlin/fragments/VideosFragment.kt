@@ -5,21 +5,25 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.GridLayoutManager
+import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.codeboy.mediafacerkotlin.R
 import com.codeboy.mediafacerkotlin.databinding.FragmentVideosBinding
 import com.codeboy.mediafacerkotlin.utils.EndlessScrollListener
 import com.codeboy.mediafacerkotlin.utils.Utils.calculateNoOfColumns
+import com.codeboy.mediafacerkotlin.viewAdapters.VideoFolderAdapter
 import com.codeboy.mediafacerkotlin.viewAdapters.VideoViewAdapter
+import com.codeboy.mediafacerkotlin.viewModels.VideoFolderViewModel
 import com.codeboy.mediafacerkotlin.viewModels.VideoViewModel
 
 class VideosFragment : Fragment() {
 
     private lateinit var bindings: FragmentVideosBinding
     private var paginationStart = 0
-    private var paginationLimit = 150
+    private var paginationLimit = 10
     private var shouldPaginate = true
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
@@ -30,7 +34,8 @@ class VideosFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
         bindings = FragmentVideosBinding.bind(view)
         bindings.lifecycleOwner = viewLifecycleOwner
-        initVideos()
+        //initVideos()
+        initVideoFolders()
     }
 
     @SuppressLint("NotifyDataSetChanged")
@@ -71,7 +76,38 @@ class VideosFragment : Fragment() {
         })
     }
 
+
+    @SuppressLint("NotifyDataSetChanged")
     private fun initVideoFolders(){
+        bindings.videosList.hasFixedSize()
+        bindings.videosList.setHasFixedSize(true)
+        bindings.videosList.setItemViewCacheSize(20)
+        val layoutManager = LinearLayoutManager(requireActivity(),LinearLayoutManager.VERTICAL,false)
+        bindings.videosList.layoutManager = layoutManager
+        bindings.videosList.itemAnimator = null
+
+        val adapter = VideoFolderAdapter()
+        bindings.videosList.adapter = adapter
+
+        val model = VideoFolderViewModel()
+        model.videoFolders.observe(viewLifecycleOwner) {
+            adapter.submitList(it)
+            paginationStart = it.size //+ 1
+            /*Toast.makeText(
+                requireActivity(),
+                "video folders " + it.size.toString(),
+                Toast.LENGTH_LONG
+            ).show()*/
+            adapter.notifyDataSetChanged()
+        }
+
+        model.loadNewItems(requireActivity(),paginationStart,paginationLimit,shouldPaginate)
+
+        bindings.videosList.addOnScrollListener(object: EndlessScrollListener(layoutManager){
+            override fun onLoadMore(page: Int, totalItemsCount: Int, view: RecyclerView?) {
+                model.loadNewItems(requireActivity(),paginationStart,paginationLimit,shouldPaginate)
+            }
+        })
 
     }
 
