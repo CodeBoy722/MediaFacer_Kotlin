@@ -9,19 +9,20 @@
         <entry key="..\:/Android_Projects/MediaFacer_Kotlin/app/src/main/res/drawable-v24/circle_green.xml" value="0.1695" />
         <entry key="..\:/Android_Projects/MediaFacer_Kotlin/app/src/main/res/layout/activity_main.xml" value="0.27291666666666664" />
         <entry key="..\:/Android_Projects/MediaFacer_Kotlin/app/src/main/res/layout/activity_splash_screen.xml" value="0.25" />
+        <entry key="..\:/Android_Projects/MediaFacer_Kotlin/app/src/main/res/layout/artist_item.xml" value="0.5" />
+        <entry key="..\:/Android_Projects/MediaFacer_Kotlin/app/src/main/res/layout/audio_album_item.xml" value="0.22402736212056434" />
+        <entry key="..\:/Android_Projects/MediaFacer_Kotlin/app/src/main/res/layout/audio_folder_item.xml" value="0.22393162393162394" />
         <entry key="..\:/Android_Projects/MediaFacer_Kotlin/app/src/main/res/layout/audio_item.xml" value="0.27291666666666664" />
         <entry key="..\:/Android_Projects/MediaFacer_Kotlin/app/src/main/res/layout/fragment_audios.xml" value="0.25885416666666666" />
         <entry key="..\:/Android_Projects/MediaFacer_Kotlin/app/src/main/res/layout/fragment_images.xml" value="0.25" />
         <entry key="..\:/Android_Projects/MediaFacer_Kotlin/app/src/main/res/layout/fragment_media_tools.xml" value="0.27291666666666664" />
         <entry key="..\:/Android_Projects/MediaFacer_Kotlin/app/src/main/res/layout/fragment_videos.xml" value="0.25" />
+        <entry key="..\:/Android_Projects/MediaFacer_Kotlin/app/src/main/res/layout/genre_item.xml" value="0.25" />
         <entry key="..\:/Android_Projects/MediaFacer_Kotlin/app/src/main/res/layout/image_item.xml" value="0.27291666666666664" />
         <entry key="..\:/Android_Projects/MediaFacer_Kotlin/app/src/main/res/layout/video_item.xml" value="0.25" />
         <entry key="..\:/Android_Projects/MediaFacer_Kotlin/app/src/main/res/menu/menu_bottom.xml" value="0.27291666666666664" />
-        <entry key="..\:/Users/mofor/StudioProjects/MediaFacer_Kotlin/app/src/main/res/drawable/video_folder_item.xml" value="0.216" />
         <entry key="..\:/Users/mofor/StudioProjects/MediaFacer_Kotlin/app/src/main/res/layout/audio_folder_item.xml" value="0.3378623188405797" />
         <entry key="..\:/Users/mofor/StudioProjects/MediaFacer_Kotlin/app/src/main/res/layout/fragment_audios.xml" value="0.25" />
-        <entry key="..\:/Users/mofor/StudioProjects/MediaFacer_Kotlin/app/src/main/res/layout/image_folder_item.xml" value="0.36666666666666664" />
-        <entry key="..\:/Users/mofor/StudioProjects/MediaFacer_Kotlin/app/src/main/res/layout/video_folder_item.xml" value="0.36666666666666664" />
         <entry key="..\:/Users/mofor/StudioProjects/MediaFacer_Kotlin/app/src/main/res/layout/video_item.xml" value="0.32065217391304346" />
       </map>
     </option>

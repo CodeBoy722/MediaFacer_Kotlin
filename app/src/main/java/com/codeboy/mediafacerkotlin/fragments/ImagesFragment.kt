@@ -92,11 +92,11 @@ class ImagesFragment : Fragment() {
         model.imageFolders.observe(viewLifecycleOwner) {
             adapter.submitList(it)
             paginationStart = it.size //+ 1
-            Toast.makeText(
+           /* Toast.makeText(
                 requireActivity(),
                 "Image Folders " + it.size.toString(),
                 Toast.LENGTH_LONG
-            ).show()
+            ).show()*/
             adapter.notifyDataSetChanged()
         }
 

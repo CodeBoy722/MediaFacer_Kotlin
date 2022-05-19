@@ -315,11 +315,12 @@ class MediaFacer: VideoGet, AudioGet, ImageGet {
                                         val albumName = cursor.getString(cursor.getColumnIndexOrThrow(Audio.Media.ALBUM))
                                         album.albumName = albumName
 
-                                        val albumArtist = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
+                                        val albumArtist = cursor.getString(cursor.getColumnIndexOrThrow(Audio.Media.ARTIST))
+                                       /* val albumArtist = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
                                             cursor.getString(cursor.getColumnIndexOrThrow(Audio.Media.ALBUM_ARTIST))
                                         } else {
-                                            cursor.getString(cursor.getColumnIndexOrThrow(Audio.Media.ALBUM))
-                                        }
+                                            cursor.getString(cursor.getColumnIndexOrThrow(Audio.Media.ARTIST))
+                                        }*/
                                         album.albumArtist = albumArtist
 
                                         val sArtworkUri = Uri.parse("content://media/external/audio/albumart")
