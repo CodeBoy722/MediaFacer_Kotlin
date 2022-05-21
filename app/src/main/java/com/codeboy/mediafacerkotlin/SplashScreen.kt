@@ -29,14 +29,17 @@ class SplashScreen : AppCompatActivity() {
         bindings = DataBindingUtil.setContentView(this,R.layout.activity_splash_screen)
         bindings.lifecycleOwner = this
 
-        if( hasPermissions(
+        when {
+            hasPermissions(
                 this,
                 Manifest.permission.WRITE_EXTERNAL_STORAGE,
                 Manifest.permission.READ_EXTERNAL_STORAGE,
                 Manifest.permission.WAKE_LOCK
-            ) || Build.VERSION.SDK_INT < Build.VERSION_CODES.M){
-            moveToMain()
-        }else requestStoragePermission()
+            ) || Build.VERSION.SDK_INT < Build.VERSION_CODES.M -> {
+                moveToMain()
+            }
+            else -> requestStoragePermission()
+        }
 
     }
 
@@ -54,14 +57,19 @@ class SplashScreen : AppCompatActivity() {
     private fun hasPermissions(context: Context?, vararg permissions: String): Boolean {
         val perm = permissions.size
         var numGranted = 0
-        if (context != null) {
-            for (permission in permissions) {
-                Log.d("SplashScreen", "Checking permission : $permission")
-                if (ActivityCompat.checkSelfPermission(context,permission) != PackageManager.PERMISSION_GRANTED) {
-                    Log.w("SplashScreen", "not granted : $permission")
-                } else {
-                    Log.d("SplashScreen", "granted : $permission")
-                    numGranted++
+        when {
+            context != null -> {
+                permissions.forEach { permission ->
+                    Log.d("SplashScreen", "Checking permission : $permission")
+                    when {
+                        ActivityCompat.checkSelfPermission(context,permission) != PackageManager.PERMISSION_GRANTED -> {
+                            Log.w("SplashScreen", "not granted : $permission")
+                        }
+                        else -> {
+                            Log.d("SplashScreen", "granted : $permission")
+                            numGranted++
+                        }
+                    }
                 }
             }
         }
@@ -71,19 +79,22 @@ class SplashScreen : AppCompatActivity() {
 
     override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<String?>, grantResults: IntArray) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults)
-        if (requestCode != requestStorage) {
-            Log.d("SplashScreen","Got unexpected permission result: $requestCode"
-            )
-            super.onRequestPermissionsResult(requestCode, permissions, grantResults)
-            return
-        }
-        if (grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED && grantResults[1] == PackageManager.PERMISSION_GRANTED && grantResults[2] == PackageManager.PERMISSION_GRANTED) {
-            Log.d("SplashScreen", "Storage permission granted")
-            granted = true
-            moveToMain()
-        } else {
-            Toast.makeText(this, "Storage permission not granted", Toast.LENGTH_LONG).show()
-            finish()
+        when {
+            requestCode != requestStorage -> {
+                Log.d("SplashScreen","Got unexpected permission result: $requestCode"
+                )
+                super.onRequestPermissionsResult(requestCode, permissions, grantResults)
+                return
+            }
+            grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED && grantResults[1] == PackageManager.PERMISSION_GRANTED && grantResults[2] == PackageManager.PERMISSION_GRANTED -> {
+                Log.d("SplashScreen", "Storage permission granted")
+                granted = true
+                moveToMain()
+            }
+            else -> {
+                Toast.makeText(this, "Storage permission not granted", Toast.LENGTH_LONG).show()
+                finish()
+            }
         }
     }
 

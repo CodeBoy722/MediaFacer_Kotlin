@@ -52,7 +52,6 @@ class MainActivity : AppCompatActivity() {
                     ).show()
                 }
         }
-
     }
 
     private fun setUpBottomMenu(){
