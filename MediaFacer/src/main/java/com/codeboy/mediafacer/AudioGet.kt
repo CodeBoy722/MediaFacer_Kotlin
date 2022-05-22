@@ -584,9 +584,14 @@ internal interface AudioGet {
   val audios = ArrayList<AudioContent>()
   when {
       genreId.trim().isEmpty() -> {
-       val cursor = context.contentResolver.query(contentMedium, audioProjections, audioSelection, null,
-        "LOWER (" + Audio.Media.TITLE + ") ASC")!! //"LOWER ("+Audio.Media.TITLE + ") ASC"
-       //try {
+       val cursor = if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q){
+        context.contentResolver.query(contentMedium, audioProjections, audioSelection, null,
+         "LOWER (" + Audio.Media.TITLE + ") ASC")!! //"LOWER ("+Audio.Media.TITLE + ") ASC"
+       }else{
+        context.contentResolver.query(contentMedium, audioProjectionsBelowQ, audioSelection, null,
+         "LOWER (" + Audio.Media.TITLE + ") ASC")!! //"LOWER ("+Audio.Media.TITLE + ") ASC"
+       }
+
        when {
         cursor.moveToFirst() -> {
          do {
@@ -631,8 +636,14 @@ internal interface AudioGet {
       }
       else -> {
        val genreAudiosUri = Audio.Genres.Members.getContentUri("external", genreId.toLong())
-       val cursor = context.contentResolver.query(genreAudiosUri, audioProjections, null, null,
-        "LOWER (" + Audio.Media.TITLE + ") ASC")!!
+
+       val cursor = if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q){
+        context.contentResolver.query(genreAudiosUri, audioProjections, null, null,
+         "LOWER (" + Audio.Media.TITLE + ") ASC")!!
+       }else{
+        context.contentResolver.query(genreAudiosUri, audioProjectionsBelowQ, null, null,
+         "LOWER (" + Audio.Media.TITLE + ") ASC")!!
+       }
 
        when {
         cursor.moveToFirst() -> {
