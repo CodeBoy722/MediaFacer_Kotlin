@@ -25,9 +25,9 @@
                 android:id="@+id/textView3"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="8dp"
+                android:layout_marginStart="16dp"
                 android:text="Videos"
-                android:textColor="@android:color/holo_blue_bright"
+                android:textColor="@color/Red_700"
                 android:textSize="16sp"
                 android:textStyle="bold"
                 app:layout_constraintBottom_toBottomOf="parent"
@@ -42,21 +42,45 @@
                 android:layout_marginEnd="8dp"
                 android:layout_marginBottom="8dp"
                 android:background="?attr/selectableItemBackground"
+                android:scaleType="fitXY"
                 android:src="@drawable/ic_options"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
-                app:tint="@android:color/holo_blue_bright" />
+                app:tint="@color/Red_700" />
          </androidx.constraintlayout.widget.ConstraintLayout>
 
          <androidx.recyclerview.widget.RecyclerView
              android:id="@+id/videos_list"
              android:layout_width="0dp"
              android:layout_height="0dp"
-             app:layout_constraintBottom_toBottomOf="parent"
+             app:layout_constraintBottom_toTopOf="@+id/loader"
              app:layout_constraintEnd_toEndOf="parent"
              app:layout_constraintStart_toStartOf="parent"
              app:layout_constraintTop_toBottomOf="@+id/constraintLayout3" />
+
+         <androidx.constraintlayout.widget.ConstraintLayout
+             android:id="@+id/loader"
+             android:layout_width="0dp"
+             android:layout_height="50dp"
+             app:layout_constraintBottom_toBottomOf="parent"
+             app:layout_constraintEnd_toEndOf="parent"
+             app:layout_constraintStart_toStartOf="parent"
+             app:layout_constraintTop_toBottomOf="@+id/videos_list">
+
+            <ProgressBar
+                android:id="@+id/progressBar"
+                style="?android:attr/progressBarStyle"
+                android:layout_width="45dp"
+                android:layout_height="45dp"
+                android:indeterminateOnly="true"
+                android:indeterminateTint="@color/Red_500"
+                android:progressTint="@color/Red_500"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+         </androidx.constraintlayout.widget.ConstraintLayout>
 
       </androidx.constraintlayout.widget.ConstraintLayout>
 

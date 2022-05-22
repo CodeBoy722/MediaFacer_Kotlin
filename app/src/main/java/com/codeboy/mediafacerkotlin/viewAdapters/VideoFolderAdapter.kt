@@ -2,13 +2,18 @@ package com.codeboy.mediafacerkotlin.viewAdapters
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
+import android.view.animation.Animation
+import android.view.animation.AnimationUtils
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.codeboy.mediafacer.models.VideoFolderContent
+import com.codeboy.mediafacerkotlin.R
 import com.codeboy.mediafacerkotlin.databinding.VideoFolderItemBinding
 
 class VideoFolderAdapter: ListAdapter<VideoFolderContent, VideoFolderAdapter.VideoFolderViewHolder>(VideoBucketDiffUtil()) {
+
+    var lastPosition = -1
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): VideoFolderViewHolder {
         val inflater = LayoutInflater.from(parent.context)
@@ -17,6 +22,11 @@ class VideoFolderAdapter: ListAdapter<VideoFolderContent, VideoFolderAdapter.Vid
     }
 
     override fun onBindViewHolder(holder: VideoFolderViewHolder, position: Int) {
+        if(holder.adapterPosition > lastPosition){
+            val anim: Animation = AnimationUtils.loadAnimation(holder.itemView.context, R.anim.recycler_item_anim)
+            holder.itemView.startAnimation(anim)
+            lastPosition = holder.adapterPosition
+        }
         holder.item = getItem(position)
         holder.bind()
     }

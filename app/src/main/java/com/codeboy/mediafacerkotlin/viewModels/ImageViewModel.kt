@@ -18,7 +18,7 @@ class ImageViewModel : ViewModel() {
     private var imagesList = ArrayList<ImageContent>()
 
      fun loadNewItems(context: Context, paginationStart: Int, paginationLimit: Int, shouldPaginate: Boolean){
-         CoroutineScope(Dispatchers.Main).async {
+         CoroutineScope(Dispatchers.IO).async {
              imagesList.addAll(
                  MediaFacer()
                      .withPagination(paginationStart, paginationLimit, shouldPaginate)

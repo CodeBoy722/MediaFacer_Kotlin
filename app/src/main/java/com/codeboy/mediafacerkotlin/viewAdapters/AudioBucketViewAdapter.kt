@@ -2,14 +2,18 @@ package com.codeboy.mediafacerkotlin.viewAdapters
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
+import android.view.animation.Animation
+import android.view.animation.AnimationUtils
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.codeboy.mediafacer.models.AudioBucketContent
+import com.codeboy.mediafacerkotlin.R
 import com.codeboy.mediafacerkotlin.databinding.AudioFolderItemBinding
 
-class AudioBucketViewAdapter: ListAdapter<AudioBucketContent, AudioBucketViewAdapter.AudioBucketViewHolder>(
-    AudioBucketViewAdapter.AudioBucketDiffUtil()) {
+class AudioBucketViewAdapter: ListAdapter<AudioBucketContent, AudioBucketViewAdapter.AudioBucketViewHolder>(AudioBucketDiffUtil()) {
+
+    var lastPosition = -1
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): AudioBucketViewHolder {
         val inflater = LayoutInflater.from(parent.context)
@@ -18,6 +22,11 @@ class AudioBucketViewAdapter: ListAdapter<AudioBucketContent, AudioBucketViewAda
     }
 
     override fun onBindViewHolder(holder: AudioBucketViewHolder, position: Int) {
+        if(holder.adapterPosition > lastPosition){
+            val anim: Animation = AnimationUtils.loadAnimation(holder.itemView.context, R.anim.recycler_item_anim)
+            holder.itemView.startAnimation(anim)
+            lastPosition = holder.adapterPosition
+        }
         holder.item = getItem(position)
         holder.bind()
     }

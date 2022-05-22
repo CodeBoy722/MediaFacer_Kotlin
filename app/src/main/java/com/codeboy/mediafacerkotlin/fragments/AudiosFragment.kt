@@ -6,6 +6,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
+import androidx.appcompat.widget.PopupMenu
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -21,7 +22,7 @@ class AudiosFragment : Fragment() {
 
     private lateinit var bindings: FragmentAudiosBinding
     private var paginationStart = 0
-    private var paginationLimit = 25
+    private var paginationLimit = 100
     private var shouldPaginate = true
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
@@ -32,22 +33,28 @@ class AudiosFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
         bindings = FragmentAudiosBinding.bind(view)
         bindings.lifecycleOwner = viewLifecycleOwner
-        //initAudios()
-        //initAudioBuckets()
-        //initAlbums()
-        //initArtists()
-        initGenres()
+
+        bindings.audioOptions.setOnClickListener(View.OnClickListener {
+            showMenu(it)
+        })
+
+        bindings.audiosList.hasFixedSize()
+        bindings.audiosList.setHasFixedSize(true)
+        bindings.audiosList.setItemViewCacheSize(20)
+
+        initAudios()
     }
 
     @SuppressLint("NotifyDataSetChanged")
     private fun initAudios(){
         // init and setup your recyclerview with a layout manager
-        bindings.audiosList.hasFixedSize()
-        bindings.audiosList.setHasFixedSize(true)
-        bindings.audiosList.setItemViewCacheSize(20)
         val layoutManager = LinearLayoutManager(requireActivity(), RecyclerView.VERTICAL, false)
         bindings.audiosList.layoutManager = layoutManager
-        bindings.audiosList.itemAnimator = null
+        //bindings.audiosList.itemAnimator = anim
+
+        paginationStart = 0
+        paginationLimit = 100
+        shouldPaginate = true
 
         //init your adapter and bind it to recyclerview
         val audiosAdapter = AudioViewAdapter()
@@ -60,36 +67,40 @@ class AudiosFragment : Fragment() {
             audiosAdapter.submitList(it)
             //notifyDataSetChanged on adapter after submitting list to avoid scroll lagging on recyclerview
             paginationStart = it.size //+ 1
-            Toast.makeText(
+            /*Toast.makeText(
                 requireActivity(),
                 "gotten new music data " + it.size.toString(),
                 Toast.LENGTH_LONG
-            ).show()
+            ).show()*/
             audiosAdapter.notifyDataSetChanged()
+            bindings.loader.visibility = View.GONE
         }
 
         //get paginated audio items using MediaFacer, remember to set paginationStart to size+1 of
         //of items gotten from MediaFacer to prepare for getting next page of items when user scroll
         //audiosList = ArrayList()
         model.loadNewItems(requireActivity(),paginationStart,paginationLimit,shouldPaginate)
+        bindings.loader.visibility = View.VISIBLE
 
         //adding EndlessScrollListener to our recyclerview to auto paginate items when user is
         //scrolling towards end of list
         bindings.audiosList.addOnScrollListener(object: EndlessScrollListener(layoutManager){
             override  fun onLoadMore(page: Int, totalItemsCount: Int, view: RecyclerView?) {
                 model.loadNewItems(requireActivity(),paginationStart,paginationLimit,shouldPaginate)
+                bindings.loader.visibility = View.VISIBLE
             }
         })
     }
 
     @SuppressLint("NotifyDataSetChanged")
     private fun initAudioBuckets(){
-        bindings.audiosList.hasFixedSize()
-        bindings.audiosList.setHasFixedSize(true)
-        bindings.audiosList.setItemViewCacheSize(20)
         val layoutManager = LinearLayoutManager(requireActivity(), RecyclerView.VERTICAL, false)
         bindings.audiosList.layoutManager = layoutManager
-        bindings.audiosList.itemAnimator = null
+        //bindings.audiosList.itemAnimator = null
+
+        paginationStart = 0
+        paginationLimit = 100
+        shouldPaginate = true
 
         val audiosBucketAdapter = AudioBucketViewAdapter()
         bindings.audiosList.adapter = audiosBucketAdapter
@@ -104,13 +115,16 @@ class AudiosFragment : Fragment() {
                 Toast.LENGTH_LONG
             ).show()*/
             audiosBucketAdapter.notifyDataSetChanged()
+            bindings.loader.visibility = View.GONE
         }
 
         model.loadNewItems(requireActivity(),paginationStart,paginationLimit,shouldPaginate)
+        bindings.loader.visibility = View.VISIBLE
 
         bindings.audiosList.addOnScrollListener(object: EndlessScrollListener(layoutManager){
             override  fun onLoadMore(page: Int, totalItemsCount: Int, view: RecyclerView?) {
                 model.loadNewItems(requireActivity(),paginationStart,paginationLimit,shouldPaginate)
+                bindings.loader.visibility = View.VISIBLE
             }
         })
 
@@ -118,12 +132,13 @@ class AudiosFragment : Fragment() {
 
     @SuppressLint("NotifyDataSetChanged")
     private fun initArtists(){
-        bindings.audiosList.hasFixedSize()
-        bindings.audiosList.setHasFixedSize(true)
-        bindings.audiosList.setItemViewCacheSize(20)
         val layoutManager = LinearLayoutManager(requireActivity(), RecyclerView.VERTICAL, false)
         bindings.audiosList.layoutManager = layoutManager
-        bindings.audiosList.itemAnimator = null
+        //bindings.audiosList.itemAnimator = null
+
+        paginationStart = 0
+        paginationLimit = 100
+        shouldPaginate = true
 
         val audiosBucketAdapter = ArtistAdapter()
         bindings.audiosList.adapter = audiosBucketAdapter
@@ -132,32 +147,36 @@ class AudiosFragment : Fragment() {
         model.audioArtists.observe(viewLifecycleOwner) {
             audiosBucketAdapter.submitList(it)
             paginationStart = it.size //+ 1
-            Toast.makeText(
+           /* Toast.makeText(
                 requireActivity(),
                 "artists " + it.size.toString(),
                 Toast.LENGTH_LONG
-            ).show()
+            ).show()*/
             audiosBucketAdapter.notifyDataSetChanged()
+            bindings.loader.visibility = View.GONE
         }
 
         model.loadNewItems(requireActivity(),paginationStart,paginationLimit,shouldPaginate)
+        bindings.loader.visibility = View.VISIBLE
 
         bindings.audiosList.addOnScrollListener(object: EndlessScrollListener(layoutManager){
             override  fun onLoadMore(page: Int, totalItemsCount: Int, view: RecyclerView?) {
                 model.loadNewItems(requireActivity(),paginationStart,paginationLimit,shouldPaginate)
+                bindings.loader.visibility = View.VISIBLE
             }
         })
     }
 
     @SuppressLint("NotifyDataSetChanged")
     private fun initAlbums(){
-        bindings.audiosList.hasFixedSize()
-        bindings.audiosList.setHasFixedSize(true)
-        bindings.audiosList.setItemViewCacheSize(20)
         val numOfColumns = Utils.calculateNoOfColumns(requireActivity(), 130f)
         val layoutManager = GridLayoutManager(requireActivity(),numOfColumns)
         bindings.audiosList.layoutManager = layoutManager
-        bindings.audiosList.itemAnimator = null
+        //bindings.audiosList.itemAnimator = null
+
+        paginationStart = 0
+        paginationLimit = 100
+        shouldPaginate = true
 
         val audiosAlbumAdapter = AudioAlbumAdapter()
         bindings.audiosList.adapter = audiosAlbumAdapter
@@ -172,26 +191,30 @@ class AudiosFragment : Fragment() {
                 Toast.LENGTH_LONG
             ).show()*/
             audiosAlbumAdapter.notifyDataSetChanged()
+            bindings.loader.visibility = View.GONE
         }
 
         model.loadNewItems(requireActivity(),paginationStart,paginationLimit,shouldPaginate)
+        bindings.loader.visibility = View.VISIBLE
 
         bindings.audiosList.addOnScrollListener(object: EndlessScrollListener(layoutManager){
             override  fun onLoadMore(page: Int, totalItemsCount: Int, view: RecyclerView?) {
                 model.loadNewItems(requireActivity(),paginationStart,paginationLimit,shouldPaginate)
+                bindings.loader.visibility = View.VISIBLE
             }
         })
     }
 
     @SuppressLint("NotifyDataSetChanged")
     private fun initGenres(){
-        bindings.audiosList.hasFixedSize()
-        bindings.audiosList.setHasFixedSize(true)
-        bindings.audiosList.setItemViewCacheSize(20)
         val numOfColumns = Utils.calculateNoOfColumns(requireActivity(), 130f)
         val layoutManager = GridLayoutManager(requireActivity(),numOfColumns)
         bindings.audiosList.layoutManager = layoutManager
-        bindings.audiosList.itemAnimator = null
+        //bindings.audiosList.itemAnimator = null
+
+        paginationStart = 0
+        paginationLimit = 100
+        shouldPaginate = true
 
         val audiosBucketAdapter = GenreAdapter()
         bindings.audiosList.adapter = audiosBucketAdapter
@@ -200,19 +223,22 @@ class AudiosFragment : Fragment() {
         model.audioGenres.observe(viewLifecycleOwner) {
             audiosBucketAdapter.submitList(it)
             paginationStart = it.size //+ 1
-            Toast.makeText(
+            /*Toast.makeText(
                 requireActivity(),
                 "genres " + it.size.toString(),
                 Toast.LENGTH_LONG
-            ).show()
+            ).show()*/
             audiosBucketAdapter.notifyDataSetChanged()
+            bindings.loader.visibility = View.GONE
         }
 
         model.loadNewItems(requireActivity(),paginationStart,paginationLimit,shouldPaginate)
+        bindings.loader.visibility = View.VISIBLE
 
         bindings.audiosList.addOnScrollListener(object: EndlessScrollListener(layoutManager){
             override  fun onLoadMore(page: Int, totalItemsCount: Int, view: RecyclerView?) {
                 model.loadNewItems(requireActivity(),paginationStart,paginationLimit,shouldPaginate)
+                bindings.loader.visibility = View.VISIBLE
             }
         })
     }
@@ -220,6 +246,51 @@ class AudiosFragment : Fragment() {
     @SuppressLint("NotifyDataSetChanged")
     private fun mediaSearch(){
 
+    }
+
+    private fun showMenu(view: View){
+        val popup = PopupMenu(requireActivity(), view)
+        try {
+            val fields = popup.javaClass.declaredFields
+            for (field in fields) {
+                if ("mPopup" == field.name) {
+                    field.isAccessible = true
+                    val menuPopupHelper = field[popup]
+                    val classPopupHelper = Class.forName(menuPopupHelper.javaClass.name)
+                    val setForceIcons = classPopupHelper.getMethod(
+                        "setForceShowIcon",
+                        Boolean::class.javaPrimitiveType
+                    )
+                    setForceIcons.invoke(menuPopupHelper, true)
+                    break
+                }
+            }
+        } catch (e: Exception) {
+            e.printStackTrace()
+        }
+        val inflater = popup.menuInflater
+        inflater.inflate(R.menu.audio_menu, popup.menu)
+        popup.setOnMenuItemClickListener { item ->
+            when (item.itemId) {
+                R.id.audio -> {
+                    initAudios()
+                }
+                R.id.buckets -> {
+                    initAudioBuckets()
+                }
+                R.id.albums -> {
+                    initAlbums()
+                }
+                R.id.artists -> {
+                    initArtists()
+                }
+                R.id.genres -> {
+                    initGenres()
+                }
+            }
+            false
+        }
+        popup.show()
     }
 
 }

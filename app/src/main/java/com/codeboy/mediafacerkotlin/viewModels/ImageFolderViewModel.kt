@@ -17,7 +17,7 @@ class ImageFolderViewModel: ViewModel() {
     private var imageFoldersList = ArrayList<ImageFolderContent>()
 
     fun loadNewItems(context: Context, paginationStart: Int, paginationLimit: Int, shouldPaginate: Boolean){
-        CoroutineScope(Dispatchers.Main).async {
+        CoroutineScope(Dispatchers.IO).async {
             imageFoldersList.addAll(
                 MediaFacer()
                     .withPagination(paginationStart, paginationLimit, shouldPaginate)

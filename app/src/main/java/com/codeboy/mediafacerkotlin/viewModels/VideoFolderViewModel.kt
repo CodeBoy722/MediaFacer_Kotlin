@@ -17,7 +17,7 @@ class VideoFolderViewModel: ViewModel() {
     private var videoFoldersList = ArrayList<VideoFolderContent>()
 
     fun loadNewItems(context: Context, paginationStart: Int, paginationLimit: Int, shouldPaginate: Boolean){
-        CoroutineScope(Dispatchers.Main).async {
+        CoroutineScope(Dispatchers.IO).async {
             videoFoldersList.addAll(
                 MediaFacer()
                     .withPagination(paginationStart, paginationLimit, shouldPaginate)

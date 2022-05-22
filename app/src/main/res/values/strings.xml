@@ -8,4 +8,13 @@
     <string name="media_tools">Media Tools</string>
     <string name="artist">artist</string>
     <string name="title">title</string>
+    <string name="all_audios">All Audios</string>
+    <string name="buckets">Buckets</string>
+    <string name="albums">Albums</string>
+    <string name="artists">Artists</string>
+    <string name="genres">Genres</string>
+    <string name="all_images">All Images</string>
+    <string name="folders">Folders</string>
+    <string name="all_videos">All Videos</string>
+    <string name="video_folders">Folders</string>
 </resources>

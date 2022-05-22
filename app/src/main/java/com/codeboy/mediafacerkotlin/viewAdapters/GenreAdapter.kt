@@ -2,13 +2,18 @@ package com.codeboy.mediafacerkotlin.viewAdapters
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
+import android.view.animation.Animation
+import android.view.animation.AnimationUtils
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.codeboy.mediafacer.models.AudioGenreContent
+import com.codeboy.mediafacerkotlin.R
 import com.codeboy.mediafacerkotlin.databinding.GenreItemBinding
 
 class GenreAdapter: ListAdapter<AudioGenreContent, GenreAdapter.AudioGenreViewHolder>(AudioGenreDiffUtil()) {
+
+    var lastPosition = -1
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): AudioGenreViewHolder {
         val inflater = LayoutInflater.from(parent.context)
@@ -17,6 +22,11 @@ class GenreAdapter: ListAdapter<AudioGenreContent, GenreAdapter.AudioGenreViewHo
     }
 
     override fun onBindViewHolder(holder: AudioGenreViewHolder, position: Int) {
+        if(holder.adapterPosition > lastPosition){
+            val anim: Animation = AnimationUtils.loadAnimation(holder.itemView.context, R.anim.recycler_item_anim)
+            holder.itemView.startAnimation(anim)
+            lastPosition = holder.adapterPosition
+        }
         holder.item = getItem(position)
         holder.bind()
     }

@@ -6,6 +6,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
+import androidx.appcompat.widget.PopupMenu
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -23,7 +24,7 @@ class ImagesFragment : Fragment() {
 
     private lateinit var bindings: FragmentImagesBinding
     private var paginationStart = 0
-    private var paginationLimit = 10
+    private var paginationLimit = 300
     private var shouldPaginate = true
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
@@ -34,20 +35,29 @@ class ImagesFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
         bindings = FragmentImagesBinding.bind(view)
         bindings.lifecycleOwner = viewLifecycleOwner
-        //initImages()
-        initImageFolders()
+
+        bindings.imageOptions.setOnClickListener(View.OnClickListener {
+            showMenu(it)
+        })
+
+        bindings.imagesList.hasFixedSize()
+        bindings.imagesList.setHasFixedSize(true)
+        bindings.imagesList.setItemViewCacheSize(20)
+
+        initImages()
     }
 
     @SuppressLint("NotifyDataSetChanged")
     private fun initImages(){
         // init and setup your recyclerview with a layout manager
-        bindings.imagesList.hasFixedSize()
-        bindings.imagesList.setHasFixedSize(true)
-        bindings.imagesList.setItemViewCacheSize(20)
         val numOfColumns = calculateNoOfColumns(requireActivity(), 85f)
         val layoutManager = GridLayoutManager(requireActivity(),numOfColumns)
         bindings.imagesList.layoutManager = layoutManager
-        bindings.imagesList.itemAnimator = null
+        //bindings.imagesList.itemAnimator = null
+
+        paginationStart = 0
+        paginationLimit = 300
+        shouldPaginate = true
 
         //init your adapter and bind it to recyclerview
         val adapter = ImageViewAdapter()
@@ -61,29 +71,33 @@ class ImagesFragment : Fragment() {
             //notifyDataSetChanged on adapter after submitting list to avoid scroll lagging on recyclerview
             paginationStart = it.size //+ 1
             adapter.notifyDataSetChanged()
+            bindings.loader.visibility = View.GONE
         }
 
         //get paginated audio items using MediaFacer, remember to set paginationStart to size+1 of
         //of items gotten from MediaFacer to prepare for getting next page of items when user scroll
         model.loadNewItems(requireActivity(),paginationStart,paginationLimit,shouldPaginate)
+        bindings.loader.visibility = View.VISIBLE
 
         //adding EndlessScrollListener to our recyclerview to auto paginate items when user is
         //scrolling towards end of list
         bindings.imagesList.addOnScrollListener(object: EndlessScrollListener(layoutManager){
             override fun onLoadMore(page: Int, totalItemsCount: Int, view: RecyclerView?) {
                 model.loadNewItems(requireActivity(),paginationStart,paginationLimit,shouldPaginate)
+                bindings.loader.visibility = View.VISIBLE
             }
         })
     }
 
     @SuppressLint("NotifyDataSetChanged")
     private fun initImageFolders(){
-        bindings.imagesList.hasFixedSize()
-        bindings.imagesList.setHasFixedSize(true)
-        bindings.imagesList.setItemViewCacheSize(20)
         val layoutManager = LinearLayoutManager(requireActivity(),LinearLayoutManager.VERTICAL,false)
         bindings.imagesList.layoutManager = layoutManager
-        bindings.imagesList.itemAnimator = null
+        //bindings.imagesList.itemAnimator = null
+
+        paginationStart = 0
+        paginationLimit = 300
+        shouldPaginate = true
 
         val adapter = ImageFolderAdapter()
         bindings.imagesList.adapter = adapter
@@ -98,16 +112,55 @@ class ImagesFragment : Fragment() {
                 Toast.LENGTH_LONG
             ).show()*/
             adapter.notifyDataSetChanged()
+            bindings.loader.visibility = View.GONE
         }
 
         model.loadNewItems(requireActivity(),paginationStart,paginationLimit,shouldPaginate)
+        bindings.loader.visibility = View.VISIBLE
 
         bindings.imagesList.addOnScrollListener(object: EndlessScrollListener(layoutManager){
             override fun onLoadMore(page: Int, totalItemsCount: Int, view: RecyclerView?) {
                 model.loadNewItems(requireActivity(),paginationStart,paginationLimit,shouldPaginate)
+                bindings.loader.visibility = View.VISIBLE
             }
         })
 
+    }
+
+    private fun showMenu(view: View){
+        val popup = PopupMenu(requireActivity(), view)
+        try {
+            val fields = popup.javaClass.declaredFields
+            for (field in fields) {
+                if ("mPopup" == field.name) {
+                    field.isAccessible = true
+                    val menuPopupHelper = field[popup]
+                    val classPopupHelper = Class.forName(menuPopupHelper.javaClass.name)
+                    val setForceIcons = classPopupHelper.getMethod(
+                        "setForceShowIcon",
+                        Boolean::class.javaPrimitiveType
+                    )
+                    setForceIcons.invoke(menuPopupHelper, true)
+                    break
+                }
+            }
+        } catch (e: Exception) {
+            e.printStackTrace()
+        }
+        val inflater = popup.menuInflater
+        inflater.inflate(R.menu.image_menu, popup.menu)
+        popup.setOnMenuItemClickListener { item ->
+            when (item.itemId) {
+                R.id.images -> {
+                    initImages()
+                }
+                R.id.image_folders -> {
+                    initImageFolders()
+                }
+            }
+            false
+        }
+        popup.show()
     }
 
     /*private fun loadNewItems(){

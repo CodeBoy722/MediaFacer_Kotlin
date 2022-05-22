@@ -6,6 +6,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
+import androidx.appcompat.widget.PopupMenu
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -23,7 +24,7 @@ class VideosFragment : Fragment() {
 
     private lateinit var bindings: FragmentVideosBinding
     private var paginationStart = 0
-    private var paginationLimit = 10
+    private var paginationLimit = 50
     private var shouldPaginate = true
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
@@ -34,20 +35,29 @@ class VideosFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
         bindings = FragmentVideosBinding.bind(view)
         bindings.lifecycleOwner = viewLifecycleOwner
-        //initVideos()
-        initVideoFolders()
+
+        bindings.videoOptions.setOnClickListener(View.OnClickListener {
+            showMenu(it)
+        })
+
+        bindings.videosList.hasFixedSize()
+        bindings.videosList.setHasFixedSize(true)
+        bindings.videosList.setItemViewCacheSize(20)
+
+        initVideos()
     }
 
     @SuppressLint("NotifyDataSetChanged")
     private fun initVideos(){
         // init and setup your recyclerview with a layout manager
-        bindings.videosList.hasFixedSize()
-        bindings.videosList.setHasFixedSize(true)
-        bindings.videosList.setItemViewCacheSize(20)
         val numOfColumns = calculateNoOfColumns(requireActivity(), 115f)
         val layoutManager = GridLayoutManager(requireActivity(),numOfColumns)
         bindings.videosList.layoutManager = layoutManager
-        bindings.videosList.itemAnimator = null
+        //bindings.videosList.itemAnimator = null
+
+        paginationStart = 0
+        paginationLimit = 50
+        shouldPaginate = true
 
         //init your adapter and bind it to recyclerview
         val adapter = VideoViewAdapter()
@@ -61,30 +71,33 @@ class VideosFragment : Fragment() {
             //notifyDataSetChanged on adapter after submitting list to avoid scroll lagging on recyclerview
             paginationStart = it.size //+ 1
             adapter.notifyDataSetChanged()
+            bindings.loader.visibility = View.GONE
         }
 
         //get paginated audio items using MediaFacer, remember to set paginationStart to size+1 of
         //of items gotten from MediaFacer to prepare for getting next page of items when user scroll
         model.loadNewItems(requireActivity(),paginationStart,paginationLimit,shouldPaginate)
+        bindings.loader.visibility = View.VISIBLE
 
         //adding EndlessScrollListener to our recyclerview to auto paginate items when user is
         //scrolling towards end of list
         bindings.videosList.addOnScrollListener(object: EndlessScrollListener(layoutManager){
             override fun onLoadMore(page: Int, totalItemsCount: Int, view: RecyclerView?) {
                 model.loadNewItems(requireActivity(),paginationStart,paginationLimit,shouldPaginate)
+                bindings.loader.visibility = View.VISIBLE
             }
         })
     }
 
-
     @SuppressLint("NotifyDataSetChanged")
     private fun initVideoFolders(){
-        bindings.videosList.hasFixedSize()
-        bindings.videosList.setHasFixedSize(true)
-        bindings.videosList.setItemViewCacheSize(20)
         val layoutManager = LinearLayoutManager(requireActivity(),LinearLayoutManager.VERTICAL,false)
         bindings.videosList.layoutManager = layoutManager
-        bindings.videosList.itemAnimator = null
+        //bindings.videosList.itemAnimator = null
+
+        paginationStart = 0
+        paginationLimit = 50
+        shouldPaginate = true
 
         val adapter = VideoFolderAdapter()
         bindings.videosList.adapter = adapter
@@ -99,16 +112,55 @@ class VideosFragment : Fragment() {
                 Toast.LENGTH_LONG
             ).show()*/
             adapter.notifyDataSetChanged()
+            bindings.loader.visibility = View.GONE
         }
 
         model.loadNewItems(requireActivity(),paginationStart,paginationLimit,shouldPaginate)
+        bindings.loader.visibility = View.VISIBLE
 
         bindings.videosList.addOnScrollListener(object: EndlessScrollListener(layoutManager){
             override fun onLoadMore(page: Int, totalItemsCount: Int, view: RecyclerView?) {
                 model.loadNewItems(requireActivity(),paginationStart,paginationLimit,shouldPaginate)
+                bindings.loader.visibility = View.VISIBLE
             }
         })
 
+    }
+
+    private fun showMenu(view: View){
+        val popup = PopupMenu(requireActivity(), view)
+        try {
+            val fields = popup.javaClass.declaredFields
+            for (field in fields) {
+                if ("mPopup" == field.name) {
+                    field.isAccessible = true
+                    val menuPopupHelper = field[popup]
+                    val classPopupHelper = Class.forName(menuPopupHelper.javaClass.name)
+                    val setForceIcons = classPopupHelper.getMethod(
+                        "setForceShowIcon",
+                        Boolean::class.javaPrimitiveType
+                    )
+                    setForceIcons.invoke(menuPopupHelper, true)
+                    break
+                }
+            }
+        } catch (e: Exception) {
+            e.printStackTrace()
+        }
+        val inflater = popup.menuInflater
+        inflater.inflate(R.menu.video_menu, popup.menu)
+        popup.setOnMenuItemClickListener { item ->
+            when (item.itemId) {
+                R.id.videos -> {
+                    initVideos()
+                }
+                R.id.video_folders -> {
+                    initVideoFolders()
+                }
+            }
+            false
+        }
+        popup.show()
     }
 
 

@@ -1,4 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
 
+    <item android:title="@string/all_images"
+        android:id="@+id/images"
+        android:icon="@drawable/ic_image"/>
+
+    <item android:title="@string/folders"
+        android:id="@+id/image_folders"
+        android:icon="@drawable/ic_image"/>
+
 </menu>

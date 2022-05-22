@@ -2,6 +2,8 @@ package com.codeboy.mediafacerkotlin.viewAdapters
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
+import android.view.animation.Animation
+import android.view.animation.AnimationUtils
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
@@ -14,6 +16,8 @@ import com.codeboy.mediafacerkotlin.databinding.ArtistItemBinding
 
 class ArtistAdapter: ListAdapter<AudioArtistContent, ArtistAdapter.ArtistViewHolder>(ArtistDiffUtil()) {
 
+    var lastPosition = -1
+
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ArtistViewHolder {
         val inflater = LayoutInflater.from(parent.context)
         val bindingView = ArtistItemBinding.inflate(inflater,parent,false)
@@ -21,6 +25,11 @@ class ArtistAdapter: ListAdapter<AudioArtistContent, ArtistAdapter.ArtistViewHol
     }
 
     override fun onBindViewHolder(holder: ArtistViewHolder, position: Int) {
+        if(holder.adapterPosition > lastPosition){
+            val anim: Animation = AnimationUtils.loadAnimation(holder.itemView.context, R.anim.recycler_item_anim)
+            holder.itemView.startAnimation(anim)
+            lastPosition = holder.adapterPosition
+        }
         holder.item = getItem(position)
         holder.bind()
     }
