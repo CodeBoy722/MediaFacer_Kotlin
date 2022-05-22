@@ -23,7 +23,7 @@ class GenreAdapter: ListAdapter<AudioGenreContent, GenreAdapter.AudioGenreViewHo
 
     override fun onBindViewHolder(holder: AudioGenreViewHolder, position: Int) {
         if(holder.adapterPosition > lastPosition){
-            val anim: Animation = AnimationUtils.loadAnimation(holder.itemView.context, R.anim.recycler_item_anim)
+            val anim: Animation = AnimationUtils.loadAnimation(holder.itemView.context, R.anim.animation_fall_down)
             holder.itemView.startAnimation(anim)
             lastPosition = holder.adapterPosition
         }
