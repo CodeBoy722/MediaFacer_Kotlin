@@ -57,8 +57,8 @@ class MainActivity : AppCompatActivity() {
     private fun setUpBottomMenu(){
         val introFragmentList = ArrayList<Fragment>()
         introFragmentList.add(AudiosFragment())
-        introFragmentList.add(ImagesFragment())
         introFragmentList.add(VideosFragment())
+        introFragmentList.add(ImagesFragment())
         introFragmentList.add(MediaTools())
 
         val welcomeFragments = MainPagerFragmentAdapter(this,introFragmentList)
@@ -70,8 +70,8 @@ class MainActivity : AppCompatActivity() {
                 super.onPageSelected(position)
                 when (position) {
                     0 -> bindings.bottomMenu.selectedItemId = R.id.audios
-                    1 -> bindings.bottomMenu.selectedItemId = R.id.images
-                    2 -> bindings.bottomMenu.selectedItemId = R.id.videos
+                    1 -> bindings.bottomMenu.selectedItemId = R.id.videos
+                    2 -> bindings.bottomMenu.selectedItemId = R.id.images
                     3 -> bindings.bottomMenu.selectedItemId = R.id.tools
                 }
             }
@@ -80,8 +80,8 @@ class MainActivity : AppCompatActivity() {
         bindings.bottomMenu.setOnItemSelectedListener{
             when (it.itemId) {
                 R.id.audios -> bindings.bodyPager.setCurrentItem(0, true)
-                R.id.images -> bindings.bodyPager.setCurrentItem(1, true)
-                R.id.videos -> bindings.bodyPager.setCurrentItem(2, true)
+                R.id.videos -> bindings.bodyPager.setCurrentItem(1, true)
+                R.id.images -> bindings.bodyPager.setCurrentItem(2, true)
                 R.id.tools -> bindings.bodyPager.setCurrentItem(3, true)
             }
             true

@@ -4,6 +4,7 @@ import android.content.Context
 import android.database.Cursor
 import android.net.Uri
 import android.os.Build
+import android.provider.MediaStore
 import android.provider.MediaStore.Audio
 import android.provider.MediaStore.Images
 import android.provider.MediaStore.Video
@@ -592,6 +593,52 @@ class MediaFacer: VideoGet, AudioGet, ImageGet {
             cursor.close()
         }else foundAudios = super.searchAudios(context, contentMedium, selectionType, selectionValue)
         return foundAudios
+    }
+
+    override fun searchVideos(context: Context, contentMedium: Uri, selectionType: String, selectionValue: String): ArrayList<VideoContent> {
+        var videos: ArrayList<VideoContent> = ArrayList()
+        if(shouldPaginate){
+
+            val cursor = context.contentResolver.query(contentMedium, videoProjections,
+                "$selectionType like ? ",
+                arrayOf("%$selectionValue%"),
+                "LOWER (" + MediaStore.Audio.Media.DATE_MODIFIED + ") ASC")!!
+            var index = 0
+            when {
+                cursor.moveToPosition(mediaPaginationStart) -> {
+                    do {
+                        val video = VideoContent()
+
+                        video.filePath = cursor.getString(cursor.getColumnIndexOrThrow(Video.Media.DATA))
+
+                        video.name = cursor.getString(cursor.getColumnIndexOrThrow(Video.Media.DISPLAY_NAME))
+
+                        video.duration = cursor.getLong(cursor.getColumnIndexOrThrow(Video.Media.DURATION))
+
+                        video.size = cursor.getLong(cursor.getColumnIndexOrThrow(Video.Media.SIZE))
+
+                        video.dateModified = Date(TimeUnit.SECONDS.toMillis(cursor.getLong(cursor.getColumnIndexOrThrow(Video.Media.DATE_MODIFIED))))
+
+                        val id: Int = cursor.getInt(cursor.getColumnIndexOrThrow(Video.Media._ID))
+
+                        video.id = id
+                        val contentUri = Uri.withAppendedPath(contentMedium, id.toString())
+                        video.videoUri = contentUri.toString()
+
+                        video.artist = cursor.getString(cursor.getColumnIndexOrThrow(Video.Media.ARTIST))
+                        videos.add(video)
+
+                        index++
+                        if (index == mediaPaginationLimit)
+                            break
+                    } while (cursor.moveToNext())
+                }
+            }
+            cursor.close()
+        }else{
+            videos = super.searchVideos(context, contentMedium, selectionType, selectionValue)
+        }
+        return videos
     }
 
     fun deleteMedia(mediaId: Int){

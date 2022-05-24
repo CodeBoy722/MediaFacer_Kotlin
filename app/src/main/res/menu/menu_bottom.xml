@@ -5,13 +5,13 @@
         android:icon="@drawable/ic_audio"
         android:title="@string/audio" />
 
-    <item android:id="@+id/images"
-        android:icon="@drawable/ic_image"
-        android:title="@string/images" />
-
     <item android:id="@+id/videos"
         android:icon="@drawable/ic_video"
         android:title="@string/video" />
+
+    <item android:id="@+id/images"
+        android:icon="@drawable/ic_image"
+        android:title="@string/images" />
 
     <item android:id="@+id/tools"
         android:icon="@drawable/ic_tools"

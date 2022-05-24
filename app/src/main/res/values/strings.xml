@@ -1,6 +1,11 @@
 <resources>
     <string name="app_name">MediaFacer Kotlin</string>
     <!-- TODO: Remove or change this placeholder text -->
+
+    <string name="admob_id" translatable="false">ca-app-pub-5037936622076338~3166798163</string>
+    <string name="banner" translatable="false">ca-app-pub-5037936622076338/1231147388</string>
+    <string name="interstitial" translatable="false">ca-app-pub-5037936622076338/5573717071</string>
+
     <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="audio">Audio</string>
     <string name="video">Video</string>

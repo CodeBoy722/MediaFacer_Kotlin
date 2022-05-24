@@ -2,6 +2,7 @@ package com.codeboy.mediafacer
 
 import android.content.Context
 import android.net.Uri
+import android.provider.MediaStore
 import android.provider.MediaStore.Video
 import com.codeboy.mediafacer.models.VideoContent
 import com.codeboy.mediafacer.models.VideoFolderContent
@@ -24,41 +25,42 @@ internal interface VideoGet {
    Video.Media.ARTIST
   )
 
+ val searchSelectionTypeBucketDisplayName: String
+  get() = Video.Media.BUCKET_DISPLAY_NAME
+
+ val searchSelectionTypeDisplayName: String
+  get() = Video.Media.DISPLAY_NAME
 
  fun getVideos(context: Context, contentMedium: Uri): ArrayList<VideoContent>{
   val allVideo: ArrayList<VideoContent> = ArrayList()
   val cursor = context.contentResolver.query(contentMedium, videoProjections, null, null,
    "LOWER (" + Video.Media.DATE_MODIFIED + ") DESC")!! //DESC ASC
-  //try {
   when {
-      cursor.moveToFirst() -> {
-       do {
-        val video = VideoContent()
+   cursor.moveToFirst() -> {
+    do {
+     val video = VideoContent()
 
-        video.filePath = cursor.getString(cursor.getColumnIndexOrThrow(Video.Media.DATA))
+     video.filePath = cursor.getString(cursor.getColumnIndexOrThrow(Video.Media.DATA))
 
-        video.name = cursor.getString(cursor.getColumnIndexOrThrow(Video.Media.DISPLAY_NAME))
+     video.name = cursor.getString(cursor.getColumnIndexOrThrow(Video.Media.DISPLAY_NAME))
 
-        video.duration = cursor.getLong(cursor.getColumnIndexOrThrow(Video.Media.DURATION))
+     video.duration = cursor.getLong(cursor.getColumnIndexOrThrow(Video.Media.DURATION))
 
-        video.size = cursor.getLong(cursor.getColumnIndexOrThrow(Video.Media.SIZE))
+     video.size = cursor.getLong(cursor.getColumnIndexOrThrow(Video.Media.SIZE))
 
-        video.dateModified = Date(TimeUnit.SECONDS.toMillis(cursor.getLong(cursor.getColumnIndexOrThrow(Video.Media.DATE_MODIFIED))))
+     video.dateModified = Date(TimeUnit.SECONDS.toMillis(cursor.getLong(cursor.getColumnIndexOrThrow(Video.Media.DATE_MODIFIED))))
 
-        val id: Int = cursor.getInt(cursor.getColumnIndexOrThrow(Video.Media._ID))
+     val id: Int = cursor.getInt(cursor.getColumnIndexOrThrow(Video.Media._ID))
 
-        video.id = id
-        val contentUri = Uri.withAppendedPath(contentMedium, id.toString())
-        video.videoUri = contentUri.toString()
+     video.id = id
+     val contentUri = Uri.withAppendedPath(contentMedium, id.toString())
+     video.videoUri = contentUri.toString()
 
-        video.artist = cursor.getString(cursor.getColumnIndexOrThrow(Video.Media.ARTIST))
-        allVideo.add(video)
-       } while (cursor.moveToNext())
-      }
+     video.artist = cursor.getString(cursor.getColumnIndexOrThrow(Video.Media.ARTIST))
+     allVideo.add(video)
+    } while (cursor.moveToNext())
+   }
   }
-  /*} catch (e: Exception) {
-   e.printStackTrace()
-  }*/
   cursor.close()
   return allVideo
  }
@@ -104,36 +106,32 @@ internal interface VideoGet {
    Video.Media.BUCKET_ID + " like ? ", arrayOf("%$bucketId%"),
    "LOWER (" + Video.Media.DATE_MODIFIED + ") DESC")!! //DESC
 
-  //try {
   when {
-      cursor.moveToFirst() -> {
-       do {
-        val video = VideoContent()
+   cursor.moveToFirst() -> {
+    do {
+     val video = VideoContent()
 
-        video.filePath = cursor.getString(cursor.getColumnIndexOrThrow(Video.Media.DATA))
+     video.filePath = cursor.getString(cursor.getColumnIndexOrThrow(Video.Media.DATA))
 
-        video.name = cursor.getString(cursor.getColumnIndexOrThrow(Video.Media.DISPLAY_NAME))
+     video.name = cursor.getString(cursor.getColumnIndexOrThrow(Video.Media.DISPLAY_NAME))
 
-        video.duration = cursor.getLong(cursor.getColumnIndexOrThrow(Video.Media.DURATION))
+     video.duration = cursor.getLong(cursor.getColumnIndexOrThrow(Video.Media.DURATION))
 
-        video.size = cursor.getLong(cursor.getColumnIndexOrThrow(Video.Media.SIZE))
+     video.size = cursor.getLong(cursor.getColumnIndexOrThrow(Video.Media.SIZE))
 
-        video.dateModified = Date(TimeUnit.SECONDS.toMillis(cursor.getLong(cursor.getColumnIndexOrThrow(Video.Media.DATE_MODIFIED))))
+     video.dateModified = Date(TimeUnit.SECONDS.toMillis(cursor.getLong(cursor.getColumnIndexOrThrow(Video.Media.DATE_MODIFIED))))
 
-        val id: Int = cursor.getInt(cursor.getColumnIndexOrThrow(Video.Media._ID))
+     val id: Int = cursor.getInt(cursor.getColumnIndexOrThrow(Video.Media._ID))
 
-        video.id = id
-        val contentUri = Uri.withAppendedPath(contentMedium, id.toString())
-        video.videoUri = contentUri.toString()
+     video.id = id
+     val contentUri = Uri.withAppendedPath(contentMedium, id.toString())
+     video.videoUri = contentUri.toString()
 
-        video.artist = cursor.getString(cursor.getColumnIndexOrThrow(Video.Media.ARTIST))
-        videos.add(video)
-       } while (cursor.moveToNext())
-      }
+     video.artist = cursor.getString(cursor.getColumnIndexOrThrow(Video.Media.ARTIST))
+     videos.add(video)
+    } while (cursor.moveToNext())
+   }
   }
-  /*} catch (e: Exception) {
-   e.printStackTrace()
-  }*/
   cursor.close()
   return videos
  }
@@ -197,6 +195,44 @@ internal interface VideoGet {
   }*/
   cursor.close()
   return absoluteVideoFolders
+ }
+
+ fun searchVideos(context: Context, contentMedium: Uri, selectionType: String, selectionValue: String): ArrayList<VideoContent>{
+  val videos: ArrayList<VideoContent> = ArrayList()
+  val cursor = context.contentResolver.query(contentMedium, videoProjections,
+   "$selectionType like ? ",
+   arrayOf("%$selectionValue%"),
+   "LOWER (" + MediaStore.Audio.Media.DATE_MODIFIED + ") ASC")!!
+
+  when {
+   cursor.moveToFirst() -> {
+    do {
+     val video = VideoContent()
+
+     video.filePath = cursor.getString(cursor.getColumnIndexOrThrow(Video.Media.DATA))
+
+     video.name = cursor.getString(cursor.getColumnIndexOrThrow(Video.Media.DISPLAY_NAME))
+
+     video.duration = cursor.getLong(cursor.getColumnIndexOrThrow(Video.Media.DURATION))
+
+     video.size = cursor.getLong(cursor.getColumnIndexOrThrow(Video.Media.SIZE))
+
+     video.dateModified = Date(TimeUnit.SECONDS.toMillis(cursor.getLong(cursor.getColumnIndexOrThrow(Video.Media.DATE_MODIFIED))))
+
+     val id: Int = cursor.getInt(cursor.getColumnIndexOrThrow(Video.Media._ID))
+
+     video.id = id
+     val contentUri = Uri.withAppendedPath(contentMedium, id.toString())
+     video.videoUri = contentUri.toString()
+
+     video.artist = cursor.getString(cursor.getColumnIndexOrThrow(Video.Media.ARTIST))
+     videos.add(video)
+    } while (cursor.moveToNext())
+   }
+  }
+
+  cursor.close()
+  return videos
  }
 
 }

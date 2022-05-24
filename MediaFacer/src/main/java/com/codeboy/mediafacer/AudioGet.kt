@@ -13,7 +13,6 @@ import java.io.File
 import java.util.*
 import java.util.concurrent.TimeUnit
 
-
 internal interface AudioGet {
 
  val audioProjections: Array<String>
@@ -81,7 +80,6 @@ internal interface AudioGet {
     "LOWER (" + Audio.Media.TITLE + ") ASC")!! //"LOWER ("+Audio.Media.TITLE + ") ASC"
   }
 
-  //try {
   when {
       cursor.moveToFirst() -> {
        do {
@@ -119,10 +117,6 @@ internal interface AudioGet {
        } while (cursor.moveToNext())
       }
   }
-
-  /* }catch (e: Exception){
-    e.printStackTrace()
-   }*/
   cursor.close()
   return allAudio
  }
@@ -751,6 +745,5 @@ internal interface AudioGet {
   }
   return genre
  }
-
 
 }
