@@ -30,6 +30,13 @@
     <color name="crimson_red">#990000</color>
     <color name="crimson_red_lite">#80990000</color>
 
+
+    <color name="baby_blue_eyes">#D5F3ff</color>
+    <color name="tufts_blue">#92E0ff</color>
+    <color name="facer_black">#000000ff</color>
+    <color name="bright_navy_blue">#7ADAff</color>
+    <color name="aero_navy_blue">#BDECff</color>
+
     <!--    Darkmode colors-->
     <color name="material_white_50">#FAFAFA</color>
     <color name="material_white_100">#F5F5F5</color>

@@ -27,10 +27,12 @@
                 android:layout_height="wrap_content"
                 android:layout_marginStart="16dp"
                 android:text="Videos"
-                android:textColor="@color/Red_700"
-                android:textSize="16sp"
+                android:textColor="@color/bright_navy_blue"
+                android:textSize="18sp"
                 android:textStyle="bold"
+                android:fontFamily="@font/poppinsbold"
                 app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toStartOf="@+id/video_search"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
 
@@ -47,6 +49,7 @@
                 android:paddingStart="16dp"
                 android:textCursorDrawable="@null"
                 android:textSize="12sp"
+                android:fontFamily="@font/poppinsbold"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toStartOf="@+id/video_options"
                 app:layout_constraintStart_toEndOf="@+id/textView3"
@@ -54,8 +57,8 @@
 
             <ImageButton
                 android:id="@+id/video_options"
-                android:layout_width="25dp"
-                android:layout_height="25dp"
+                android:layout_width="35dp"
+                android:layout_height="35dp"
                 android:layout_marginTop="8dp"
                 android:layout_marginEnd="16dp"
                 android:layout_marginBottom="8dp"
@@ -64,8 +67,9 @@
                 android:src="@drawable/ic_options"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toEndOf="@+id/video_search"
                 app:layout_constraintTop_toTopOf="parent"
-                app:tint="@color/Red_700" />
+                app:tint="@color/bright_navy_blue" />
          </androidx.constraintlayout.widget.ConstraintLayout>
 
          <androidx.recyclerview.widget.RecyclerView

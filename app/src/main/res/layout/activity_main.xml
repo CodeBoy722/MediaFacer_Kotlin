@@ -6,7 +6,8 @@
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        android:background="@color/white">
 
         <androidx.viewpager2.widget.ViewPager2
             android:id="@+id/body_pager"
@@ -21,12 +22,13 @@
 
         <com.google.android.material.bottomnavigation.BottomNavigationView
             android:id="@+id/bottom_menu"
+            style="@style/bottom_menu"
             android:layout_width="0dp"
             android:layout_height="60dp"
+            android:background="@color/bright_navy_blue"
             app:elevation="0dp"
-            style="@style/bottom_menu"
             app:itemIconTint="@color/colors_bottom_menu"
-            app:itemRippleColor="@color/light_Red_200"
+            app:itemRippleColor="@color/bright_navy_blue"
             app:itemTextColor="@color/colors_bottom_menu"
             app:labelVisibilityMode="labeled"
             app:layout_constraintBottom_toBottomOf="parent"
@@ -50,9 +52,10 @@
                 android:layout_height="wrap_content"
                 android:layout_marginStart="4dp"
                 android:text="MediaFacer"
-                android:textColor="@color/Red_500"
-                android:textSize="18dp"
+                android:textColor="@color/bright_navy_blue"
+                android:textSize="20sp"
                 android:textStyle="bold"
+                android:fontFamily="@font/poppinsbold"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintStart_toEndOf="@+id/imageView2"
                 app:layout_constraintTop_toTopOf="parent" />
@@ -61,8 +64,8 @@
                 android:id="@+id/imageView2"
                 android:layout_width="40dp"
                 android:layout_height="40dp"
-                android:layout_marginStart="8dp"
-                android:tint="@color/Red_500"
+                android:layout_marginStart="16dp"
+                android:tint="@color/bright_navy_blue"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
@@ -70,8 +73,8 @@
 
             <androidx.appcompat.widget.AppCompatImageButton
                 android:id="@+id/about_menu"
-                android:layout_width="25dp"
-                android:layout_height="25dp"
+                android:layout_width="35dp"
+                android:layout_height="35dp"
                 android:layout_marginTop="8dp"
                 android:layout_marginEnd="16dp"
                 android:layout_marginBottom="8dp"
@@ -81,7 +84,7 @@
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
                 app:srcCompat="@drawable/ic_info"
-                app:tint="@color/Red_500" />
+                app:tint="@color/bright_navy_blue" />
         </androidx.constraintlayout.widget.ConstraintLayout>
 
     </androidx.constraintlayout.widget.ConstraintLayout>
