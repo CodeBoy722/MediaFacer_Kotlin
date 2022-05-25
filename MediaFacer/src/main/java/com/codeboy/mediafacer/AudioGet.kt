@@ -6,8 +6,8 @@ import android.database.Cursor
 import android.net.Uri
 import android.os.Build
 import android.provider.MediaStore.Audio
-import com.codeboy.mediafacer.MediaFacer.Companion.externalAudioContent
-import com.codeboy.mediafacer.MediaFacer.Companion.internalAudioContent
+import com.codeboy.mediafacer.MediaFacer.externalAudioContent
+import com.codeboy.mediafacer.MediaFacer.internalAudioContent
 import com.codeboy.mediafacer.models.*
 import java.io.File
 import java.util.*
@@ -53,13 +53,13 @@ internal interface AudioGet {
   get() = arrayOf(Audio.Media.ARTIST,
    Audio.Artists.ARTIST)
 
- val searchSelectionTypeAlbum: String
+ val audioSearchSelectionTypeAlbum: String
   get() = Audio.Media.ALBUM
 
- val searchSelectionTypeArtist: String
+ val audioSearchSelectionTypeArtist: String
   get() = Audio.Media.ARTIST
 
- val searchSelectionTypeTitle: String
+ val audioSearchSelectionTypeTitle: String
   get() = Audio.Media.TITLE
 
  val audioSelection: String

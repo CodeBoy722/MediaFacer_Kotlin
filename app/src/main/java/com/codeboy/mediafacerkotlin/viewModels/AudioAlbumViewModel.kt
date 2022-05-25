@@ -18,7 +18,7 @@ class AudioAlbumViewModel {
     fun loadNewItems(context: Context, paginationStart: Int, paginationLimit: Int, shouldPaginate: Boolean){
         CoroutineScope(Dispatchers.IO).async {
             audioAlbumList.addAll(
-                MediaFacer()
+                MediaFacer
                     .withPagination(paginationStart, paginationLimit, shouldPaginate)
                     .getAlbums(context, MediaFacer.externalAudioContent)
             )

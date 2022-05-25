@@ -2,15 +2,18 @@ package com.codeboy.mediafacerkotlin.fragments
 
 import android.annotation.SuppressLint
 import android.os.Bundle
+import android.text.Editable
+import android.text.TextUtils
+import android.text.TextWatcher
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Toast
 import androidx.appcompat.widget.PopupMenu
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.codeboy.mediafacer.MediaFacer
 import com.codeboy.mediafacerkotlin.R
 import com.codeboy.mediafacerkotlin.databinding.FragmentVideosBinding
 import com.codeboy.mediafacerkotlin.utils.EndlessScrollListener
@@ -18,6 +21,7 @@ import com.codeboy.mediafacerkotlin.utils.Utils.calculateNoOfColumns
 import com.codeboy.mediafacerkotlin.viewAdapters.VideoFolderAdapter
 import com.codeboy.mediafacerkotlin.viewAdapters.VideoViewAdapter
 import com.codeboy.mediafacerkotlin.viewModels.VideoFolderViewModel
+import com.codeboy.mediafacerkotlin.viewModels.VideoSearchViewModel
 import com.codeboy.mediafacerkotlin.viewModels.VideoViewModel
 
 class VideosFragment : Fragment() {
@@ -44,13 +48,14 @@ class VideosFragment : Fragment() {
         bindings.videosList.setHasFixedSize(true)
         bindings.videosList.setItemViewCacheSize(20)
 
+        setupVideoSearch()
         initVideos()
     }
 
     @SuppressLint("NotifyDataSetChanged")
     private fun initVideos(){
         // init and setup your recyclerview with a layout manager
-        val numOfColumns = calculateNoOfColumns(requireActivity(), 115f)
+        val numOfColumns = calculateNoOfColumns(requireActivity(), 105f)
         val layoutManager = GridLayoutManager(requireActivity(),numOfColumns)
         bindings.videosList.layoutManager = layoutManager
         //bindings.videosList.itemAnimator = null
@@ -127,6 +132,52 @@ class VideosFragment : Fragment() {
 
     }
 
+    @SuppressLint("NotifyDataSetChanged")
+    private fun setupVideoSearch(){
+        val numOfColumns = calculateNoOfColumns(requireActivity(), 105f)
+        val layoutManager = GridLayoutManager(requireActivity(),numOfColumns)
+        val adapter = VideoViewAdapter()
+        var searchHolder = ""
+
+        val videoSearch = VideoSearchViewModel()
+        videoSearch.videos.observe(viewLifecycleOwner){
+            adapter.submitList(it)
+            paginationStart = it.size //+ 1
+            adapter.notifyDataSetChanged()
+            bindings.loader.visibility = View.GONE
+        }
+
+        bindings.videosList.addOnScrollListener(object: EndlessScrollListener(layoutManager){
+            override fun onLoadMore(page: Int, totalItemsCount: Int, view: RecyclerView?) {
+                videoSearch.loadNewItems(requireActivity(),paginationStart,paginationLimit,shouldPaginate,
+                MediaFacer.videoSearchSelectionTypeDisplayName,searchHolder)
+                bindings.loader.visibility = View.VISIBLE
+            }
+        })
+
+        bindings.videoSearch.addTextChangedListener(object: TextWatcher{
+            override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {}
+            override fun onTextChanged(newText: CharSequence?, start: Int, before: Int, count: Int) {
+                bindings.videosList.layoutManager = layoutManager
+                bindings.videosList.adapter = adapter
+
+                // on every new search, clear the list in the view model and reset the pagination values to default
+                videoSearch.videosList.clear()
+                paginationStart = 0
+                paginationLimit = 50
+                shouldPaginate = true
+
+                val searchText = newText.toString().trim()
+                if(!TextUtils.isEmpty(searchText)){
+                    searchHolder = searchText
+                    videoSearch.loadNewItems(requireActivity(),paginationStart,paginationLimit,shouldPaginate,
+                        MediaFacer.videoSearchSelectionTypeDisplayName,searchText)
+                }
+            }
+            override fun afterTextChanged(p0: Editable?) {}
+        })
+    }
+
     private fun showMenu(view: View){
         val popup = PopupMenu(requireActivity(), view)
         try {
@@ -162,6 +213,8 @@ class VideosFragment : Fragment() {
         }
         popup.show()
     }
+
+
 
 
     /*private fun loadNewItems(){

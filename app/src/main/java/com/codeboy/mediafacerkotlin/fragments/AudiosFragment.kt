@@ -2,15 +2,21 @@ package com.codeboy.mediafacerkotlin.fragments
 
 import android.annotation.SuppressLint
 import android.os.Bundle
+import android.text.Editable
+import android.text.TextUtils
+import android.text.TextWatcher
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
 import androidx.appcompat.widget.PopupMenu
+import androidx.core.widget.addTextChangedListener
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.LifecycleOwner
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.codeboy.mediafacer.MediaFacer
 import com.codeboy.mediafacerkotlin.R
 import com.codeboy.mediafacerkotlin.databinding.FragmentAudiosBinding
 import com.codeboy.mediafacerkotlin.utils.EndlessScrollListener
@@ -34,14 +40,15 @@ class AudiosFragment : Fragment() {
         bindings = FragmentAudiosBinding.bind(view)
         bindings.lifecycleOwner = viewLifecycleOwner
 
-        bindings.audioOptions.setOnClickListener(View.OnClickListener {
+        bindings.audioOptions.setOnClickListener {
             showMenu(it)
-        })
+        }
 
         bindings.audiosList.hasFixedSize()
         bindings.audiosList.setHasFixedSize(true)
         bindings.audiosList.setItemViewCacheSize(20)
 
+        setupAudioSearch()
         initAudios()
     }
 
@@ -244,8 +251,49 @@ class AudiosFragment : Fragment() {
     }
 
     @SuppressLint("NotifyDataSetChanged")
-    private fun mediaSearch(){
 
+    private fun setupAudioSearch(){
+        val layoutManager = LinearLayoutManager(requireActivity(), RecyclerView.VERTICAL, false)
+        val audiosAdapter = AudioViewAdapter()
+        var searchHolder = ""
+
+        val audioSearch = AudioSearchViewModel()
+        audioSearch.audios.observe(viewLifecycleOwner){
+            audiosAdapter.submitList(it)
+            paginationStart = it.size //+ 1
+            audiosAdapter.notifyDataSetChanged()
+            bindings.loader.visibility = View.GONE
+        }
+
+        bindings.audiosList.addOnScrollListener(object: EndlessScrollListener(layoutManager){
+            override  fun onLoadMore(page: Int, totalItemsCount: Int, view: RecyclerView?) {
+                audioSearch.loadNewItems(requireActivity(),paginationStart,paginationLimit,shouldPaginate,
+                    MediaFacer.audioSearchSelectionTypeTitle,searchHolder)
+                bindings.loader.visibility = View.VISIBLE
+            }
+        })
+
+        bindings.audioSearch.addTextChangedListener(object:TextWatcher {
+            override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {}
+            override fun onTextChanged(newText: CharSequence?, start: Int, before: Int, count: Int) {
+                bindings.audiosList.layoutManager = layoutManager
+                bindings.audiosList.adapter = audiosAdapter
+
+                // on every new search, clear the list in the view model and reset the pagination values to default
+                audioSearch.audiosList.clear()
+                paginationStart = 0
+                paginationLimit = 50
+                shouldPaginate = true
+
+                val searchText = newText.toString().trim()
+                if(!TextUtils.isEmpty(searchText)){
+                    searchHolder = searchText
+                    audioSearch.loadNewItems(requireActivity(),paginationStart,paginationLimit,shouldPaginate,
+                        MediaFacer.audioSearchSelectionTypeTitle,searchText)
+                }
+            }
+            override fun afterTextChanged(p0: Editable?) {}
+        })
     }
 
     private fun showMenu(view: View){

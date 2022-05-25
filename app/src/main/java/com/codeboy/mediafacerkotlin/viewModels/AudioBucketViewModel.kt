@@ -19,7 +19,7 @@ class AudioBucketViewModel: ViewModel() {
     fun loadNewItems(context: Context, paginationStart: Int, paginationLimit: Int, shouldPaginate: Boolean){
         CoroutineScope(Dispatchers.IO).async {
             audiosList.addAll(
-                MediaFacer()
+                MediaFacer
                     .withPagination(paginationStart, paginationLimit, shouldPaginate)
                     .getBuckets(context, MediaFacer.externalAudioContent)
             )

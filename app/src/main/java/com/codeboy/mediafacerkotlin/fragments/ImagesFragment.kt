@@ -50,7 +50,7 @@ class ImagesFragment : Fragment() {
     @SuppressLint("NotifyDataSetChanged")
     private fun initImages(){
         // init and setup your recyclerview with a layout manager
-        val numOfColumns = calculateNoOfColumns(requireActivity(), 85f)
+        val numOfColumns = calculateNoOfColumns(requireActivity(), 82f)
         val layoutManager = GridLayoutManager(requireActivity(),numOfColumns)
         bindings.imagesList.layoutManager = layoutManager
         //bindings.imagesList.itemAnimator = null

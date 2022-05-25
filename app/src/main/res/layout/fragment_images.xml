@@ -26,9 +26,10 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="16dp"
+            android:fontFamily="@font/poppinsbold"
             android:text="Images"
-            android:textColor="@color/Red_700"
-            android:textSize="16sp"
+            android:textColor="@color/bright_navy_blue"
+            android:textSize="18sp"
             android:textStyle="bold"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="parent"
@@ -36,8 +37,8 @@
 
         <ImageButton
             android:id="@+id/image_options"
-            android:layout_width="25dp"
-            android:layout_height="25dp"
+            android:layout_width="35dp"
+            android:layout_height="35dp"
             android:layout_marginTop="8dp"
             android:layout_marginEnd="16dp"
             android:layout_marginBottom="8dp"
@@ -47,13 +48,15 @@
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            app:tint="@color/Red_700" />
+            app:tint="@color/bright_navy_blue" />
       </androidx.constraintlayout.widget.ConstraintLayout>
 
       <androidx.recyclerview.widget.RecyclerView
           android:id="@+id/images_list"
           android:layout_width="0dp"
           android:layout_height="0dp"
+          android:layout_marginStart="8dp"
+          android:layout_marginEnd="8dp"
           app:layout_constraintBottom_toTopOf="@+id/loader"
           app:layout_constraintEnd_toEndOf="parent"
           app:layout_constraintStart_toStartOf="parent"
@@ -74,8 +77,8 @@
             android:layout_width="45dp"
             android:layout_height="45dp"
             android:indeterminateOnly="true"
-            android:indeterminateTint="@color/Red_500"
-            android:progressTint="@color/Red_500"
+            android:indeterminateTint="@color/bright_navy_blue"
+            android:progressTint="@color/bright_navy_blue"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"

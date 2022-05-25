@@ -6,8 +6,7 @@
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="8dp"
-        android:background="@drawable/item_background">
+        android:layout_marginTop="8dp">
 
         <androidx.appcompat.widget.AppCompatImageView
             android:id="@+id/art"
@@ -32,7 +31,7 @@
             android:maxLines="2"
             android:text="@string/title"
             android:textSize="14sp"
-            android:fontFamily="@font/poppinsmedium"
+            android:fontFamily="@font/notosans_bold"
             app:layout_constraintBottom_toTopOf="@+id/artist"
             app:layout_constraintEnd_toStartOf="@+id/play"
             app:layout_constraintStart_toEndOf="@+id/art"
@@ -48,7 +47,7 @@
             android:maxLines="1"
             android:text="@string/artist"
             android:textSize="12sp"
-            android:fontFamily="@font/poppinsmedium"
+            android:fontFamily="@font/notosans_regular"
             app:layout_constraintBottom_toBottomOf="@+id/art"
             app:layout_constraintEnd_toStartOf="@+id/play"
             app:layout_constraintStart_toEndOf="@+id/art"

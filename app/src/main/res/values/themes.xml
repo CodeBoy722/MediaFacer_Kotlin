@@ -15,7 +15,11 @@
     </style>
 
     <style name="bottom_menu">
-        <item name="android:background">@color/bottom_background</item>
+        <item name="android:background">@color/bright_navy_blue</item>
+    </style>
+
+    <style name="main_background">
+        <item name="android:background">@color/white</item>
     </style>
 
 </resources>

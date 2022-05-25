@@ -4,30 +4,32 @@ import android.content.Context
 import android.os.Handler
 import android.os.Looper
 import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.ViewModel
 import com.codeboy.mediafacer.MediaFacer
-import com.codeboy.mediafacer.models.AudioGenreContent
+import com.codeboy.mediafacer.models.AudioContent
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.async
 
-class AudioGenreViewModel {
+class AudioSearchViewModel: ViewModel() {
 
-    var audioGenres: MutableLiveData<ArrayList<AudioGenreContent>> = MutableLiveData()
-    private var audioGenreList = ArrayList<AudioGenreContent>()
+    var audios: MutableLiveData<ArrayList<AudioContent>> = MutableLiveData()
+    var audiosList = ArrayList<AudioContent>()
 
-    fun loadNewItems(context: Context, paginationStart: Int, paginationLimit: Int, shouldPaginate: Boolean){
+    fun loadNewItems(context: Context, paginationStart: Int, paginationLimit: Int, shouldPaginate: Boolean,
+                     selectionType: String, selectionValue: String){
         CoroutineScope(Dispatchers.IO).async {
-            audioGenreList.addAll(
+            audiosList.addAll(
                 MediaFacer
                     .withPagination(paginationStart, paginationLimit, shouldPaginate)
-                    .getGenres(context, MediaFacer.externalAudioContent)
+                    .searchAudios(context, MediaFacer.externalAudioContent,selectionType,selectionValue)
             )
         }.invokeOnCompletion {
             Handler(Looper.getMainLooper())
                 .post {
-                    audioGenres.value = audioGenreList
+                    audios.value = audiosList
                 }
         }
     }
-    
+
 }

@@ -22,7 +22,7 @@ class AudioViewModel : ViewModel() {
          // the recommended dispatcher for performing UI-related events such as showing lists in a RecyclerView, updating view
         CoroutineScope(Dispatchers.IO).async {
             audiosList.addAll(
-                MediaFacer()
+                MediaFacer
                     .withPagination(paginationStart, paginationLimit, shouldPaginate)
                     .getAudios(context, MediaFacer.externalAudioContent)
             )

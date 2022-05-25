@@ -6,7 +6,7 @@ import android.os.Looper
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.codeboy.mediafacer.MediaFacer
-import com.codeboy.mediafacer.MediaFacer.Companion.externalImagesContent
+import com.codeboy.mediafacer.MediaFacer.externalImagesContent
 import com.codeboy.mediafacer.models.ImageContent
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -20,7 +20,7 @@ class ImageViewModel : ViewModel() {
      fun loadNewItems(context: Context, paginationStart: Int, paginationLimit: Int, shouldPaginate: Boolean){
          CoroutineScope(Dispatchers.IO).async {
              imagesList.addAll(
-                 MediaFacer()
+                 MediaFacer
                      .withPagination(paginationStart, paginationLimit, shouldPaginate)
                      .getImages(context, externalImagesContent)
              )

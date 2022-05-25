@@ -7,7 +7,7 @@
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="@color/white">
+        style="@style/main_background">
 
         <androidx.viewpager2.widget.ViewPager2
             android:id="@+id/body_pager"
@@ -25,10 +25,9 @@
             style="@style/bottom_menu"
             android:layout_width="0dp"
             android:layout_height="60dp"
-            android:background="@color/bright_navy_blue"
-            app:elevation="0dp"
+            app:elevation="3dp"
             app:itemIconTint="@color/colors_bottom_menu"
-            app:itemRippleColor="@color/bright_navy_blue"
+            app:itemRippleColor="@color/material_grey_400"
             app:itemTextColor="@color/colors_bottom_menu"
             app:labelVisibilityMode="labeled"
             app:layout_constraintBottom_toBottomOf="parent"

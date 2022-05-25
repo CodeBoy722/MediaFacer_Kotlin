@@ -6,30 +6,31 @@ import android.os.Looper
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.codeboy.mediafacer.MediaFacer
-import com.codeboy.mediafacer.MediaFacer.externalVideoContent
 import com.codeboy.mediafacer.models.VideoContent
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.async
 
-class VideoViewModel : ViewModel() {
+class VideoSearchViewModel : ViewModel() {
 
     var videos: MutableLiveData<ArrayList<VideoContent>> = MutableLiveData()
-    private var videosList = ArrayList<VideoContent>()
+    var videosList = ArrayList<VideoContent>()
 
-    fun loadNewItems(context: Context, paginationStart: Int, paginationLimit: Int, shouldPaginate: Boolean){
+    fun loadNewItems(context: Context, paginationStart: Int, paginationLimit: Int, shouldPaginate: Boolean,
+                     selectionType: String, selectionValue: String){
         CoroutineScope(Dispatchers.IO).async {
             videosList.addAll(
                 MediaFacer
                     .withPagination(paginationStart, paginationLimit, shouldPaginate)
-                    .getVideos(context, externalVideoContent)
+                    .searchVideos(context, MediaFacer.externalVideoContent,selectionType,selectionValue)
             )
         }.invokeOnCompletion {
             Handler(Looper.getMainLooper())
                 .post{
-                   videos.value = videosList
+                    videos.value = videosList
                 }
         }
     }
+
 
 }

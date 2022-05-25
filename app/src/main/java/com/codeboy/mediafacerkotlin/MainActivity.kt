@@ -10,9 +10,7 @@ import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import androidx.viewpager2.widget.ViewPager2
 import com.codeboy.mediafacer.MediaFacer
-import com.codeboy.mediafacer.MediaFacer.Companion.externalAudioContent
-import com.codeboy.mediafacer.MediaFacer.Companion.externalImagesContent
-import com.codeboy.mediafacer.MediaFacer.Companion.externalVideoContent
+import com.codeboy.mediafacer.MediaFacer.externalAudioContent
 import com.codeboy.mediafacer.models.*
 import com.codeboy.mediafacerkotlin.databinding.ActivityMainBinding
 import com.codeboy.mediafacerkotlin.fragments.AudiosFragment
@@ -40,7 +38,7 @@ class MainActivity : AppCompatActivity() {
     private fun testFacer(){
         var folders = ArrayList<AudioBucketContent>()
         CoroutineScope(Dispatchers.Main).async {
-            folders = MediaFacer().getBuckets(this@MainActivity, externalAudioContent)
+            folders = MediaFacer.getBuckets(this@MainActivity, externalAudioContent)
         }.invokeOnCompletion {
             Handler(Looper.getMainLooper())
                 .post{

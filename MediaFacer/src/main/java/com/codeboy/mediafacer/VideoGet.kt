@@ -25,10 +25,10 @@ internal interface VideoGet {
    Video.Media.ARTIST
   )
 
- val searchSelectionTypeBucketDisplayName: String
+ val videoSearchSelectionTypeBucketDisplayName: String
   get() = Video.Media.BUCKET_DISPLAY_NAME
 
- val searchSelectionTypeDisplayName: String
+ val videoSearchSelectionTypeDisplayName: String
   get() = Video.Media.DISPLAY_NAME
 
  fun getVideos(context: Context, contentMedium: Uri): ArrayList<VideoContent>{

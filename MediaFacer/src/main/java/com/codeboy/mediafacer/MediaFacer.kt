@@ -14,16 +14,16 @@ import java.util.*
 import java.util.concurrent.TimeUnit
 import kotlin.collections.ArrayList
 
-class MediaFacer: VideoGet, AudioGet, ImageGet {
+object MediaFacer: VideoGet, AudioGet, ImageGet {
 
-    companion object {
-        val externalAudioContent: Uri = Audio.Media.EXTERNAL_CONTENT_URI
-        val internalAudioContent: Uri = Audio.Media.INTERNAL_CONTENT_URI
-        val externalVideoContent: Uri = Video.Media.EXTERNAL_CONTENT_URI
-        val internalVideoContent: Uri = Video.Media.INTERNAL_CONTENT_URI
-        val externalImagesContent: Uri = Images.Media.EXTERNAL_CONTENT_URI
-        val internalImagesContent: Uri = Images.Media.INTERNAL_CONTENT_URI
-    }
+
+    val externalAudioContent: Uri = Audio.Media.EXTERNAL_CONTENT_URI
+    val internalAudioContent: Uri = Audio.Media.INTERNAL_CONTENT_URI
+    val externalVideoContent: Uri = Video.Media.EXTERNAL_CONTENT_URI
+    val internalVideoContent: Uri = Video.Media.INTERNAL_CONTENT_URI
+    val externalImagesContent: Uri = Images.Media.EXTERNAL_CONTENT_URI
+    val internalImagesContent: Uri = Images.Media.INTERNAL_CONTENT_URI
+
 
     private var mediaPaginationStart = 0
     private var mediaPaginationLimit = 0
@@ -242,6 +242,9 @@ class MediaFacer: VideoGet, AudioGet, ImageGet {
                 }
             }
             cursor.close()
+            mediaPaginationStart = 0
+            mediaPaginationLimit = 0
+            shouldPaginate = false
         }else videoFolders = super.getVideoFolders(context, contentMedium)
         return videoFolders
     }
@@ -287,6 +290,9 @@ class MediaFacer: VideoGet, AudioGet, ImageGet {
             }
 
             cursor.close()
+            mediaPaginationStart = 0
+            mediaPaginationLimit = 0
+            shouldPaginate = false
         }else imageFolders = super.getImageFolders(context, contentMedium)
         return imageFolders
     }
@@ -344,6 +350,9 @@ class MediaFacer: VideoGet, AudioGet, ImageGet {
                 }
             }
             cursor.close()
+            mediaPaginationStart = 0
+            mediaPaginationLimit = 0
+            shouldPaginate = false
         }else albums = super.getAlbums(context, contentMedium)
         return albums
     }
@@ -427,6 +436,9 @@ class MediaFacer: VideoGet, AudioGet, ImageGet {
                 }
             }
             cursor.close()
+            mediaPaginationStart = 0
+            mediaPaginationLimit = 0
+            shouldPaginate = false
         }else audioBuckets = super.getBuckets(context, contentMedium)
         return audioBuckets
     }
@@ -463,6 +475,9 @@ class MediaFacer: VideoGet, AudioGet, ImageGet {
                 }
             }
             cursor.close()
+            mediaPaginationStart = 0
+            mediaPaginationLimit = 0
+            shouldPaginate = false
         }else audioArtists = super.getArtists(context, contentMedium)
         return audioArtists
     }
@@ -528,6 +543,9 @@ class MediaFacer: VideoGet, AudioGet, ImageGet {
             }
 
             cursor.close()
+            mediaPaginationStart = 0
+            mediaPaginationLimit = 0
+            shouldPaginate = false
         }else audioGenres = super.getGenres(context, contentMedium)
         return audioGenres
     }
@@ -591,6 +609,9 @@ class MediaFacer: VideoGet, AudioGet, ImageGet {
             }
 
             cursor.close()
+            mediaPaginationStart = 0
+            mediaPaginationLimit = 0
+            shouldPaginate = false
         }else foundAudios = super.searchAudios(context, contentMedium, selectionType, selectionValue)
         return foundAudios
     }
@@ -635,6 +656,9 @@ class MediaFacer: VideoGet, AudioGet, ImageGet {
                 }
             }
             cursor.close()
+            mediaPaginationStart = 0
+            mediaPaginationLimit = 0
+            shouldPaginate = false
         }else{
             videos = super.searchVideos(context, contentMedium, selectionType, selectionValue)
         }

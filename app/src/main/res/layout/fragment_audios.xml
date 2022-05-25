@@ -62,7 +62,7 @@
                     android:layout_marginEnd="8dp"
                     android:layout_marginBottom="8dp"
                     android:background="@drawable/search_background"
-                    android:hint="search audio"
+                    android:hint="search music"
                     android:paddingStart="16dp"
                     android:textCursorDrawable="@null"
                     android:textSize="12sp"
