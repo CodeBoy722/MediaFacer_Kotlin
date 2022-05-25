@@ -8,7 +8,7 @@ import android.view.ViewGroup
 import com.codeboy.mediafacerkotlin.R
 import com.codeboy.mediafacerkotlin.databinding.FragmentMediaToolsBinding
 
-class MediaTools : Fragment() {
+class MediaTools() : Fragment() {
 
     lateinit var bindings: FragmentMediaToolsBinding
 

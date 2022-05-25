@@ -16,7 +16,6 @@ import kotlin.collections.ArrayList
 
 object MediaFacer: VideoGet, AudioGet, ImageGet {
 
-
     val externalAudioContent: Uri = Audio.Media.EXTERNAL_CONTENT_URI
     val internalAudioContent: Uri = Audio.Media.INTERNAL_CONTENT_URI
     val externalVideoContent: Uri = Video.Media.EXTERNAL_CONTENT_URI

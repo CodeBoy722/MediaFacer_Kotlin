@@ -24,7 +24,7 @@ import com.codeboy.mediafacerkotlin.viewModels.VideoFolderViewModel
 import com.codeboy.mediafacerkotlin.viewModels.VideoSearchViewModel
 import com.codeboy.mediafacerkotlin.viewModels.VideoViewModel
 
-class VideosFragment : Fragment() {
+class VideosFragment() : Fragment() {
 
     private lateinit var bindings: FragmentVideosBinding
     private var paginationStart = 0

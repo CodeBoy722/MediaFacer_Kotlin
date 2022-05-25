@@ -20,7 +20,7 @@ import com.codeboy.mediafacerkotlin.viewAdapters.ImageViewAdapter
 import com.codeboy.mediafacerkotlin.viewModels.ImageFolderViewModel
 import com.codeboy.mediafacerkotlin.viewModels.ImageViewModel
 
-class ImagesFragment : Fragment() {
+class ImagesFragment() : Fragment() {
 
     private lateinit var bindings: FragmentImagesBinding
     private var paginationStart = 0
