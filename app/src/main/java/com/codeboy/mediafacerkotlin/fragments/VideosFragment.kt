@@ -5,17 +5,24 @@ import android.os.Bundle
 import android.text.Editable
 import android.text.TextUtils
 import android.text.TextWatcher
+import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.animation.Animation
+import android.view.animation.AnimationUtils
 import androidx.appcompat.widget.PopupMenu
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import androidx.transition.Slide
 import com.codeboy.mediafacer.MediaFacer
+import com.codeboy.mediafacer.models.VideoContent
+import com.codeboy.mediafacerkotlin.MainActivity
 import com.codeboy.mediafacerkotlin.R
 import com.codeboy.mediafacerkotlin.databinding.FragmentVideosBinding
+import com.codeboy.mediafacerkotlin.listeners.VideoFolderActionListener
 import com.codeboy.mediafacerkotlin.utils.EndlessScrollListener
 import com.codeboy.mediafacerkotlin.utils.Utils.calculateNoOfColumns
 import com.codeboy.mediafacerkotlin.viewAdapters.VideoFolderAdapter
@@ -104,7 +111,11 @@ class VideosFragment() : Fragment() {
         paginationLimit = 50
         shouldPaginate = true
 
-        val adapter = VideoFolderAdapter()
+        val adapter = VideoFolderAdapter(object: VideoFolderActionListener{
+            override fun onVideoFolderClicked(mediaType: String, title: String, videos: ArrayList<VideoContent>) {
+                navigateToMediaDetails(mediaType,title,videos)
+            }
+        })
         bindings.videosList.adapter = adapter
 
         val model = VideoFolderViewModel()
@@ -178,6 +189,25 @@ class VideosFragment() : Fragment() {
         })
     }
 
+    private fun navigateToMediaDetails(mediaType: String, title: String, videos: ArrayList<VideoContent>){
+//hide the bottom navigation in main activity
+        (requireActivity() as MainActivity).hideBottomMenu()
+
+        val mediaDetail = VideoMediaDetail(mediaType,title,videos)
+        val slideOutFromTop = Slide(Gravity.TOP)
+        val slideInFromBottom = Slide(Gravity.BOTTOM)
+        mediaDetail.enterTransition = slideInFromBottom
+        mediaDetail.exitTransition = slideOutFromTop
+        val anim: Animation = AnimationUtils.loadAnimation(requireActivity(), R.anim.animation_fall_down)
+        parentFragmentManager
+            .beginTransaction()
+            .replace(R.id.activity_parent, mediaDetail, mediaDetail.javaClass.canonicalName)
+            .setReorderingAllowed(true)
+            .addToBackStack(null)
+            .commit()
+        mediaDetail.view?.startAnimation(anim)//animates the view of the fragment can be done alone or with transitions above
+    }
+
     private fun showMenu(view: View){
         val popup = PopupMenu(requireActivity(), view)
         try {
@@ -213,9 +243,6 @@ class VideosFragment() : Fragment() {
         }
         popup.show()
     }
-
-
-
 
     /*private fun loadNewItems(){
         Handler(Looper.getMainLooper())

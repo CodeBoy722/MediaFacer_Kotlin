@@ -3,10 +3,10 @@
 
     <item android:title="@string/all_images"
         android:id="@+id/images"
-        android:icon="@drawable/ic_image" />
+        android:icon="@drawable/ic_image_menu" />
 
     <item android:title="@string/folders"
         android:id="@+id/image_folders"
-        android:icon="@drawable/ic_image" />
+        android:icon="@drawable/ic_image_menu" />
 
 </menu>

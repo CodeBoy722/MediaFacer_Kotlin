@@ -8,6 +8,7 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.codeboy.mediafacer.models.AudioContent
+import com.codeboy.mediafacerkotlin.MainActivity
 import com.codeboy.mediafacerkotlin.R
 import com.codeboy.mediafacerkotlin.databinding.FragmentAudioMediaDetailsBinding
 import com.codeboy.mediafacerkotlin.viewAdapters.AudioViewAdapter
@@ -56,4 +57,9 @@ class AudioMediaDetails() : Fragment() {
         bindings.audioList.adapter = audiosAdapter
     }
 
+    override fun onDetach() {
+        super.onDetach()
+        //make bottom navigation visible again
+        (requireActivity() as MainActivity).showBottomMenu()
+    }
 }

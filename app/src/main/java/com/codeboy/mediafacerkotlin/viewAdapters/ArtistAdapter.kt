@@ -1,6 +1,7 @@
 package com.codeboy.mediafacerkotlin.viewAdapters
 
 import android.view.LayoutInflater
+import android.view.View
 import android.view.ViewGroup
 import android.view.animation.Animation
 import android.view.animation.AnimationUtils
@@ -11,10 +12,12 @@ import com.bumptech.glide.Glide
 import com.bumptech.glide.request.RequestOptions
 import com.codeboy.mediafacer.models.AudioAlbumContent
 import com.codeboy.mediafacer.models.AudioArtistContent
+import com.codeboy.mediafacer.models.AudioContent
 import com.codeboy.mediafacerkotlin.R
 import com.codeboy.mediafacerkotlin.databinding.ArtistItemBinding
+import com.codeboy.mediafacerkotlin.listeners.AudioMediaListener
 
-class ArtistAdapter: ListAdapter<AudioArtistContent, ArtistAdapter.ArtistViewHolder>(ArtistDiffUtil()) {
+class ArtistAdapter(private val mediaListener: AudioMediaListener): ListAdapter<AudioArtistContent, ArtistAdapter.ArtistViewHolder>(ArtistDiffUtil()) {
 
     var lastPosition = -1
 
@@ -44,10 +47,11 @@ class ArtistAdapter: ListAdapter<AudioArtistContent, ArtistAdapter.ArtistViewHol
         }
     }
 
-    class ArtistViewHolder(private val bindings: ArtistItemBinding)
-        : RecyclerView.ViewHolder(bindings.root){
+    inner class ArtistViewHolder(private val bindings: ArtistItemBinding)
+        : RecyclerView.ViewHolder(bindings.root), View.OnClickListener{
         lateinit var item: AudioArtistContent
         fun bind(){
+            bindings.root.setOnClickListener(this)
             Glide.with(bindings.artistArt)
                 .load(item.albums[0].albumArtUri)
                 .apply(RequestOptions().centerCrop()).circleCrop()
@@ -62,6 +66,14 @@ class ArtistAdapter: ListAdapter<AudioArtistContent, ArtistAdapter.ArtistViewHol
             }
             val bucketSizeText = "$albumsSize Albums and $numSongs Songs"
             bindings.albumsAnSongs.text = bucketSizeText
+        }
+
+        override fun onClick(v: View?) {
+            val audios: ArrayList<AudioContent> = ArrayList()
+            item.albums.forEach { album: AudioAlbumContent ->
+                audios.addAll(album.albumAudios)
+            }
+            mediaListener.onAudioMediaClicked("Artist", item.artistName, audios)
         }
     }
 

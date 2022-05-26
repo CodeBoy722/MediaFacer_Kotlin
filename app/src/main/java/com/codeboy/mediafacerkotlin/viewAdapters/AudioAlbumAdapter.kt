@@ -1,6 +1,7 @@
 package com.codeboy.mediafacerkotlin.viewAdapters
 
 import android.view.LayoutInflater
+import android.view.View
 import android.view.ViewGroup
 import android.view.animation.Animation
 import android.view.animation.AnimationUtils
@@ -12,8 +13,9 @@ import com.bumptech.glide.request.RequestOptions
 import com.codeboy.mediafacer.models.AudioAlbumContent
 import com.codeboy.mediafacerkotlin.R
 import com.codeboy.mediafacerkotlin.databinding.AudioAlbumItemBinding
+import com.codeboy.mediafacerkotlin.listeners.AudioMediaListener
 
-class AudioAlbumAdapter: ListAdapter<AudioAlbumContent, AudioAlbumAdapter.AudioAlbumViewHolder>(AudioAlbumDiffUtil()) {
+class AudioAlbumAdapter(private val mediaListener: AudioMediaListener): ListAdapter<AudioAlbumContent, AudioAlbumAdapter.AudioAlbumViewHolder>(AudioAlbumDiffUtil()) {
 
     var lastPosition = -1
 
@@ -43,11 +45,11 @@ class AudioAlbumAdapter: ListAdapter<AudioAlbumContent, AudioAlbumAdapter.AudioA
         }
     }
 
-    class AudioAlbumViewHolder(private val bindings: AudioAlbumItemBinding)
-        : RecyclerView.ViewHolder(bindings.root){
+    inner class AudioAlbumViewHolder(private val bindings: AudioAlbumItemBinding)
+        : RecyclerView.ViewHolder(bindings.root), View.OnClickListener{
         lateinit var item: AudioAlbumContent
         fun bind(){
-
+            bindings.root.setOnClickListener(this)
             Glide.with(bindings.albumArt)
                 .load(item.albumArtUri)
                 .apply(RequestOptions().centerCrop()).circleCrop()
@@ -58,6 +60,10 @@ class AudioAlbumAdapter: ListAdapter<AudioAlbumContent, AudioAlbumAdapter.AudioA
             val bucketSize = item.albumAudios.size.toString()
             val bucketSizeText = "$bucketSize Songs in this Album"
             bindings.numSongs.text = bucketSizeText
+        }
+
+        override fun onClick(v: View?) {
+            mediaListener.onAudioMediaClicked("Album", item.albumName, item.albumAudios)
         }
     }
 

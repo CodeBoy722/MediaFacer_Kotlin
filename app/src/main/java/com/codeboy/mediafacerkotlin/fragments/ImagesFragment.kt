@@ -2,17 +2,24 @@ package com.codeboy.mediafacerkotlin.fragments
 
 import android.annotation.SuppressLint
 import android.os.Bundle
+import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.animation.Animation
+import android.view.animation.AnimationUtils
 import android.widget.Toast
 import androidx.appcompat.widget.PopupMenu
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import androidx.transition.Slide
+import com.codeboy.mediafacer.models.ImageContent
+import com.codeboy.mediafacerkotlin.MainActivity
 import com.codeboy.mediafacerkotlin.R
 import com.codeboy.mediafacerkotlin.databinding.FragmentImagesBinding
+import com.codeboy.mediafacerkotlin.listeners.ImageFolderActionListener
 import com.codeboy.mediafacerkotlin.utils.EndlessScrollListener
 import com.codeboy.mediafacerkotlin.utils.Utils.calculateNoOfColumns
 import com.codeboy.mediafacerkotlin.viewAdapters.ImageFolderAdapter
@@ -99,7 +106,12 @@ class ImagesFragment() : Fragment() {
         paginationLimit = 300
         shouldPaginate = true
 
-        val adapter = ImageFolderAdapter()
+        val adapter = ImageFolderAdapter(object: ImageFolderActionListener{
+            override fun onImageFolderClicked(mediaType: String, title: String, images: ArrayList<ImageContent>) {
+                navigateToMediaDetails(mediaType,title,images)
+            }
+
+        })
         bindings.imagesList.adapter = adapter
 
         val model = ImageFolderViewModel()
@@ -125,6 +137,25 @@ class ImagesFragment() : Fragment() {
             }
         })
 
+    }
+
+    private fun navigateToMediaDetails(mediaType: String, title: String, images: ArrayList<ImageContent>){
+        //hide the bottom navigation in main activity
+        (requireActivity() as MainActivity).hideBottomMenu()
+
+        val mediaDetail = ImageMediaDetail(mediaType,title,images)
+        val slideOutFromTop = Slide(Gravity.TOP)
+        val slideInFromBottom = Slide(Gravity.BOTTOM)
+        mediaDetail.enterTransition = slideInFromBottom
+        mediaDetail.exitTransition = slideOutFromTop
+        val anim: Animation = AnimationUtils.loadAnimation(requireActivity(), R.anim.animation_fall_down)
+        parentFragmentManager
+            .beginTransaction()
+            .replace(R.id.activity_parent, mediaDetail, mediaDetail.javaClass.canonicalName)
+            .setReorderingAllowed(true)
+            .addToBackStack(null)
+            .commit()
+        mediaDetail.view?.startAnimation(anim)//animates the view of the fragment can be done alone or with transitions above
     }
 
     private fun showMenu(view: View){

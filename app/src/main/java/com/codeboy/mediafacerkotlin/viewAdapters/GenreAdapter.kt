@@ -1,6 +1,7 @@
 package com.codeboy.mediafacerkotlin.viewAdapters
 
 import android.view.LayoutInflater
+import android.view.View
 import android.view.ViewGroup
 import android.view.animation.Animation
 import android.view.animation.AnimationUtils
@@ -10,8 +11,9 @@ import androidx.recyclerview.widget.RecyclerView
 import com.codeboy.mediafacer.models.AudioGenreContent
 import com.codeboy.mediafacerkotlin.R
 import com.codeboy.mediafacerkotlin.databinding.GenreItemBinding
+import com.codeboy.mediafacerkotlin.listeners.AudioMediaListener
 
-class GenreAdapter: ListAdapter<AudioGenreContent, GenreAdapter.AudioGenreViewHolder>(AudioGenreDiffUtil()) {
+class GenreAdapter(private val mediaListener: AudioMediaListener): ListAdapter<AudioGenreContent, GenreAdapter.AudioGenreViewHolder>(AudioGenreDiffUtil()) {
 
     var lastPosition = -1
 
@@ -41,14 +43,19 @@ class GenreAdapter: ListAdapter<AudioGenreContent, GenreAdapter.AudioGenreViewHo
         }
     }
 
-    class AudioGenreViewHolder(private val bindings: GenreItemBinding)
-        : RecyclerView.ViewHolder(bindings.root){
+    inner class AudioGenreViewHolder(private val bindings: GenreItemBinding)
+        : RecyclerView.ViewHolder(bindings.root), View.OnClickListener{
         lateinit var item: AudioGenreContent
         fun bind(){
+            bindings.root.setOnClickListener(this)
             bindings.genreName.text = item.genreName
             val bucketSize = item.audios.size.toString()
             val bucketSizeText = "$bucketSize Songs for this Genre"
             bindings.numSongs.text = bucketSizeText
+        }
+
+        override fun onClick(v: View?) {
+            mediaListener.onAudioMediaClicked("Genre", item.genreName, item.audios)
         }
     }
 

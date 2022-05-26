@@ -1,6 +1,7 @@
 package com.codeboy.mediafacerkotlin.viewAdapters
 
 import android.view.LayoutInflater
+import android.view.View
 import android.view.ViewGroup
 import android.view.animation.Animation
 import android.view.animation.AnimationUtils
@@ -10,8 +11,9 @@ import androidx.recyclerview.widget.RecyclerView
 import com.codeboy.mediafacer.models.AudioBucketContent
 import com.codeboy.mediafacerkotlin.R
 import com.codeboy.mediafacerkotlin.databinding.AudioFolderItemBinding
+import com.codeboy.mediafacerkotlin.listeners.AudioMediaListener
 
-class AudioBucketViewAdapter: ListAdapter<AudioBucketContent, AudioBucketViewAdapter.AudioBucketViewHolder>(AudioBucketDiffUtil()) {
+class AudioBucketViewAdapter(private val mediaListener: AudioMediaListener): ListAdapter<AudioBucketContent, AudioBucketViewAdapter.AudioBucketViewHolder>(AudioBucketDiffUtil()) {
 
     var lastPosition = -1
 
@@ -41,15 +43,20 @@ class AudioBucketViewAdapter: ListAdapter<AudioBucketContent, AudioBucketViewAda
         }
     }
 
-    class AudioBucketViewHolder(private val bindings: AudioFolderItemBinding)
-        : RecyclerView.ViewHolder(bindings.root){
+    inner class AudioBucketViewHolder(private val bindings: AudioFolderItemBinding)
+        : RecyclerView.ViewHolder(bindings.root), View.OnClickListener{
         lateinit var item: AudioBucketContent
             fun bind(){
+                bindings.root.setOnClickListener(this)
                 bindings.folderName.text = item.bucketName
                 val bucketSize = item.audios.size.toString()
                 val bucketSizeText = "$bucketSize Songs in this folder"
                 bindings.numOfSongs.text = bucketSizeText
             }
+
+        override fun onClick(v: View?) {
+            mediaListener.onAudioMediaClicked("Bucket", item.bucketName, item.audios)
+        }
     }
 
 }

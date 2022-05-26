@@ -5,6 +5,7 @@ import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
 import android.provider.MediaStore
+import android.view.View
 import android.widget.Toast
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
@@ -33,6 +34,14 @@ class MainActivity : AppCompatActivity() {
         bindings.lifecycleOwner = this
         setUpBottomMenu()
         //testFacer()
+    }
+
+    fun hideBottomMenu(){
+        bindings.bottomMenu.visibility = View.GONE
+    }
+
+    fun showBottomMenu(){
+        bindings.bottomMenu.visibility = View.VISIBLE
     }
 
     private fun testFacer(){

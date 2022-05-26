@@ -1,6 +1,7 @@
 package com.codeboy.mediafacerkotlin.viewAdapters
 
 import android.view.LayoutInflater
+import android.view.View
 import android.view.ViewGroup
 import android.view.animation.Animation
 import android.view.animation.AnimationUtils
@@ -10,8 +11,9 @@ import androidx.recyclerview.widget.RecyclerView
 import com.codeboy.mediafacer.models.ImageFolderContent
 import com.codeboy.mediafacerkotlin.R
 import com.codeboy.mediafacerkotlin.databinding.ImageFolderItemBinding
+import com.codeboy.mediafacerkotlin.listeners.ImageFolderActionListener
 
-class ImageFolderAdapter: ListAdapter<ImageFolderContent, ImageFolderAdapter.ImageFolderViewHolder>(ImageBucketDiffUtil()) {
+class ImageFolderAdapter(private val listener: ImageFolderActionListener): ListAdapter<ImageFolderContent, ImageFolderAdapter.ImageFolderViewHolder>(ImageBucketDiffUtil()) {
 
     var lastPosition = -1
 
@@ -42,14 +44,19 @@ class ImageFolderAdapter: ListAdapter<ImageFolderContent, ImageFolderAdapter.Ima
         }
     }
 
-    class ImageFolderViewHolder(private val bindings: ImageFolderItemBinding)
-        : RecyclerView.ViewHolder(bindings.root){
+    inner class ImageFolderViewHolder(private val bindings: ImageFolderItemBinding)
+        : RecyclerView.ViewHolder(bindings.root), View.OnClickListener{
         lateinit var item: ImageFolderContent
         fun bind(){
+            bindings.root.setOnClickListener(this)
             bindings.imageFolderName.text = item.folderName
             val bucketSize = item.images.size.toString()
             val bucketSizeText = "$bucketSize Images in this folder"
             bindings.numOfImages.text = bucketSizeText
+        }
+
+        override fun onClick(v: View?) {
+            listener.onImageFolderClicked("Folder",item.folderName,item.images)
         }
     }
 

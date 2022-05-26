@@ -1,8 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <layout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    tools:context=".fragments.AudioMediaDetails">
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    tools:context=".fragments.ImageMediaDetail">
+
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
@@ -10,7 +11,6 @@
         android:clickable="true"
         android:focusable="true"
         style="@style/main_background">
-
 
         <TextView
             android:id="@+id/media_title"
@@ -23,10 +23,10 @@
             android:fontFamily="@font/poppinsbold"
             android:gravity="center"
             android:maxLines="1"
-            android:text="Album : Ordinal Scale the Kings"
+            android:text="Folder : Oculus wings"
             android:textColor="@color/bright_navy_blue"
             android:textSize="16sp"
-            app:layout_constraintBottom_toTopOf="@+id/audio_list"
+            app:layout_constraintBottom_toTopOf="@+id/image_list"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
@@ -39,13 +39,13 @@
             android:layout_marginTop="8dp"
             android:layout_marginEnd="16dp"
             android:background="@color/bright_navy_blue"
-            app:layout_constraintBottom_toTopOf="@+id/audio_list"
+            app:layout_constraintBottom_toTopOf="@+id/image_list"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/media_title" />
 
         <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/audio_list"
+            android:id="@+id/image_list"
             android:layout_width="0dp"
             android:layout_height="0dp"
             android:layout_marginStart="8dp"
@@ -56,6 +56,8 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/textView6" />
 
+
     </androidx.constraintlayout.widget.ConstraintLayout>
+
 
 </layout>

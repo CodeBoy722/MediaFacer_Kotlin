@@ -1,6 +1,7 @@
 package com.codeboy.mediafacerkotlin.viewAdapters
 
 import android.view.LayoutInflater
+import android.view.View
 import android.view.ViewGroup
 import android.view.animation.Animation
 import android.view.animation.AnimationUtils
@@ -10,8 +11,9 @@ import androidx.recyclerview.widget.RecyclerView
 import com.codeboy.mediafacer.models.VideoFolderContent
 import com.codeboy.mediafacerkotlin.R
 import com.codeboy.mediafacerkotlin.databinding.VideoFolderItemBinding
+import com.codeboy.mediafacerkotlin.listeners.VideoFolderActionListener
 
-class VideoFolderAdapter: ListAdapter<VideoFolderContent, VideoFolderAdapter.VideoFolderViewHolder>(VideoBucketDiffUtil()) {
+class VideoFolderAdapter(private val listener: VideoFolderActionListener): ListAdapter<VideoFolderContent, VideoFolderAdapter.VideoFolderViewHolder>(VideoBucketDiffUtil()) {
 
     var lastPosition = -1
 
@@ -41,14 +43,19 @@ class VideoFolderAdapter: ListAdapter<VideoFolderContent, VideoFolderAdapter.Vid
         }
     }
 
-    class VideoFolderViewHolder(private val bindings: VideoFolderItemBinding)
-        : RecyclerView.ViewHolder(bindings.root){
+    inner class VideoFolderViewHolder(private val bindings: VideoFolderItemBinding)
+        : RecyclerView.ViewHolder(bindings.root), View.OnClickListener{
         lateinit var item: VideoFolderContent
         fun bind(){
+            bindings.root.setOnClickListener(this)
             bindings.videoFolderName.text = item.folderName
             val bucketSize = item.videos.size.toString()
             val bucketSizeText = "$bucketSize Videos in this folder"
             bindings.numOfVideos.text = bucketSizeText
+        }
+
+        override fun onClick(v: View?) {
+            listener.onVideoFolderClicked("Folder",item.folderName,item.videos)
         }
     }
 

@@ -5,9 +5,12 @@ import android.os.Bundle
 import android.text.Editable
 import android.text.TextUtils
 import android.text.TextWatcher
+import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.animation.Animation
+import android.view.animation.AnimationUtils
 import android.widget.Toast
 import androidx.appcompat.widget.PopupMenu
 import androidx.core.widget.addTextChangedListener
@@ -16,9 +19,13 @@ import androidx.lifecycle.LifecycleOwner
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import androidx.transition.Slide
 import com.codeboy.mediafacer.MediaFacer
+import com.codeboy.mediafacer.models.AudioContent
+import com.codeboy.mediafacerkotlin.MainActivity
 import com.codeboy.mediafacerkotlin.R
 import com.codeboy.mediafacerkotlin.databinding.FragmentAudiosBinding
+import com.codeboy.mediafacerkotlin.listeners.AudioMediaListener
 import com.codeboy.mediafacerkotlin.utils.EndlessScrollListener
 import com.codeboy.mediafacerkotlin.utils.Utils
 import com.codeboy.mediafacerkotlin.viewAdapters.*
@@ -109,7 +116,11 @@ class AudiosFragment() : Fragment() {
         paginationLimit = 100
         shouldPaginate = true
 
-        val audiosBucketAdapter = AudioBucketViewAdapter()
+        val audiosBucketAdapter = AudioBucketViewAdapter(object:AudioMediaListener{
+            override fun onAudioMediaClicked(mediaType: String, title: String, audios: ArrayList<AudioContent>) {
+                navigateToMediaDetails(mediaType,title,audios)
+            }
+        })
         bindings.audiosList.adapter = audiosBucketAdapter
 
         val model = AudioBucketViewModel()
@@ -147,7 +158,11 @@ class AudiosFragment() : Fragment() {
         paginationLimit = 100
         shouldPaginate = true
 
-        val audiosBucketAdapter = ArtistAdapter()
+        val audiosBucketAdapter = ArtistAdapter(object:AudioMediaListener{
+            override fun onAudioMediaClicked(mediaType: String, title: String, audios: ArrayList<AudioContent>) {
+                navigateToMediaDetails(mediaType,title,audios)
+            }
+        })
         bindings.audiosList.adapter = audiosBucketAdapter
 
         val model = ArtistViewModel()
@@ -185,7 +200,11 @@ class AudiosFragment() : Fragment() {
         paginationLimit = 100
         shouldPaginate = true
 
-        val audiosAlbumAdapter = AudioAlbumAdapter()
+        val audiosAlbumAdapter = AudioAlbumAdapter(object:AudioMediaListener{
+            override fun onAudioMediaClicked(mediaType: String, title: String, audios: ArrayList<AudioContent>) {
+                navigateToMediaDetails(mediaType,title,audios)
+            }
+        })
         bindings.audiosList.adapter = audiosAlbumAdapter
 
         val model = AudioAlbumViewModel()
@@ -223,7 +242,11 @@ class AudiosFragment() : Fragment() {
         paginationLimit = 100
         shouldPaginate = true
 
-        val audiosBucketAdapter = GenreAdapter()
+        val audiosBucketAdapter = GenreAdapter(object:AudioMediaListener{
+            override fun onAudioMediaClicked(mediaType: String, title: String, audios: ArrayList<AudioContent>) {
+                navigateToMediaDetails(mediaType,title,audios)
+            }
+        })
         bindings.audiosList.adapter = audiosBucketAdapter
 
         val model = AudioGenreViewModel()
@@ -251,7 +274,6 @@ class AudiosFragment() : Fragment() {
     }
 
     @SuppressLint("NotifyDataSetChanged")
-
     private fun setupAudioSearch(){
         val layoutManager = LinearLayoutManager(requireActivity(), RecyclerView.VERTICAL, false)
         val audiosAdapter = AudioViewAdapter()
@@ -294,6 +316,25 @@ class AudiosFragment() : Fragment() {
             }
             override fun afterTextChanged(p0: Editable?) {}
         })
+    }
+
+    private fun navigateToMediaDetails(mediaType: String, title: String, audios: ArrayList<AudioContent>){
+        //hide the bottom navigation in main activity
+        (requireActivity() as MainActivity).hideBottomMenu()
+
+        val mediaDetail = AudioMediaDetails(mediaType,title,audios)
+        val slideOutFromTop = Slide(Gravity.TOP)
+        val slideInFromBottom = Slide(Gravity.BOTTOM)
+        mediaDetail.enterTransition = slideInFromBottom
+        mediaDetail.exitTransition = slideOutFromTop
+        val anim: Animation = AnimationUtils.loadAnimation(requireActivity(), R.anim.animation_fall_down)
+        parentFragmentManager
+            .beginTransaction()
+            .replace(R.id.activity_parent, mediaDetail, mediaDetail.javaClass.canonicalName)
+            .setReorderingAllowed(true)
+            .addToBackStack(null)
+            .commit()
+        mediaDetail.view?.startAnimation(anim)//animates the view of the fragment can be done alone or with transitions above
     }
 
     private fun showMenu(view: View){
