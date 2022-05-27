@@ -5,25 +5,27 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import com.codeboy.mediafacer.databinding.FragmentMediaFacerMediaPickerBinding
+import com.codeboy.mediafacer.R
+import com.codeboy.mediafacer.databinding.FragmentMediaFacerPickerBinding
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 
 class MediaFacerPicker() : BottomSheetDialogFragment() {
 
-    private lateinit var bindings: FragmentMediaFacerMediaPickerBinding
+    private lateinit var bindings: FragmentMediaFacerPickerBinding
     private lateinit var bottomSheetBehavior: BottomSheetBehavior<*>
     private var addVideos = false
     private var addImages = false
     private var addAudios = false
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        return super.onCreateView(inflater, container, savedInstanceState)
+        //return super.onCreateView(inflater, container, savedInstanceState)
+        return inflater.inflate(R.layout.fragment_media_facer_picker, container, false)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        bindings = FragmentMediaFacerMediaPickerBinding.bind(view)
+        bindings = FragmentMediaFacerPickerBinding.bind(view)
         bindings.lifecycleOwner = viewLifecycleOwner
 
         /* bottomSheetBehavior?.peekHeight = Resources.getSystem().displayMetrics.heightPixels

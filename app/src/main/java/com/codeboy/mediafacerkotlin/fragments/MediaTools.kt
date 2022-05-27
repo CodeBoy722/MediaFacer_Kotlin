@@ -20,6 +20,11 @@ class MediaTools() : Fragment() {
         super.onViewCreated(view, savedInstanceState)
         bindings = FragmentMediaToolsBinding.bind(view)
         bindings.lifecycleOwner = viewLifecycleOwner
+
+        bindings.openPicker.setOnClickListener(View.OnClickListener {
+
+        })
+
     }
 
 }

@@ -4,20 +4,20 @@ import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
-import android.provider.MediaStore
+import android.view.Gravity
 import android.view.View
+import android.view.animation.Animation
+import android.view.animation.AnimationUtils
 import android.widget.Toast
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
+import androidx.transition.Slide
 import androidx.viewpager2.widget.ViewPager2
 import com.codeboy.mediafacer.MediaFacer
 import com.codeboy.mediafacer.MediaFacer.externalAudioContent
 import com.codeboy.mediafacer.models.*
 import com.codeboy.mediafacerkotlin.databinding.ActivityMainBinding
-import com.codeboy.mediafacerkotlin.fragments.AudiosFragment
-import com.codeboy.mediafacerkotlin.fragments.ImagesFragment
-import com.codeboy.mediafacerkotlin.fragments.MediaTools
-import com.codeboy.mediafacerkotlin.fragments.VideosFragment
+import com.codeboy.mediafacerkotlin.fragments.*
 import com.codeboy.mediafacerkotlin.viewAdapters.MainPagerFragmentAdapter
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -32,6 +32,24 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         bindings = DataBindingUtil.setContentView(this, R.layout.activity_main)
         bindings.lifecycleOwner = this
+
+        bindings.aboutMenu.setOnClickListener(View.OnClickListener {
+            hideBottomMenu()
+            val about = About()
+            val slideOutFromTop = Slide(Gravity.TOP)
+            val slideInFromBottom = Slide(Gravity.BOTTOM)
+            about.enterTransition = slideInFromBottom
+            about.exitTransition = slideOutFromTop
+            val anim: Animation = AnimationUtils.loadAnimation(this, R.anim.animation_fall_down)
+            supportFragmentManager
+                .beginTransaction()
+                .replace(R.id.activity_parent, about, about.javaClass.canonicalName)
+                .setReorderingAllowed(true)
+                .addToBackStack(null)
+                .commit()
+            about.view?.startAnimation(anim)
+        })
+
         setUpBottomMenu()
         //testFacer()
     }
