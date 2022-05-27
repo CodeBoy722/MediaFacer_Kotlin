@@ -22,4 +22,6 @@
     <string name="folders">Folders</string>
     <string name="all_videos">All Videos</string>
     <string name="video_folders">Folders</string>
+
+    <string name="media_picker">MediaFacer Picker is a dynamic and customisable media picker for audio, video, and image files, test the demos below and see how it can fit in your apps</string>
 </resources>
