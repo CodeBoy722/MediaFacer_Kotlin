@@ -11,9 +11,9 @@ import androidx.recyclerview.widget.RecyclerView
 import com.codeboy.mediafacer.models.AudioBucketContent
 import com.codeboy.mediafacerkotlin.R
 import com.codeboy.mediafacerkotlin.databinding.AudioFolderItemBinding
-import com.codeboy.mediafacerkotlin.listeners.AudioMediaListener
+import com.codeboy.mediafacerkotlin.listeners.AudioContainerActionListener
 
-class AudioBucketViewAdapter(private val mediaListener: AudioMediaListener): ListAdapter<AudioBucketContent, AudioBucketViewAdapter.AudioBucketViewHolder>(AudioBucketDiffUtil()) {
+class AudioBucketViewAdapter(private val mediaListener: AudioContainerActionListener): ListAdapter<AudioBucketContent, AudioBucketViewAdapter.AudioBucketViewHolder>(AudioBucketDiffUtil()) {
 
     var lastPosition = -1
 
@@ -55,7 +55,7 @@ class AudioBucketViewAdapter(private val mediaListener: AudioMediaListener): Lis
             }
 
         override fun onClick(v: View?) {
-            mediaListener.onAudioMediaClicked("Bucket", item.bucketName, item.audios)
+            mediaListener.onAudioContainerClicked("Bucket", item.bucketName, item.audios)
         }
     }
 

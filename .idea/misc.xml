@@ -36,12 +36,17 @@
         <entry key="..\:/Android_Projects/MediaFacer_Kotlin/app/src/main/res/menu/menu_bottom.xml" value="0.27291666666666664" />
         <entry key="..\:/Android_Projects/MediaFacer_Kotlin/app/src/main/res/menu/video_menu.xml" value="0.22393162393162394" />
         <entry key="..\:/Users/mofor/StudioProjects/MediaFacer_Kotlin/app/src/main/res/layout/audio_folder_item.xml" value="0.3378623188405797" />
+        <entry key="..\:/Users/mofor/StudioProjects/MediaFacer_Kotlin/app/src/main/res/layout/audio_item.xml" value="0.3171171171171171" />
+        <entry key="..\:/Users/mofor/StudioProjects/MediaFacer_Kotlin/app/src/main/res/layout/fragment_audio_details.xml" value="0.3171171171171171" />
         <entry key="..\:/Users/mofor/StudioProjects/MediaFacer_Kotlin/app/src/main/res/layout/fragment_audios.xml" value="0.25" />
+        <entry key="..\:/Users/mofor/StudioProjects/MediaFacer_Kotlin/app/src/main/res/layout/fragment_image_details.xml" value="0.35260416666666666" />
+        <entry key="..\:/Users/mofor/StudioProjects/MediaFacer_Kotlin/app/src/main/res/layout/fragment_media_tools.xml" value="0.36666666666666664" />
+        <entry key="..\:/Users/mofor/StudioProjects/MediaFacer_Kotlin/app/src/main/res/layout/fragment_video_details.xml" value="0.35260416666666666" />
         <entry key="..\:/Users/mofor/StudioProjects/MediaFacer_Kotlin/app/src/main/res/layout/video_item.xml" value="0.32065217391304346" />
       </map>
     </option>
   </component>
-  <component name="ProjectRootManager" version="2" languageLevel="JDK_11" project-jdk-name="10" project-jdk-type="JavaSDK">
+  <component name="ProjectRootManager" version="2" languageLevel="JDK_11" default="true" project-jdk-name="10" project-jdk-type="JavaSDK">
     <output url="file://$PROJECT_DIR$/build/classes" />
   </component>
   <component name="ProjectType">

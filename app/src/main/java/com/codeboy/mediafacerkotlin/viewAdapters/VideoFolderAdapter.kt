@@ -11,9 +11,9 @@ import androidx.recyclerview.widget.RecyclerView
 import com.codeboy.mediafacer.models.VideoFolderContent
 import com.codeboy.mediafacerkotlin.R
 import com.codeboy.mediafacerkotlin.databinding.VideoFolderItemBinding
-import com.codeboy.mediafacerkotlin.listeners.VideoFolderActionListener
+import com.codeboy.mediafacerkotlin.listeners.VideoContainerActionListener
 
-class VideoFolderAdapter(private val listener: VideoFolderActionListener): ListAdapter<VideoFolderContent, VideoFolderAdapter.VideoFolderViewHolder>(VideoBucketDiffUtil()) {
+class VideoFolderAdapter(private val listener: VideoContainerActionListener): ListAdapter<VideoFolderContent, VideoFolderAdapter.VideoFolderViewHolder>(VideoBucketDiffUtil()) {
 
     var lastPosition = -1
 

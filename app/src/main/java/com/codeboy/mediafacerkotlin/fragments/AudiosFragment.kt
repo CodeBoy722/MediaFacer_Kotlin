@@ -22,7 +22,9 @@ import com.codeboy.mediafacer.models.AudioContent
 import com.codeboy.mediafacerkotlin.MainActivity
 import com.codeboy.mediafacerkotlin.R
 import com.codeboy.mediafacerkotlin.databinding.FragmentAudiosBinding
-import com.codeboy.mediafacerkotlin.listeners.AudioMediaListener
+import com.codeboy.mediafacerkotlin.dialogs.AudioDetails
+import com.codeboy.mediafacerkotlin.listeners.AudioActionListener
+import com.codeboy.mediafacerkotlin.listeners.AudioContainerActionListener
 import com.codeboy.mediafacerkotlin.utils.EndlessScrollListener
 import com.codeboy.mediafacerkotlin.utils.Utils
 import com.codeboy.mediafacerkotlin.viewAdapters.*
@@ -68,7 +70,14 @@ class AudiosFragment() : Fragment() {
         shouldPaginate = true
 
         //init your adapter and bind it to recyclerview
-        val audiosAdapter = AudioViewAdapter()
+        val audiosAdapter = AudioViewAdapter(object : AudioActionListener{
+            override fun onAudioItemClicked(audio: AudioContent) {}
+
+            override fun onAudioItemLongClicked(audio: AudioContent) {
+               val audioDetails = AudioDetails(audio)
+                audioDetails.show(childFragmentManager,audioDetails.javaClass.canonicalName)
+            }
+        })
         bindings.audiosList.adapter = audiosAdapter
 
         //init viewModel
@@ -113,8 +122,8 @@ class AudiosFragment() : Fragment() {
         paginationLimit = 100
         shouldPaginate = true
 
-        val audiosBucketAdapter = AudioBucketViewAdapter(object:AudioMediaListener{
-            override fun onAudioMediaClicked(mediaType: String, title: String, audios: ArrayList<AudioContent>) {
+        val audiosBucketAdapter = AudioBucketViewAdapter(object:AudioContainerActionListener{
+            override fun onAudioContainerClicked(mediaType: String, title: String, audios: ArrayList<AudioContent>) {
                 navigateToMediaDetails(mediaType,title,audios)
             }
         })
@@ -155,8 +164,8 @@ class AudiosFragment() : Fragment() {
         paginationLimit = 100
         shouldPaginate = true
 
-        val audiosBucketAdapter = ArtistAdapter(object:AudioMediaListener{
-            override fun onAudioMediaClicked(mediaType: String, title: String, audios: ArrayList<AudioContent>) {
+        val audiosBucketAdapter = ArtistAdapter(object:AudioContainerActionListener{
+            override fun onAudioContainerClicked(mediaType: String, title: String, audios: ArrayList<AudioContent>) {
                 navigateToMediaDetails(mediaType,title,audios)
             }
         })
@@ -197,8 +206,8 @@ class AudiosFragment() : Fragment() {
         paginationLimit = 100
         shouldPaginate = true
 
-        val audiosAlbumAdapter = AudioAlbumAdapter(object:AudioMediaListener{
-            override fun onAudioMediaClicked(mediaType: String, title: String, audios: ArrayList<AudioContent>) {
+        val audiosAlbumAdapter = AudioAlbumAdapter(object:AudioContainerActionListener{
+            override fun onAudioContainerClicked(mediaType: String, title: String, audios: ArrayList<AudioContent>) {
                 navigateToMediaDetails(mediaType,title,audios)
             }
         })
@@ -239,8 +248,8 @@ class AudiosFragment() : Fragment() {
         paginationLimit = 100
         shouldPaginate = true
 
-        val audiosBucketAdapter = GenreAdapter(object:AudioMediaListener{
-            override fun onAudioMediaClicked(mediaType: String, title: String, audios: ArrayList<AudioContent>) {
+        val audiosBucketAdapter = GenreAdapter(object:AudioContainerActionListener{
+            override fun onAudioContainerClicked(mediaType: String, title: String, audios: ArrayList<AudioContent>) {
                 navigateToMediaDetails(mediaType,title,audios)
             }
         })
@@ -273,7 +282,14 @@ class AudiosFragment() : Fragment() {
     @SuppressLint("NotifyDataSetChanged")
     private fun setupAudioSearch(){
         val layoutManager = LinearLayoutManager(requireActivity(), RecyclerView.VERTICAL, false)
-        val audiosAdapter = AudioViewAdapter()
+        val audiosAdapter = AudioViewAdapter(object : AudioActionListener{
+            override fun onAudioItemClicked(audio: AudioContent) {}
+
+            override fun onAudioItemLongClicked(audio: AudioContent) {
+                val audioDetails = AudioDetails(audio)
+                audioDetails.show(childFragmentManager,audioDetails.javaClass.canonicalName)
+            }
+        })
         var searchHolder = ""
 
         val audioSearch = AudioSearchViewModel()
@@ -319,7 +335,7 @@ class AudiosFragment() : Fragment() {
         //hide the bottom navigation in main activity
         (requireActivity() as MainActivity).hideBottomMenu()
 
-        val mediaDetail = AudioMediaDetails(mediaType,title,audios)
+        val mediaDetail = AudioContainerDetails(mediaType,title,audios)
         val slideOutFromTop = Slide(Gravity.TOP)
         val slideInFromBottom = Slide(Gravity.BOTTOM)
         mediaDetail.enterTransition = slideInFromBottom

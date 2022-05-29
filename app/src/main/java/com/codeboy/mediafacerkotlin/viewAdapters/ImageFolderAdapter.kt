@@ -11,9 +11,9 @@ import androidx.recyclerview.widget.RecyclerView
 import com.codeboy.mediafacer.models.ImageFolderContent
 import com.codeboy.mediafacerkotlin.R
 import com.codeboy.mediafacerkotlin.databinding.ImageFolderItemBinding
-import com.codeboy.mediafacerkotlin.listeners.ImageFolderActionListener
+import com.codeboy.mediafacerkotlin.listeners.ImageContainerActionListener
 
-class ImageFolderAdapter(private val listener: ImageFolderActionListener): ListAdapter<ImageFolderContent, ImageFolderAdapter.ImageFolderViewHolder>(ImageBucketDiffUtil()) {
+class ImageFolderAdapter(private val listener: ImageContainerActionListener): ListAdapter<ImageFolderContent, ImageFolderAdapter.ImageFolderViewHolder>(ImageBucketDiffUtil()) {
 
     var lastPosition = -1
 

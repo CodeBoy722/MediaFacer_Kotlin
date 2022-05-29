@@ -10,7 +10,7 @@ import com.codeboy.mediafacer.databinding.FragmentMediaFacerPickerBinding
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 
-class MediaFacerPicker() : BottomSheetDialogFragment() {
+ class MediaFacerPicker() : BottomSheetDialogFragment() {
 
     private lateinit var bindings: FragmentMediaFacerPickerBinding
     private lateinit var bottomSheetBehavior: BottomSheetBehavior<*>

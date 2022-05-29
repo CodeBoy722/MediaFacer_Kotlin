@@ -11,9 +11,11 @@ import com.codeboy.mediafacer.models.AudioContent
 import com.codeboy.mediafacerkotlin.MainActivity
 import com.codeboy.mediafacerkotlin.R
 import com.codeboy.mediafacerkotlin.databinding.FragmentAudioMediaDetailsBinding
+import com.codeboy.mediafacerkotlin.dialogs.AudioDetails
+import com.codeboy.mediafacerkotlin.listeners.AudioActionListener
 import com.codeboy.mediafacerkotlin.viewAdapters.AudioViewAdapter
 
-class AudioMediaDetails() : Fragment() {
+class AudioContainerDetails() : Fragment() {
 
     private lateinit var bindings: FragmentAudioMediaDetailsBinding
     private lateinit var audioMediaType: String
@@ -52,7 +54,14 @@ class AudioMediaDetails() : Fragment() {
         val headTitle = "$audioMediaType: $title"
         bindings.mediaTitle.text = headTitle
 
-        val audiosAdapter = AudioViewAdapter()
+        val audiosAdapter = AudioViewAdapter(object : AudioActionListener {
+            override fun onAudioItemClicked(audio: AudioContent) {}
+
+            override fun onAudioItemLongClicked(audio: AudioContent) {
+                val audioDetails = AudioDetails(audio)
+                audioDetails.show(childFragmentManager,audioDetails.javaClass.canonicalName)
+            }
+        })
         audiosAdapter.submitList(audios)
         bindings.audioList.adapter = audiosAdapter
     }

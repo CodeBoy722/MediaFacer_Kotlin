@@ -13,7 +13,7 @@ import com.codeboy.mediafacerkotlin.databinding.FragmentVideoMediaDetailBinding
 import com.codeboy.mediafacerkotlin.utils.Utils
 import com.codeboy.mediafacerkotlin.viewAdapters.VideoViewAdapter
 
-class VideoMediaDetail() : Fragment() {
+class VideoContainerDetail() : Fragment() {
 
     private lateinit var bindings: FragmentVideoMediaDetailBinding
     private lateinit var audioMediaType: String

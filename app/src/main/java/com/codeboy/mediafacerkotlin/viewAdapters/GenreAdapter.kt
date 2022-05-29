@@ -11,9 +11,9 @@ import androidx.recyclerview.widget.RecyclerView
 import com.codeboy.mediafacer.models.AudioGenreContent
 import com.codeboy.mediafacerkotlin.R
 import com.codeboy.mediafacerkotlin.databinding.GenreItemBinding
-import com.codeboy.mediafacerkotlin.listeners.AudioMediaListener
+import com.codeboy.mediafacerkotlin.listeners.AudioContainerActionListener
 
-class GenreAdapter(private val mediaListener: AudioMediaListener): ListAdapter<AudioGenreContent, GenreAdapter.AudioGenreViewHolder>(AudioGenreDiffUtil()) {
+class GenreAdapter(private val mediaListener: AudioContainerActionListener): ListAdapter<AudioGenreContent, GenreAdapter.AudioGenreViewHolder>(AudioGenreDiffUtil()) {
 
     var lastPosition = -1
 
@@ -55,7 +55,7 @@ class GenreAdapter(private val mediaListener: AudioMediaListener): ListAdapter<A
         }
 
         override fun onClick(v: View?) {
-            mediaListener.onAudioMediaClicked("Genre", item.genreName, item.audios)
+            mediaListener.onAudioContainerClicked("Genre", item.genreName, item.audios)
         }
     }
 

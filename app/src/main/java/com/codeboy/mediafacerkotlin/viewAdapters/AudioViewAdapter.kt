@@ -13,8 +13,9 @@ import com.bumptech.glide.request.RequestOptions
 import com.codeboy.mediafacer.models.AudioContent
 import com.codeboy.mediafacerkotlin.R
 import com.codeboy.mediafacerkotlin.databinding.AudioItemBinding
+import com.codeboy.mediafacerkotlin.listeners.AudioActionListener
 
-class AudioViewAdapter : ListAdapter<AudioContent, AudioViewAdapter.AudioViewHolder>(AudioDiffUtil()) {
+class AudioViewAdapter(private val listener: AudioActionListener) : ListAdapter<AudioContent, AudioViewAdapter.AudioViewHolder>(AudioDiffUtil()) {
 
     var lastPosition = -1
 
@@ -45,10 +46,12 @@ class AudioViewAdapter : ListAdapter<AudioContent, AudioViewAdapter.AudioViewHol
     }
 
 
-    class AudioViewHolder(private val bindings: AudioItemBinding)
-        : RecyclerView.ViewHolder(bindings.root), View.OnClickListener{
+    inner class AudioViewHolder(private val bindings: AudioItemBinding)
+        : RecyclerView.ViewHolder(bindings.root), View.OnClickListener, View.OnLongClickListener{
         lateinit var item: AudioContent
         fun bind(){
+            bindings.root.setOnLongClickListener(this)
+            bindings.play.setOnClickListener(this)
             Glide.with(bindings.art)
                 .load(item.artUri)
                 .apply(RequestOptions().centerCrop().circleCrop())
@@ -60,8 +63,15 @@ class AudioViewAdapter : ListAdapter<AudioContent, AudioViewAdapter.AudioViewHol
             bindings.play.setOnClickListener(this)
         }
 
-        override fun onClick(p0: View?) {
+        override fun onClick(v: View?) {
+            // add to playlist
+            listener.onAudioItemClicked(item)
+        }
 
+        override fun onLongClick(v: View?): Boolean {
+            // show details
+            listener.onAudioItemLongClicked(item)
+            return true
         }
     }
 

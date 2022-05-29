@@ -13,9 +13,9 @@ import com.bumptech.glide.request.RequestOptions
 import com.codeboy.mediafacer.models.AudioAlbumContent
 import com.codeboy.mediafacerkotlin.R
 import com.codeboy.mediafacerkotlin.databinding.AudioAlbumItemBinding
-import com.codeboy.mediafacerkotlin.listeners.AudioMediaListener
+import com.codeboy.mediafacerkotlin.listeners.AudioContainerActionListener
 
-class AudioAlbumAdapter(private val mediaListener: AudioMediaListener): ListAdapter<AudioAlbumContent, AudioAlbumAdapter.AudioAlbumViewHolder>(AudioAlbumDiffUtil()) {
+class AudioAlbumAdapter(private val mediaListener: AudioContainerActionListener): ListAdapter<AudioAlbumContent, AudioAlbumAdapter.AudioAlbumViewHolder>(AudioAlbumDiffUtil()) {
 
     var lastPosition = -1
 
@@ -63,7 +63,7 @@ class AudioAlbumAdapter(private val mediaListener: AudioMediaListener): ListAdap
         }
 
         override fun onClick(v: View?) {
-            mediaListener.onAudioMediaClicked("Album", item.albumName, item.albumAudios)
+            mediaListener.onAudioContainerClicked("Album", item.albumName, item.albumAudios)
         }
     }
 

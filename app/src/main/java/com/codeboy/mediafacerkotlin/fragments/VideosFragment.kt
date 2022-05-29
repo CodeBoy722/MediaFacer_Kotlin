@@ -22,7 +22,7 @@ import com.codeboy.mediafacer.models.VideoContent
 import com.codeboy.mediafacerkotlin.MainActivity
 import com.codeboy.mediafacerkotlin.R
 import com.codeboy.mediafacerkotlin.databinding.FragmentVideosBinding
-import com.codeboy.mediafacerkotlin.listeners.VideoFolderActionListener
+import com.codeboy.mediafacerkotlin.listeners.VideoContainerActionListener
 import com.codeboy.mediafacerkotlin.utils.EndlessScrollListener
 import com.codeboy.mediafacerkotlin.utils.Utils.calculateNoOfColumns
 import com.codeboy.mediafacerkotlin.viewAdapters.VideoFolderAdapter
@@ -111,7 +111,7 @@ class VideosFragment() : Fragment() {
         paginationLimit = 50
         shouldPaginate = true
 
-        val adapter = VideoFolderAdapter(object: VideoFolderActionListener{
+        val adapter = VideoFolderAdapter(object: VideoContainerActionListener{
             override fun onVideoFolderClicked(mediaType: String, title: String, videos: ArrayList<VideoContent>) {
                 navigateToMediaDetails(mediaType,title,videos)
             }
@@ -193,7 +193,7 @@ class VideosFragment() : Fragment() {
 //hide the bottom navigation in main activity
         (requireActivity() as MainActivity).hideBottomMenu()
 
-        val mediaDetail = VideoMediaDetail(mediaType,title,videos)
+        val mediaDetail = VideoContainerDetail(mediaType,title,videos)
         val slideOutFromTop = Slide(Gravity.TOP)
         val slideInFromBottom = Slide(Gravity.BOTTOM)
         mediaDetail.enterTransition = slideInFromBottom

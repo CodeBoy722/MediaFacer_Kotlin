@@ -15,9 +15,9 @@ import com.codeboy.mediafacer.models.AudioArtistContent
 import com.codeboy.mediafacer.models.AudioContent
 import com.codeboy.mediafacerkotlin.R
 import com.codeboy.mediafacerkotlin.databinding.ArtistItemBinding
-import com.codeboy.mediafacerkotlin.listeners.AudioMediaListener
+import com.codeboy.mediafacerkotlin.listeners.AudioContainerActionListener
 
-class ArtistAdapter(private val mediaListener: AudioMediaListener): ListAdapter<AudioArtistContent, ArtistAdapter.ArtistViewHolder>(ArtistDiffUtil()) {
+class ArtistAdapter(private val mediaListener: AudioContainerActionListener): ListAdapter<AudioArtistContent, ArtistAdapter.ArtistViewHolder>(ArtistDiffUtil()) {
 
     var lastPosition = -1
 
@@ -73,7 +73,7 @@ class ArtistAdapter(private val mediaListener: AudioMediaListener): ListAdapter<
             item.albums.forEach { album: AudioAlbumContent ->
                 audios.addAll(album.albumAudios)
             }
-            mediaListener.onAudioMediaClicked("Artist", item.artistName, audios)
+            mediaListener.onAudioContainerClicked("Artist", item.artistName, audios)
         }
     }
 
