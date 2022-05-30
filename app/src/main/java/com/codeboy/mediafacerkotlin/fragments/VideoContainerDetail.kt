@@ -10,6 +10,8 @@ import com.codeboy.mediafacer.models.VideoContent
 import com.codeboy.mediafacerkotlin.MainActivity
 import com.codeboy.mediafacerkotlin.R
 import com.codeboy.mediafacerkotlin.databinding.FragmentVideoMediaDetailBinding
+import com.codeboy.mediafacerkotlin.dialogs.VideoDetails
+import com.codeboy.mediafacerkotlin.listeners.VideoActionListener
 import com.codeboy.mediafacerkotlin.utils.Utils
 import com.codeboy.mediafacerkotlin.viewAdapters.VideoViewAdapter
 
@@ -50,7 +52,17 @@ class VideoContainerDetail() : Fragment() {
         val headTitle = "$audioMediaType: $title"
         bindings.mediaTitle.text = headTitle
 
-        val audiosAdapter = VideoViewAdapter()
+        val audiosAdapter = VideoViewAdapter(object: VideoActionListener {
+            override fun onVideoItemClicked(videoItem: VideoContent) {
+                TODO("Not yet implemented")
+            }
+
+            override fun onVideoItemLongClicked(videoItem: VideoContent) {
+                val videoDetails = VideoDetails(videoItem)
+                videoDetails.show(childFragmentManager,videoDetails.javaClass.canonicalName)
+            }
+
+        })
         audiosAdapter.submitList(videos)
         bindings.videoList.adapter = audiosAdapter
     }

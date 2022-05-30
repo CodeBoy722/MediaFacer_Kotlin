@@ -18,6 +18,8 @@ import com.codeboy.mediafacer.models.ImageContent
 import com.codeboy.mediafacerkotlin.MainActivity
 import com.codeboy.mediafacerkotlin.R
 import com.codeboy.mediafacerkotlin.databinding.FragmentImagesBinding
+import com.codeboy.mediafacerkotlin.dialogs.ImageDetails
+import com.codeboy.mediafacerkotlin.listeners.ImageActionListener
 import com.codeboy.mediafacerkotlin.listeners.ImageContainerActionListener
 import com.codeboy.mediafacerkotlin.utils.EndlessScrollListener
 import com.codeboy.mediafacerkotlin.utils.Utils.calculateNoOfColumns
@@ -66,7 +68,16 @@ class ImagesFragment() : Fragment() {
         shouldPaginate = true
 
         //init your adapter and bind it to recyclerview
-        val adapter = ImageViewAdapter()
+        val adapter = ImageViewAdapter(object: ImageActionListener{
+            override fun onImageItemClicked(imageItem: ImageContent) {
+                //TODO("Not yet implemented")
+            }
+
+            override fun onImageItemLongClicked(imageItem: ImageContent) {
+                val imageDetails = ImageDetails(imageItem)
+                imageDetails.show(childFragmentManager,imageDetails.javaClass.canonicalName)
+            }
+        })
         bindings.imagesList.adapter = adapter
 
         //init viewModel

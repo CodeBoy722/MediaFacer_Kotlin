@@ -1,14 +1,136 @@
 <?xml version="1.0" encoding="utf-8"?>
 <layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     tools:context=".dialogs.ImageDetails">
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="wrap_content"
+        style="@style/main_background">
 
 
+        <TextView
+            android:id="@+id/name_f"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
+            android:layout_marginTop="16dp"
+            android:text="Name"
+            android:fontFamily="@font/poppinsbold"
+            android:gravity="start|center"
+            android:textColor="@color/bright_navy_blue"
+            android:textSize="13sp"
+            app:layout_constraintHorizontal_weight="2"
+            app:layout_constraintEnd_toStartOf="@+id/image_name"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
 
+        <TextView
+            android:id="@+id/image_name"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
+            android:layout_marginEnd="8dp"
+            android:text="The alpha go to the hills for a top meeting "
+            android:fontFamily="@font/notosans_regular"
+            android:textSize="13sp"
+            app:layout_constraintHorizontal_weight="8"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@+id/name_f"
+            app:layout_constraintTop_toTopOf="@+id/name_f" />
+
+        <TextView
+            android:id="@+id/hggh"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
+            android:layout_marginTop="16dp"
+            android:fontFamily="@font/poppinsbold"
+            android:gravity="start|center"
+            android:text="Path"
+            android:textColor="@color/bright_navy_blue"
+            android:textSize="13sp"
+            app:layout_constraintEnd_toStartOf="@+id/image_path"
+            app:layout_constraintHorizontal_weight="2"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/image_name" />
+
+        <TextView
+            android:id="@+id/image_path"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
+            android:layout_marginEnd="8dp"
+            android:fontFamily="@font/notosans_regular"
+            android:text="The alpha go to the hills for a top meeting "
+            android:textSize="13sp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_weight="8"
+            app:layout_constraintStart_toEndOf="@+id/hggh"
+            app:layout_constraintTop_toTopOf="@+id/hggh" />
+
+        <TextView
+            android:id="@+id/textView28"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
+            android:layout_marginTop="16dp"
+            android:fontFamily="@font/poppinsbold"
+            android:gravity="start|center"
+            android:text="Size"
+            android:textColor="@color/bright_navy_blue"
+            android:textSize="13sp"
+            app:layout_constraintEnd_toStartOf="@+id/image_size"
+            app:layout_constraintHorizontal_weight="2"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/image_path" />
+
+        <TextView
+            android:id="@+id/image_size"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
+            android:layout_marginEnd="8dp"
+            android:fontFamily="@font/notosans_regular"
+            android:text="The alpha go to the hills for a top meeting "
+            android:textSize="13sp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_weight="8"
+            app:layout_constraintStart_toEndOf="@+id/textView28"
+            app:layout_constraintTop_toTopOf="@+id/textView28" />
+
+        <TextView
+            android:id="@+id/textView30"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
+            android:layout_marginTop="16dp"
+            android:fontFamily="@font/poppinsbold"
+            android:gravity="start|center"
+            android:text="Modified"
+            android:textColor="@color/bright_navy_blue"
+            android:textSize="13sp"
+            app:layout_constraintEnd_toStartOf="@+id/date_modified"
+            app:layout_constraintHorizontal_weight="2"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/image_size" />
+
+        <TextView
+            android:id="@+id/date_modified"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
+            android:layout_marginEnd="8dp"
+            android:layout_marginBottom="16dp"
+            android:fontFamily="@font/notosans_regular"
+            android:text="The alpha go to the hills for a top meeting "
+            android:textSize="13sp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_weight="8"
+            app:layout_constraintStart_toEndOf="@+id/textView30"
+            app:layout_constraintTop_toTopOf="@+id/textView30" />
     </androidx.constraintlayout.widget.ConstraintLayout>
 
 

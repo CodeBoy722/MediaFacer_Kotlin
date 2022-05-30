@@ -2,16 +2,18 @@ package com.codeboy.mediafacerkotlin.dialogs
 
 import android.content.res.Resources
 import android.os.Bundle
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import com.codeboy.mediafacer.MediaDataUtils
 import com.codeboy.mediafacer.models.VideoContent
 import com.codeboy.mediafacerkotlin.R
 import com.codeboy.mediafacerkotlin.databinding.FragmentVideoDetailsBinding
 import com.google.android.material.bottomsheet.BottomSheetBehavior
+import com.google.android.material.bottomsheet.BottomSheetDialogFragment
+import java.text.DateFormat
 
-class VideoDetails() : Fragment() {
+class VideoDetails() : BottomSheetDialogFragment() {
 
     lateinit var bindings: FragmentVideoDetailsBinding
     lateinit var videoItem: VideoContent
@@ -36,6 +38,15 @@ class VideoDetails() : Fragment() {
         view.minimumHeight = (Resources.getSystem().displayMetrics.heightPixels)
 
         bottomSheetBehavior.state = BottomSheetBehavior.STATE_EXPANDED
-
+        initContent()
     }
+
+    private fun initContent(){
+        bindings.videoName.text = videoItem.name
+        bindings.videoDuration.text = MediaDataUtils.milliSecondsToTimer(videoItem.duration)
+        bindings.videoSize.text = MediaDataUtils.convertBytes(videoItem.size)
+        bindings.videoPath.text = videoItem.filePath
+        bindings.videoModified.text = DateFormat.getDateInstance().format(videoItem.dateModified)
+    }
+
 }

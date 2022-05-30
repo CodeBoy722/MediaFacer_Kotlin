@@ -2,16 +2,18 @@ package com.codeboy.mediafacerkotlin.dialogs
 
 import android.content.res.Resources
 import android.os.Bundle
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import com.codeboy.mediafacer.MediaDataUtils
 import com.codeboy.mediafacer.models.ImageContent
 import com.codeboy.mediafacerkotlin.R
 import com.codeboy.mediafacerkotlin.databinding.FragmentImageDetailsBinding
 import com.google.android.material.bottomsheet.BottomSheetBehavior
+import com.google.android.material.bottomsheet.BottomSheetDialogFragment
+import java.text.DateFormat
 
-class ImageDetails() : Fragment() {
+class ImageDetails() : BottomSheetDialogFragment() {
 
     lateinit var bindings: FragmentImageDetailsBinding
     lateinit var imageItem: ImageContent
@@ -36,7 +38,14 @@ class ImageDetails() : Fragment() {
         view.minimumHeight = (Resources.getSystem().displayMetrics.heightPixels)
 
         bottomSheetBehavior.state = BottomSheetBehavior.STATE_EXPANDED
+        initContent()
+    }
 
+    private fun initContent(){
+        bindings.imageName.text = imageItem.name
+        bindings.imagePath.text = imageItem.filePath
+        bindings.imageSize.text = MediaDataUtils.convertBytes(imageItem.size)
+        bindings.dateModified.text = DateFormat.getDateInstance().format(imageItem.dateModified)
     }
 
 }

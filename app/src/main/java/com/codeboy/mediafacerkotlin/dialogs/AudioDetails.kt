@@ -39,6 +39,10 @@ class AudioDetails() : BottomSheetDialogFragment() {
 
         bottomSheetBehavior.state = BottomSheetBehavior.STATE_EXPANDED
 
+        initContent()
+    }
+
+    private fun initContent(){
         bindings.name.text = audioItem.name
         bindings.artist.text = audioItem.artist
         bindings.album.text = audioItem.album

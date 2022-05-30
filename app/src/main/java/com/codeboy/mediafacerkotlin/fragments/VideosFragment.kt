@@ -22,6 +22,8 @@ import com.codeboy.mediafacer.models.VideoContent
 import com.codeboy.mediafacerkotlin.MainActivity
 import com.codeboy.mediafacerkotlin.R
 import com.codeboy.mediafacerkotlin.databinding.FragmentVideosBinding
+import com.codeboy.mediafacerkotlin.dialogs.VideoDetails
+import com.codeboy.mediafacerkotlin.listeners.VideoActionListener
 import com.codeboy.mediafacerkotlin.listeners.VideoContainerActionListener
 import com.codeboy.mediafacerkotlin.utils.EndlessScrollListener
 import com.codeboy.mediafacerkotlin.utils.Utils.calculateNoOfColumns
@@ -72,7 +74,17 @@ class VideosFragment() : Fragment() {
         shouldPaginate = true
 
         //init your adapter and bind it to recyclerview
-        val adapter = VideoViewAdapter()
+        val adapter = VideoViewAdapter(object: VideoActionListener{
+            override fun onVideoItemClicked(videoItem: VideoContent) {
+                TODO("Not yet implemented")
+            }
+
+            override fun onVideoItemLongClicked(videoItem: VideoContent) {
+                val videoDetails = VideoDetails(videoItem)
+                videoDetails.show(childFragmentManager,videoDetails.javaClass.canonicalName)
+            }
+
+        })
         bindings.videosList.adapter = adapter
 
         //init viewModel
@@ -147,7 +159,17 @@ class VideosFragment() : Fragment() {
     private fun setupVideoSearch(){
         val numOfColumns = calculateNoOfColumns(requireActivity(), 105f)
         val layoutManager = GridLayoutManager(requireActivity(),numOfColumns)
-        val adapter = VideoViewAdapter()
+        val adapter = VideoViewAdapter(object: VideoActionListener{
+            override fun onVideoItemClicked(videoItem: VideoContent) {
+                //TODO("Not yet implemented")
+            }
+
+            override fun onVideoItemLongClicked(videoItem: VideoContent) {
+                val videoDetails = VideoDetails(videoItem)
+                videoDetails.show(childFragmentManager,videoDetails.javaClass.canonicalName)
+            }
+
+        })
         var searchHolder = ""
 
         val videoSearch = VideoSearchViewModel()

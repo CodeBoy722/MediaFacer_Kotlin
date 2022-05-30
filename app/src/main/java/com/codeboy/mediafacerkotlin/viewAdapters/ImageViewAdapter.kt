@@ -13,8 +13,9 @@ import com.bumptech.glide.request.RequestOptions
 import com.codeboy.mediafacer.models.ImageContent
 import com.codeboy.mediafacerkotlin.R
 import com.codeboy.mediafacerkotlin.databinding.ImageItemBinding
+import com.codeboy.mediafacerkotlin.listeners.ImageActionListener
 
-class ImageViewAdapter : ListAdapter<ImageContent, ImageViewAdapter.ImageViewHolder>(ImageDiffUtil()) {
+class ImageViewAdapter(private val listener: ImageActionListener) : ListAdapter<ImageContent, ImageViewAdapter.ImageViewHolder>(ImageDiffUtil()) {
 
     var lastPosition = -1
 
@@ -46,9 +47,12 @@ class ImageViewAdapter : ListAdapter<ImageContent, ImageViewAdapter.ImageViewHol
     }
 
 
-    class ImageViewHolder(private val bindings:ImageItemBinding): RecyclerView.ViewHolder(bindings.root), View.OnClickListener{
+    inner class ImageViewHolder(private val bindings:ImageItemBinding):
+        RecyclerView.ViewHolder(bindings.root), View.OnClickListener, View.OnLongClickListener{
         lateinit var item: ImageContent
         fun bind(){
+            bindings.root.setOnLongClickListener(this)
+            bindings.root.setOnClickListener(this)
             Glide.with(bindings.image)
                 .load(item.imageUri)
                 .apply(RequestOptions().centerCrop())
@@ -57,6 +61,11 @@ class ImageViewAdapter : ListAdapter<ImageContent, ImageViewAdapter.ImageViewHol
 
         override fun onClick(p0: View?) {
 
+        }
+
+        override fun onLongClick(v: View?): Boolean {
+            listener.onImageItemLongClicked(item)
+            return true
         }
     }
 

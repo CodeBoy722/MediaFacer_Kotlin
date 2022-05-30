@@ -32,11 +32,11 @@
             android:layout_height="wrap_content"
             android:layout_marginStart="8dp"
             android:layout_marginEnd="8dp"
-            android:fontFamily="@font/notosans_regular"
             android:text="The alpha go to the hills for a top meeting "
             android:textSize="13sp"
-            app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_weight="8"
+            android:fontFamily="@font/notosans_regular"
+            app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toEndOf="@+id/textView12"
             app:layout_constraintTop_toTopOf="@+id/textView12" />
 

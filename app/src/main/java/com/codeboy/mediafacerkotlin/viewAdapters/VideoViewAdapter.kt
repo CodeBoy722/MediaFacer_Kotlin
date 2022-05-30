@@ -13,8 +13,9 @@ import com.bumptech.glide.request.RequestOptions
 import com.codeboy.mediafacer.models.VideoContent
 import com.codeboy.mediafacerkotlin.R
 import com.codeboy.mediafacerkotlin.databinding.VideoItemBinding
+import com.codeboy.mediafacerkotlin.listeners.VideoActionListener
 
-class VideoViewAdapter : ListAdapter<VideoContent, VideoViewAdapter.VideoViewHolder>(VideoDiffUtil()){
+class VideoViewAdapter(private val listener: VideoActionListener) : ListAdapter<VideoContent, VideoViewAdapter.VideoViewHolder>(VideoDiffUtil()){
 
     var lastPosition = -1
 
@@ -44,10 +45,12 @@ class VideoViewAdapter : ListAdapter<VideoContent, VideoViewAdapter.VideoViewHol
         }
     }
 
-    class VideoViewHolder(private val bindings: VideoItemBinding)
-        : RecyclerView.ViewHolder(bindings.root), View.OnClickListener{
+    inner class VideoViewHolder(private val bindings: VideoItemBinding)
+        : RecyclerView.ViewHolder(bindings.root), View.OnClickListener, View.OnLongClickListener{
         lateinit var item: VideoContent
         fun bind(){
+            bindings.root.setOnLongClickListener(this)
+            bindings.play.setOnClickListener(this)
             Glide.with(bindings.videoPreview)
                 .load(item.videoUri)
                 .apply(RequestOptions().centerCrop())
@@ -55,8 +58,13 @@ class VideoViewAdapter : ListAdapter<VideoContent, VideoViewAdapter.VideoViewHol
             bindings.play.setOnClickListener(this)
         }
 
-        override fun onClick(p0: View?) {
+        override fun onClick(v: View?) {
 
+        }
+
+        override fun onLongClick(v: View?): Boolean {
+            listener.onVideoItemLongClicked(item)
+            return true
         }
     }
 

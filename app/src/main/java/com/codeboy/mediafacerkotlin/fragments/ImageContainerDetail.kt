@@ -10,6 +10,8 @@ import com.codeboy.mediafacer.models.ImageContent
 import com.codeboy.mediafacerkotlin.MainActivity
 import com.codeboy.mediafacerkotlin.R
 import com.codeboy.mediafacerkotlin.databinding.FragmentImageMediadetailBinding
+import com.codeboy.mediafacerkotlin.dialogs.ImageDetails
+import com.codeboy.mediafacerkotlin.listeners.ImageActionListener
 import com.codeboy.mediafacerkotlin.utils.Utils
 import com.codeboy.mediafacerkotlin.viewAdapters.ImageViewAdapter
 
@@ -50,7 +52,17 @@ class ImageContainerDetail() : Fragment() {
         val headTitle = "$audioMediaType: $title"
         bindings.mediaTitle.text = headTitle
 
-        val audiosAdapter = ImageViewAdapter()
+        val audiosAdapter = ImageViewAdapter(object: ImageActionListener {
+            override fun onImageItemClicked(imageItem: ImageContent) {
+                //TODO("Not yet implemented")
+            }
+
+            override fun onImageItemLongClicked(imageItem: ImageContent) {
+                val imageDetails = ImageDetails(imageItem)
+                imageDetails.show(childFragmentManager,imageDetails.javaClass.canonicalName)
+            }
+
+        })
         audiosAdapter.submitList(Images)
         bindings.imageList.adapter = audiosAdapter
     }
