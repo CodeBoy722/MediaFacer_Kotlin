@@ -22,6 +22,7 @@ class About() : Fragment() {
         super.onDetach()
         //make bottom navigation visible again
         (requireActivity() as MainActivity).showBottomMenu()
+        (requireActivity() as MainActivity).loadInterstitial()
     }
 
 

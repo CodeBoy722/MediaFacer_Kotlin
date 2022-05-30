@@ -1,14 +1,15 @@
 package com.codeboy.mediafacerkotlin
 
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
+import android.util.DisplayMetrics
 import android.view.Gravity
 import android.view.View
 import android.view.animation.Animation
 import android.view.animation.AnimationUtils
 import android.widget.Toast
+import androidx.appcompat.app.AppCompatActivity
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import androidx.transition.Slide
@@ -19,6 +20,10 @@ import com.codeboy.mediafacer.models.*
 import com.codeboy.mediafacerkotlin.databinding.ActivityMainBinding
 import com.codeboy.mediafacerkotlin.fragments.*
 import com.codeboy.mediafacerkotlin.viewAdapters.MainPagerFragmentAdapter
+import com.google.android.gms.ads.*
+import com.google.android.gms.ads.interstitial.InterstitialAd
+import com.google.android.gms.ads.interstitial.InterstitialAdLoadCallback
+import com.google.firebase.analytics.FirebaseAnalytics
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.async
@@ -50,6 +55,7 @@ class MainActivity : AppCompatActivity() {
             about.view?.startAnimation(anim)
         })
 
+        initializeBannerAd()
         setUpBottomMenu()
         //testFacer()
     }
@@ -112,5 +118,75 @@ class MainActivity : AppCompatActivity() {
             true
         }
     }
+
+    private fun initializeBannerAd() {
+        val mAdView = AdView(this)
+        mAdView.adSize = getAdSize()
+        mAdView.adUnitId = getString(R.string.banner)
+        bindings.adzone.addView(mAdView)
+        val adRequest = AdRequest.Builder()
+            .build()
+        mAdView.loadAd(adRequest)
+        mAdView.adListener = object : AdListener() {
+            override fun onAdLoaded() {
+                super.onAdLoaded()
+                bindings.adzone.visibility = View.VISIBLE
+            }
+        }
+    }
+
+    private fun getAdSize(): AdSize? {
+        // Step 2 - Determine the screen width (less decorations) to use for the ad width.
+        val display = windowManager.defaultDisplay
+        val outMetrics = DisplayMetrics()
+        display.getMetrics(outMetrics)
+        val widthPixels = outMetrics.widthPixels.toFloat()
+        val density = outMetrics.density
+        val adWidth = (widthPixels / density).toInt()
+
+        // Step 3 - Get adaptive ad size and return for setting on the ad view.
+        return AdSize.getCurrentOrientationAnchoredAdaptiveBannerAdSize(this, adWidth)
+    }
+
+
+    fun loadInterstitial() {
+        InterstitialAd.load(this, getString(R.string.interstitial), AdRequest.Builder().build(), object : InterstitialAdLoadCallback() {
+                override fun onAdLoaded(interstitialAd: InterstitialAd) {
+                    super.onAdLoaded(interstitialAd)
+                    interstitialAd.fullScreenContentCallback = object :
+                        FullScreenContentCallback() {
+                        override fun onAdFailedToShowFullScreenContent(adError: AdError) {
+                            super.onAdFailedToShowFullScreenContent(adError)
+                        }
+
+                        override fun onAdShowedFullScreenContent() {
+                            super.onAdShowedFullScreenContent()
+                        }
+
+                        override fun onAdDismissedFullScreenContent() {
+                            super.onAdDismissedFullScreenContent()
+                        }
+
+                        override fun onAdImpression() {
+                            super.onAdImpression()
+                            val bundle = Bundle()
+                            bundle.putString(
+                                FirebaseAnalytics.Param.METHOD,
+                                "onAdImpression_Banner"
+                            )
+                            FirebaseAnalytics.getInstance(this@MainActivity)
+                                .logEvent(FirebaseAnalytics.Event.AD_IMPRESSION, bundle)
+                        }
+                    }
+                    interstitialAd.show(this@MainActivity)
+                }
+
+                override fun onAdFailedToLoad(loadAdError: LoadAdError) {
+                    super.onAdFailedToLoad(loadAdError)
+                }
+            })
+    }
+
+
 
 }
