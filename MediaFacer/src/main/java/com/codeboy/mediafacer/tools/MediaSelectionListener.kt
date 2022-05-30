@@ -6,6 +6,6 @@ import com.codeboy.mediafacer.models.VideoContent
 
 interface MediaSelectionListener {
 
- fun onMediaSelected(audios: ArrayList<AudioContent>, videos: ArrayList<VideoContent>, Images: ArrayList<ImageContent>)
+ fun onMediaItemsSelected(audios: ArrayList<AudioContent>, videos: ArrayList<VideoContent>, Images: ArrayList<ImageContent>)
 
 }

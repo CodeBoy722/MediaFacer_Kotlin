@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <style name="bottom_menu">
+        <item name="android:background">@color/facer_black</item>
+    </style>
+
+    <style name="main_background">
+        <item name="android:background">@color/black</item>
+    </style>
+
+</resources>

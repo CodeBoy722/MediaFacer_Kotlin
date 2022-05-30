@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <color name="black">#FF000000</color>
+    <color name="white">#FFFFFFFF</color>
+    <color name="transparent">#00000000</color>
+
+    <color name="baby_blue_eyes">#D5F3ff</color>
+    <color name="tufts_blue">#92E0ff</color>
+    <color name="facer_black">#000000ff</color>
+    <color name="bright_navy_blue">#7ADAff</color>
+    <color name="aero_navy_blue">#BDECff</color>
+
+</resources>

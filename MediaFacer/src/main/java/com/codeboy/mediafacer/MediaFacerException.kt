@@ -1,7 +1,3 @@
 package com.codeboy.mediafacer
 
-class MediaFacerException: Exception() {
-
-
-
-}
+internal class MediaFacerException(override val message: String): Exception(message) {}

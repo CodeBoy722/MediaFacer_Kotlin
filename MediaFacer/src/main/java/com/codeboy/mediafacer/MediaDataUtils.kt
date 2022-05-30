@@ -7,8 +7,7 @@ object MediaDataUtils {
 
     fun convertDuration(duration: Long): String? {
         var out: String? = null
-        var hours: Long = 0
-        hours = try {
+        val hours: Long = try {
             duration / 3600000
         } catch (e: Exception) {
             e.printStackTrace()
@@ -19,8 +18,8 @@ object MediaDataUtils {
         if (minutes == "0") {
             minutes = "00"
         }
-        val remaining_seconds = duration - hours * 3600000 - remainingMinutes * 60000
-        var seconds = remaining_seconds.toString()
+        val remainingSeconds = duration - hours * 3600000 - remainingMinutes * 60000
+        var seconds = remainingSeconds.toString()
         seconds = if (seconds.length < 2) {
             "00"
         } else {
@@ -36,7 +35,7 @@ object MediaDataUtils {
 
     fun milliSecondsToTimer(milliseconds: Long): String {
         var finalTimerString = ""
-        var secondsString = ""
+        val secondsString: String
         // Convert total duration into time
         val hours = (milliseconds / (1000 * 60 * 60)).toInt()
         val minutes = (milliseconds % (1000 * 60 * 60)).toInt() / (1000 * 60)
@@ -59,7 +58,7 @@ object MediaDataUtils {
     }
 
     fun size(size: Int): String {
-        var hrSize = ""
+        val hrSize: String
         val m = size / 1024.0
         val dec = DecimalFormat("0.00")
         hrSize = if (m > 1) {

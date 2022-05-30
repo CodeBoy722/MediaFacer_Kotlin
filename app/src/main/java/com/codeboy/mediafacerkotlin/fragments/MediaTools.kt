@@ -5,6 +5,11 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import com.codeboy.mediafacer.models.AudioContent
+import com.codeboy.mediafacer.models.ImageContent
+import com.codeboy.mediafacer.models.VideoContent
+import com.codeboy.mediafacer.tools.MediaFacerPicker
+import com.codeboy.mediafacer.tools.MediaSelectionListener
 import com.codeboy.mediafacerkotlin.R
 import com.codeboy.mediafacerkotlin.databinding.FragmentMediaToolsBinding
 
@@ -21,9 +26,18 @@ class MediaTools() : Fragment() {
         bindings = FragmentMediaToolsBinding.bind(view)
         bindings.lifecycleOwner = viewLifecycleOwner
 
-        bindings.openPicker.setOnClickListener(View.OnClickListener {
+        bindings.openPicker.setOnClickListener {
 
-        })
+            val mediaPicker = MediaFacerPicker()
+                .addAllMediaSelection()
+                .addMediaSelectionListener(object : MediaSelectionListener {
+                    override fun onMediaItemsSelected(
+                        audios: ArrayList<AudioContent>, videos: ArrayList<VideoContent>, Images: ArrayList<ImageContent>, ) {
+                        // handle your selected items here
+                    }
+                }).initMediaPicker()
+                .show(childFragmentManager,MediaFacerPicker().javaClass.canonicalName)
+        }
 
     }
 
