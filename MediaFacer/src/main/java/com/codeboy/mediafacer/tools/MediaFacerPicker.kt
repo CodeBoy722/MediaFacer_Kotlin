@@ -106,8 +106,22 @@ class MediaFacerPicker() : BottomSheetDialogFragment() {
 
     private fun buildMediaPicker(){
 
+    }
+
+    fun setImageSelectionFolderDrawable(drawableId: Int){
 
     }
 
+    fun setSelectionCompleteDrawable(drawableId: Int){
+
+    }
+
+    fun  setAudioDefaultAlbumArtDrawable(drawableId: Int){
+
+    }
+
+    fun setSelectionMenuTitles(){
+
+    }
 
 }
