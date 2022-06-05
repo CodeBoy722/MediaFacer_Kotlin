@@ -108,20 +108,24 @@ class MediaFacerPicker() : BottomSheetDialogFragment() {
 
     }
 
-    fun setImageSelectionFolderDrawable(drawableId: Int){
+    fun setImageSelectionFolderDrawable(drawableId: Int): MediaFacerPicker{
 
+        return this
     }
 
-    fun setSelectionCompleteDrawable(drawableId: Int){
+    fun setSelectionCompleteDrawable(drawableId: Int): MediaFacerPicker{
 
+        return this
     }
 
-    fun  setAudioDefaultAlbumArtDrawable(drawableId: Int){
+    fun  setAudioDefaultAlbumArtDrawable(drawableId: Int): MediaFacerPicker{
 
+        return this
     }
 
-    fun setSelectionMenuTitles(){
+    fun setSelectionMenuTitles(): MediaFacerPicker{
 
+        return this
     }
 
 }
