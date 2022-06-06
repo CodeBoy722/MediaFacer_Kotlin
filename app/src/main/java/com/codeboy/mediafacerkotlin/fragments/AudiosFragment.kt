@@ -395,4 +395,8 @@ class AudiosFragment() : Fragment() {
         popup.show()
     }
 
+    override fun onDestroyView() {
+        viewModelStore.clear()
+        super.onDestroyView()
+    }
 }

@@ -9,17 +9,28 @@ import android.view.ViewGroup
 import com.codeboy.mediafacer.MediaFacerException
 import com.codeboy.mediafacer.R
 import com.codeboy.mediafacer.databinding.FragmentMediaFacerPickerBinding
+import com.codeboy.mediafacer.mediaFragments.AudioSelect
+import com.codeboy.mediafacer.mediaFragments.ImageSelect
+import com.codeboy.mediafacer.mediaFragments.VideoSelect
+import com.codeboy.mediafacer.models.AudioArtistContent
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 
-class MediaFacerPicker() : BottomSheetDialogFragment() {
+class MediaFacerPicker() : BottomSheetDialogFragment(), View.OnClickListener {
 
     private lateinit var bindings: FragmentMediaFacerPickerBinding
     private lateinit var bottomSheetBehavior: BottomSheetBehavior<*>
+
     private var addVideos = false
     private var addImages = false
     private var addAudios = false
+
+    private var customAlbumDrawable = R.drawable.music_placeholder
     private lateinit var listener: MediaSelectionListener
+
+    private lateinit var videoSelect: VideoSelect
+    private lateinit var audioSelect: AudioSelect
+    private lateinit var imageSelect: ImageSelect
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         return inflater.inflate(R.layout.fragment_media_facer_picker, container, false)
@@ -51,18 +62,19 @@ class MediaFacerPicker() : BottomSheetDialogFragment() {
                     }
                 }
             }
-
             override fun onSlide(view: View, offset: Float) {}
         })
     }
 
     override fun onStart() {
         super.onStart()
+        //set bottom sheet to full size
         bottomSheetBehavior.state = BottomSheetBehavior.STATE_COLLAPSED;
+        initMediaPicker()
     }
 
     @Throws(MediaFacerException::class)
-    fun initMediaPicker(): MediaFacerPicker{
+    private fun initMediaPicker(): MediaFacerPicker{
         when {
             !addVideos && !addAudios && !addImages -> {
                 throw MediaFacerException("add at least one media type for selection")
@@ -105,27 +117,60 @@ class MediaFacerPicker() : BottomSheetDialogFragment() {
     }
 
     private fun buildMediaPicker(){
-
+        bindings.audioOption.setOnClickListener(this)
+        bindings.videoOption.setOnClickListener(this)
+        bindings.imageOption.setOnClickListener(this)
+        //todo setup navigation
+        setUpSelectedMediaFragment()
     }
 
-    fun setImageSelectionFolderDrawable(drawableId: Int): MediaFacerPicker{
-
-        return this
+    private fun setUpSelectedMediaFragment(){
+        when {
+            addVideos -> {
+                videoSelect = VideoSelect()
+            }
+            addAudios -> {
+                audioSelect = AudioSelect(customAlbumDrawable)
+            }
+            addImages -> {
+                imageSelect = ImageSelect()
+            }
+        }
     }
 
+    // pass in yur custom selecting complete drawable
     fun setSelectionCompleteDrawable(drawableId: Int): MediaFacerPicker{
 
         return this
     }
 
-    fun  setAudioDefaultAlbumArtDrawable(drawableId: Int): MediaFacerPicker{
-
+    //pass in your custom default album image for audios without an album art
+    //if you are selecting audios too
+    fun setAudioDefaultAlbumArtDrawable(drawableId: Int): MediaFacerPicker{
+        customAlbumDrawable = drawableId
         return this
     }
 
-    fun setSelectionMenuTitles(): MediaFacerPicker{
-
+    //pass in your title strings here in any local or language to fit your use-case
+    fun setSelectionMenuTitles(audiosText: String, videosText: String, ImagesText:String): MediaFacerPicker{
+        bindings.audioOptionText.text = audiosText
+        bindings.videoOptionText.text = videosText
+        bindings.imageOptionText.text = videosText
         return this
+    }
+
+    override fun onClick(v: View) {
+        when (v.id) {
+            R.id.audio_option -> {
+
+            }
+            R.id.video_option -> {
+
+            }
+            R.id.image_option -> {
+
+            }
+        }
     }
 
 }

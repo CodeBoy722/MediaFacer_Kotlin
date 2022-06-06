@@ -73,4 +73,9 @@ class VideoContainerDetail() : Fragment() {
         (requireActivity() as MainActivity).showBottomMenu()
     }
 
+    override fun onDestroyView() {
+        viewModelStore.clear()
+        super.onDestroyView()
+    }
+
 }

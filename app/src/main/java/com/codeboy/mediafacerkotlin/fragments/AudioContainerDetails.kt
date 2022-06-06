@@ -71,4 +71,10 @@ class AudioContainerDetails() : Fragment() {
         //make bottom navigation visible again
         (requireActivity() as MainActivity).showBottomMenu()
     }
+
+    override fun onDestroyView() {
+        viewModelStore.clear()
+        super.onDestroyView()
+    }
+
 }

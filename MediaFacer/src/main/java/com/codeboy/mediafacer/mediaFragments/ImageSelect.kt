@@ -7,7 +7,7 @@ import android.view.View
 import android.view.ViewGroup
 import com.codeboy.mediafacer.R
 
-internal class ImageSelect : Fragment() {
+internal class ImageSelect() : Fragment() {
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?, ): View? {
         return inflater.inflate(R.layout.fragment_image_select, container, false)

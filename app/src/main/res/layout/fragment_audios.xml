@@ -24,7 +24,7 @@
 
 
                 <TextView
-                    android:id="@+id/textView2"
+                    android:id="@+id/video_option_text"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="16dp"
@@ -69,7 +69,7 @@
                     android:fontFamily="@font/poppinsbold"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toStartOf="@+id/audio_options"
-                    app:layout_constraintStart_toEndOf="@+id/textView2"
+                    app:layout_constraintStart_toEndOf="@+id/video_option_text"
                     app:layout_constraintTop_toTopOf="parent" />
 
             </androidx.constraintlayout.widget.ConstraintLayout>

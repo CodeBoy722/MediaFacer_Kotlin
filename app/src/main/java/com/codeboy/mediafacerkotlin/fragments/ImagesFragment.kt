@@ -204,6 +204,11 @@ class ImagesFragment() : Fragment() {
         popup.show()
     }
 
+    override fun onDestroyView() {
+        viewModelStore.clear()
+        super.onDestroyView()
+    }
+
     /*private fun loadNewItems(){
         Handler(Looper.getMainLooper())
             .post {

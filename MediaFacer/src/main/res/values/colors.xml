@@ -10,5 +10,6 @@
     <color name="facer_black">#000000ff</color>
     <color name="bright_navy_blue">#7ADAff</color>
     <color name="aero_navy_blue">#BDECff</color>
+    <color name="skyblue">#4BB4E9</color>
 
 </resources>

@@ -33,10 +33,9 @@ class MediaTools() : Fragment() {
                 .addMediaSelectionListener(object : MediaSelectionListener {
                     override fun onMediaItemsSelected(
                         audios: ArrayList<AudioContent>, videos: ArrayList<VideoContent>, Images: ArrayList<ImageContent>, ) {
-                        // handle your selected items here
+                        // todo handle your selected media items here
                     }
-                }).initMediaPicker()
-                .show(childFragmentManager,MediaFacerPicker().javaClass.canonicalName)
+                }).show(childFragmentManager,MediaFacerPicker().javaClass.canonicalName)
         }
 
     }

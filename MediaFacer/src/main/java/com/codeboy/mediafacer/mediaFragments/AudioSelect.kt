@@ -7,7 +7,13 @@ import android.view.View
 import android.view.ViewGroup
 import com.codeboy.mediafacer.R
 
-internal class AudioSelect : Fragment() {
+internal class AudioSelect() : Fragment() {
+
+    private var defaultAlbumArt = 0
+
+    constructor(defaultAlbumArt: Int): this(){
+        this.defaultAlbumArt = defaultAlbumArt
+    }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?, ): View? {
         return inflater.inflate(R.layout.fragment_audio_select, container, false)
