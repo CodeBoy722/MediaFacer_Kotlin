@@ -15,7 +15,8 @@ import com.codeboy.mediafacerkotlin.R
 import com.codeboy.mediafacerkotlin.databinding.ImageItemBinding
 import com.codeboy.mediafacerkotlin.listeners.ImageActionListener
 
-class ImageViewAdapter(private val listener: ImageActionListener) : ListAdapter<ImageContent, ImageViewAdapter.ImageViewHolder>(ImageDiffUtil()) {
+class ImageViewAdapter(private val listener: ImageActionListener)
+    : ListAdapter<ImageContent, ImageViewAdapter.ImageViewHolder>(ImageDiffUtil()) {
 
     var lastPosition = -1
 

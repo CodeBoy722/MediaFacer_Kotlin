@@ -17,9 +17,9 @@ internal object AudiosViewModel: ViewModel() {
     var audioBuckets: MutableLiveData<ArrayList<AudioBucketContent>> = MutableLiveData()
     var audios: MutableLiveData<ArrayList<AudioContent>> = MutableLiveData()
     var foundAudios: MutableLiveData<ArrayList<AudioContent>> = MutableLiveData()
-    private var audiosList = ArrayList<AudioContent>()
 
     fun loadMoreAudioItems(context: Context, paginationStart: Int, paginationLimit: Int, shouldPaginate: Boolean){
+        val audiosList = ArrayList<AudioContent>()
         CoroutineScope(Dispatchers.IO).async {
             audiosList.addAll(
                 MediaFacer

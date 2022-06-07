@@ -15,7 +15,8 @@ import com.codeboy.mediafacerkotlin.R
 import com.codeboy.mediafacerkotlin.databinding.AudioItemBinding
 import com.codeboy.mediafacerkotlin.listeners.AudioActionListener
 
-class AudioViewAdapter(private val listener: AudioActionListener) : ListAdapter<AudioContent, AudioViewAdapter.AudioViewHolder>(AudioDiffUtil()) {
+class AudioViewAdapter(private val listener: AudioActionListener)
+    : ListAdapter<AudioContent, AudioViewAdapter.AudioViewHolder>(AudioDiffUtil()) {
 
     var lastPosition = -1
 

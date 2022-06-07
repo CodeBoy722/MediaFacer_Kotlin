@@ -31,14 +31,14 @@ import kotlinx.coroutines.async
 class MainActivity : AppCompatActivity() {
 
     lateinit var bindings: ActivityMainBinding
-    var folderList = ArrayList<AudioBucketContent>()
+    private var folderList = ArrayList<AudioBucketContent>()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         bindings = DataBindingUtil.setContentView(this, R.layout.activity_main)
         bindings.lifecycleOwner = this
 
-        bindings.aboutMenu.setOnClickListener(View.OnClickListener {
+        bindings.aboutMenu.setOnClickListener {
             hideBottomMenu()
             val about = About()
             val slideOutFromTop = Slide(Gravity.TOP)
@@ -53,7 +53,7 @@ class MainActivity : AppCompatActivity() {
                 .addToBackStack(null)
                 .commit()
             about.view?.startAnimation(anim)
-        })
+        }
 
         initializeBannerAd()
         setUpBottomMenu()
@@ -121,7 +121,7 @@ class MainActivity : AppCompatActivity() {
 
     private fun initializeBannerAd() {
         val mAdView = AdView(this)
-        mAdView.adSize = getAdSize()
+        mAdView.setAdSize(getAdSize())
         mAdView.adUnitId = getString(R.string.banner)
         bindings.adzone.addView(mAdView)
         val adRequest = AdRequest.Builder()
@@ -135,11 +135,19 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-    private fun getAdSize(): AdSize? {
-        // Step 2 - Determine the screen width (less decorations) to use for the ad width.
-        val display = windowManager.defaultDisplay
+    private fun getAdSize(): AdSize {
         val outMetrics = DisplayMetrics()
-        display.getMetrics(outMetrics)
+        // Step 2 - Determine the screen width (less decorations) to use for the ad width.
+        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.R) {
+            val display = this.display
+            @Suppress("DEPRECATION")
+            display?.getRealMetrics(outMetrics)
+        } else {
+            @Suppress("DEPRECATION")
+            val display = this.windowManager.defaultDisplay
+            @Suppress("DEPRECATION")
+            display.getMetrics(outMetrics)
+        }
         val widthPixels = outMetrics.widthPixels.toFloat()
         val density = outMetrics.density
         val adWidth = (widthPixels / density).toInt()
@@ -155,17 +163,6 @@ class MainActivity : AppCompatActivity() {
                     super.onAdLoaded(interstitialAd)
                     interstitialAd.fullScreenContentCallback = object :
                         FullScreenContentCallback() {
-                        override fun onAdFailedToShowFullScreenContent(adError: AdError) {
-                            super.onAdFailedToShowFullScreenContent(adError)
-                        }
-
-                        override fun onAdShowedFullScreenContent() {
-                            super.onAdShowedFullScreenContent()
-                        }
-
-                        override fun onAdDismissedFullScreenContent() {
-                            super.onAdDismissedFullScreenContent()
-                        }
 
                         override fun onAdImpression() {
                             super.onAdImpression()
@@ -181,10 +178,7 @@ class MainActivity : AppCompatActivity() {
                     interstitialAd.show(this@MainActivity)
                 }
 
-                override fun onAdFailedToLoad(loadAdError: LoadAdError) {
-                    super.onAdFailedToLoad(loadAdError)
-                }
-            })
+        })
     }
 
 

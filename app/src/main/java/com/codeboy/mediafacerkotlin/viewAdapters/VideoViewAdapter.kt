@@ -15,7 +15,8 @@ import com.codeboy.mediafacerkotlin.R
 import com.codeboy.mediafacerkotlin.databinding.VideoItemBinding
 import com.codeboy.mediafacerkotlin.listeners.VideoActionListener
 
-class VideoViewAdapter(private val listener: VideoActionListener) : ListAdapter<VideoContent, VideoViewAdapter.VideoViewHolder>(VideoDiffUtil()){
+class VideoViewAdapter(private val listener: VideoActionListener)
+    : ListAdapter<VideoContent, VideoViewAdapter.VideoViewHolder>(VideoDiffUtil()){
 
     var lastPosition = -1
 

@@ -18,11 +18,11 @@ internal object VideosViewModel: ViewModel() {
     var videoFolders: MutableLiveData<ArrayList<VideoFolderContent>> = MutableLiveData()
     var foundVideos: MutableLiveData<ArrayList<VideoContent>> = MutableLiveData()
     var videos: MutableLiveData<ArrayList<VideoContent>> = MutableLiveData()
-    private var videosList = ArrayList<VideoContent>()
 
     fun loadMoreVideoItems(context: Context, paginationStart: Int, paginationLimit: Int, shouldPaginate: Boolean){
+        val videoList = ArrayList<VideoContent>()
         CoroutineScope(Dispatchers.IO).async {
-            videosList.addAll(
+            videoList.addAll(
                 MediaFacer
                     .withPagination(paginationStart, paginationLimit, shouldPaginate)
                     .getVideos(context, MediaFacer.externalVideoContent)
@@ -30,7 +30,7 @@ internal object VideosViewModel: ViewModel() {
         }.invokeOnCompletion {
             Handler(Looper.getMainLooper())
                 .post{
-                    videos.value = videosList
+                    videos.value = videoList
                 }
         }
     }
