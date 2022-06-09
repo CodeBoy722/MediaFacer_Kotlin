@@ -644,6 +644,7 @@ internal interface AudioGet {
          do {
 
           val audio = AudioContent()
+          audio.filePath = cursor.getString(cursor.getColumnIndexOrThrow(Audio.Media.DATA))
           audio.name = cursor.getString(cursor.getColumnIndexOrThrow(Audio.Media.DISPLAY_NAME))
           audio.title = cursor.getString(cursor.getColumnIndexOrThrow(Audio.Media.TITLE))
 
