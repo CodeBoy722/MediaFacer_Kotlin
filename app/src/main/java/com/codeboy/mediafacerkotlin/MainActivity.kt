@@ -156,7 +156,6 @@ class MainActivity : AppCompatActivity() {
         return AdSize.getCurrentOrientationAnchoredAdaptiveBannerAdSize(this, adWidth)
     }
 
-
     fun loadInterstitial() {
         InterstitialAd.load(this, getString(R.string.interstitial), AdRequest.Builder().build(), object : InterstitialAdLoadCallback() {
                 override fun onAdLoaded(interstitialAd: InterstitialAd) {

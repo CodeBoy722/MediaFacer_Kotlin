@@ -69,7 +69,7 @@ class MediaFacerPicker() : BottomSheetDialogFragment(), View.OnClickListener {
     override fun onStart() {
         super.onStart()
         //set bottom sheet to full size
-        bottomSheetBehavior.state = BottomSheetBehavior.STATE_COLLAPSED;
+        bottomSheetBehavior.state = BottomSheetBehavior.STATE_EXPANDED;
         initMediaPicker()
     }
 
