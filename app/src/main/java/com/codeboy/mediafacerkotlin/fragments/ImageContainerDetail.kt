@@ -20,12 +20,12 @@ class ImageContainerDetail() : Fragment() {
     private lateinit var bindings: FragmentImageMediadetailBinding
     private lateinit var audioMediaType: String
     private lateinit var title: String
-    private lateinit var Images: ArrayList<ImageContent>
+    private lateinit var images: ArrayList<ImageContent>
 
     constructor(audioMediaType: String, title: String, audios: ArrayList<ImageContent>) : this() {
         this.audioMediaType = audioMediaType
         this.title = title
-        this.Images = audios
+        this.images = audios
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
@@ -63,7 +63,7 @@ class ImageContainerDetail() : Fragment() {
             }
 
         })
-        audiosAdapter.submitList(Images)
+        audiosAdapter.submitList(images)
         bindings.imageList.adapter = audiosAdapter
     }
 

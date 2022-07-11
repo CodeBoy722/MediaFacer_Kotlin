@@ -1,6 +1,5 @@
 package com.codeboy.mediafacerkotlin.fragments
 
-import android.annotation.SuppressLint
 import android.os.Bundle
 import android.view.Gravity
 import android.view.LayoutInflater
@@ -15,6 +14,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.transition.Slide
 import com.codeboy.mediafacer.models.ImageContent
+import com.codeboy.mediafacer.models.ImageFolderContent
 import com.codeboy.mediafacerkotlin.MainActivity
 import com.codeboy.mediafacerkotlin.R
 import com.codeboy.mediafacerkotlin.databinding.FragmentImagesBinding
@@ -44,9 +44,9 @@ class ImagesFragment() : Fragment() {
         bindings = FragmentImagesBinding.bind(view)
         bindings.lifecycleOwner = viewLifecycleOwner
 
-        bindings.imageOptions.setOnClickListener(View.OnClickListener {
+        bindings.imageOptions.setOnClickListener {
             showMenu(it)
-        })
+        }
 
         bindings.imagesList.hasFixedSize()
         bindings.imagesList.setHasFixedSize(true)
@@ -55,7 +55,6 @@ class ImagesFragment() : Fragment() {
         initImages()
     }
 
-    @SuppressLint("NotifyDataSetChanged")
     private fun initImages(){
         // init and setup your recyclerview with a layout manager
         val numOfColumns = calculateNoOfColumns(requireActivity(), 82f)
@@ -84,10 +83,11 @@ class ImagesFragment() : Fragment() {
         val model = ImageViewModel()
         //observe the LifeData list of items and feed them to recyclerview each time there is an update
         model.images.observe(viewLifecycleOwner) {
-            adapter.submitList(it)
+            val newData = ArrayList<ImageContent>()
+            newData.addAll(it)
+            adapter.submitList(newData)
             //notifyDataSetChanged on adapter after submitting list to avoid scroll lagging on recyclerview
             paginationStart = it.size //+ 1
-            adapter.notifyDataSetChanged()
             bindings.loader.visibility = View.GONE
         }
 
@@ -106,7 +106,6 @@ class ImagesFragment() : Fragment() {
         })
     }
 
-    @SuppressLint("NotifyDataSetChanged")
     private fun initImageFolders(){
         val layoutManager = LinearLayoutManager(requireActivity(),LinearLayoutManager.VERTICAL,false)
         bindings.imagesList.layoutManager = layoutManager
@@ -126,14 +125,15 @@ class ImagesFragment() : Fragment() {
 
         val model = ImageFolderViewModel()
         model.imageFolders.observe(viewLifecycleOwner) {
-            adapter.submitList(it)
+            val newData = ArrayList<ImageFolderContent>()
+            newData.addAll(it)
+            adapter.submitList(newData)
             paginationStart = it.size //+ 1
            /* Toast.makeText(
                 requireActivity(),
                 "Image Folders " + it.size.toString(),
                 Toast.LENGTH_LONG
             ).show()*/
-            adapter.notifyDataSetChanged()
             bindings.loader.visibility = View.GONE
         }
 

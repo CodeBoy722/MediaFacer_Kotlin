@@ -1,6 +1,5 @@
 package com.codeboy.mediafacerkotlin.fragments
 
-import android.annotation.SuppressLint
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextUtils
@@ -19,6 +18,7 @@ import androidx.recyclerview.widget.RecyclerView
 import androidx.transition.Slide
 import com.codeboy.mediafacer.MediaFacer
 import com.codeboy.mediafacer.models.VideoContent
+import com.codeboy.mediafacer.models.VideoFolderContent
 import com.codeboy.mediafacerkotlin.MainActivity
 import com.codeboy.mediafacerkotlin.R
 import com.codeboy.mediafacerkotlin.databinding.FragmentVideosBinding
@@ -49,9 +49,9 @@ class VideosFragment() : Fragment() {
         bindings = FragmentVideosBinding.bind(view)
         bindings.lifecycleOwner = viewLifecycleOwner
 
-        bindings.videoOptions.setOnClickListener(View.OnClickListener {
+        bindings.videoOptions.setOnClickListener {
             showMenu(it)
-        })
+        }
 
         bindings.videosList.hasFixedSize()
         bindings.videosList.setHasFixedSize(true)
@@ -61,7 +61,6 @@ class VideosFragment() : Fragment() {
         initVideos()
     }
 
-    @SuppressLint("NotifyDataSetChanged")
     private fun initVideos(){
         // init and setup your recyclerview with a layout manager
         val numOfColumns = calculateNoOfColumns(requireActivity(), 105f)
@@ -91,10 +90,11 @@ class VideosFragment() : Fragment() {
         val model = VideoViewModel()
         //observe the LifeData list of items and feed them to recyclerview each time there is an update
         model.videos.observe(viewLifecycleOwner) {
-            adapter.submitList(it)
+            val newData = ArrayList<VideoContent>()
+            newData.addAll(it)
+            adapter.submitList(newData)
             //notifyDataSetChanged on adapter after submitting list to avoid scroll lagging on recyclerview
             paginationStart = it.size //+ 1
-            adapter.notifyDataSetChanged()
             bindings.loader.visibility = View.GONE
         }
 
@@ -113,7 +113,6 @@ class VideosFragment() : Fragment() {
         })
     }
 
-    @SuppressLint("NotifyDataSetChanged")
     private fun initVideoFolders(){
         val layoutManager = LinearLayoutManager(requireActivity(),LinearLayoutManager.VERTICAL,false)
         bindings.videosList.layoutManager = layoutManager
@@ -132,14 +131,15 @@ class VideosFragment() : Fragment() {
 
         val model = VideoFolderViewModel()
         model.videoFolders.observe(viewLifecycleOwner) {
-            adapter.submitList(it)
+            val newData = ArrayList<VideoFolderContent>()
+            newData.addAll(it)
+            adapter.submitList(newData)
             paginationStart = it.size //+ 1
             /*Toast.makeText(
                 requireActivity(),
                 "video folders " + it.size.toString(),
                 Toast.LENGTH_LONG
             ).show()*/
-            adapter.notifyDataSetChanged()
             bindings.loader.visibility = View.GONE
         }
 
@@ -155,7 +155,6 @@ class VideosFragment() : Fragment() {
 
     }
 
-    @SuppressLint("NotifyDataSetChanged")
     private fun setupVideoSearch(){
         val numOfColumns = calculateNoOfColumns(requireActivity(), 105f)
         val layoutManager = GridLayoutManager(requireActivity(),numOfColumns)
@@ -174,9 +173,10 @@ class VideosFragment() : Fragment() {
 
         val videoSearch = VideoSearchViewModel()
         videoSearch.videos.observe(viewLifecycleOwner){
-            adapter.submitList(it)
+            val newData = ArrayList<VideoContent>()
+            newData.addAll(it)
+            adapter.submitList(newData)
             paginationStart = it.size //+ 1
-            adapter.notifyDataSetChanged()
             bindings.loader.visibility = View.GONE
         }
 
