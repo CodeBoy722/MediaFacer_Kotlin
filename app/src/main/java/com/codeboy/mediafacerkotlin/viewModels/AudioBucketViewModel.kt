@@ -3,6 +3,7 @@ package com.codeboy.mediafacerkotlin.viewModels
 import android.content.Context
 import android.os.Handler
 import android.os.Looper
+import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.codeboy.mediafacer.MediaFacer
@@ -13,7 +14,8 @@ import kotlinx.coroutines.async
 
 class AudioBucketViewModel: ViewModel() {
 
-    var audioBuckets: MutableLiveData<ArrayList<AudioBucketContent>> = MutableLiveData()
+    private val _audioBuckets: MutableLiveData<ArrayList<AudioBucketContent>> = MutableLiveData()
+    val audioBuckets: LiveData<ArrayList<AudioBucketContent>> = _audioBuckets
     private var audiosList = ArrayList<AudioBucketContent>()
 
     fun loadNewItems(context: Context, paginationStart: Int, paginationLimit: Int, shouldPaginate: Boolean){
@@ -26,7 +28,7 @@ class AudioBucketViewModel: ViewModel() {
         }.invokeOnCompletion {
             Handler(Looper.getMainLooper())
                 .post{
-                    audioBuckets.value = audiosList
+                    _audioBuckets.value = audiosList
                 }
         }
     }

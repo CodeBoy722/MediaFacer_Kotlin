@@ -3,6 +3,7 @@ package com.codeboy.mediafacerkotlin.viewModels
 import android.content.Context
 import android.os.Handler
 import android.os.Looper
+import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.codeboy.mediafacer.MediaFacer
@@ -14,7 +15,8 @@ import kotlinx.coroutines.async
 
 class VideoViewModel : ViewModel() {
 
-    var videos: MutableLiveData<ArrayList<VideoContent>> = MutableLiveData()
+    private val _videos: MutableLiveData<ArrayList<VideoContent>> = MutableLiveData()
+    val videos: LiveData<ArrayList<VideoContent>> = _videos
     private var videosList = ArrayList<VideoContent>()
 
     fun loadNewItems(context: Context, paginationStart: Int, paginationLimit: Int, shouldPaginate: Boolean){
@@ -27,7 +29,7 @@ class VideoViewModel : ViewModel() {
         }.invokeOnCompletion {
             Handler(Looper.getMainLooper())
                 .post{
-                   videos.value = videosList
+                   _videos.value = videosList
                 }
         }
     }

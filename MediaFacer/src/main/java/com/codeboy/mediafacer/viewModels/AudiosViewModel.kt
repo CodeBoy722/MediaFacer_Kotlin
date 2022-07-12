@@ -3,6 +3,7 @@ package com.codeboy.mediafacer.viewModels
 import android.content.Context
 import android.os.Handler
 import android.os.Looper
+import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.codeboy.mediafacer.MediaFacer
@@ -14,8 +15,10 @@ import kotlinx.coroutines.async
 
 internal object AudiosViewModel: ViewModel() {
 
-    var audioBuckets: MutableLiveData<ArrayList<AudioBucketContent>> = MutableLiveData()
-    var audios: MutableLiveData<ArrayList<AudioContent>> = MutableLiveData()
+    private val AudioBuckets: MutableLiveData<ArrayList<AudioBucketContent>> = MutableLiveData()
+    val audioBuckets: LiveData<ArrayList<AudioBucketContent>> = AudioBuckets
+    private val Audios: MutableLiveData<ArrayList<AudioContent>> = MutableLiveData()
+    val audios: LiveData<ArrayList<AudioContent>> = Audios
     var foundAudios: MutableLiveData<ArrayList<AudioContent>> = MutableLiveData()
 
     fun loadMoreAudioItems(context: Context, paginationStart: Int, paginationLimit: Int, shouldPaginate: Boolean){
@@ -29,7 +32,7 @@ internal object AudiosViewModel: ViewModel() {
         }.invokeOnCompletion {
             Handler(Looper.getMainLooper())
                 .post {
-                    audios.value = audiosList
+                    Audios.value = audiosList
                 }
         }
     }
@@ -64,13 +67,12 @@ internal object AudiosViewModel: ViewModel() {
         }.invokeOnCompletion {
             Handler(Looper.getMainLooper())
                 .post{
-                    audioBuckets.value = buckets
+                    AudioBuckets.value = buckets
                 }
         }
     }
 
     override fun onCleared() {
-        //todo dispose model here
         super.onCleared()
     }
 

@@ -3,6 +3,7 @@ package com.codeboy.mediafacerkotlin.viewModels
 import android.content.Context
 import android.os.Handler
 import android.os.Looper
+import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.codeboy.mediafacer.MediaFacer
 import com.codeboy.mediafacer.models.AudioGenreContent
@@ -12,7 +13,8 @@ import kotlinx.coroutines.async
 
 class AudioGenreViewModel {
 
-    var audioGenres: MutableLiveData<ArrayList<AudioGenreContent>> = MutableLiveData()
+    private val _audioGenres: MutableLiveData<ArrayList<AudioGenreContent>> = MutableLiveData()
+    val audioGenres: LiveData<ArrayList<AudioGenreContent>> = _audioGenres
     private var audioGenreList = ArrayList<AudioGenreContent>()
 
     fun loadNewItems(context: Context, paginationStart: Int, paginationLimit: Int, shouldPaginate: Boolean){
@@ -25,7 +27,7 @@ class AudioGenreViewModel {
         }.invokeOnCompletion {
             Handler(Looper.getMainLooper())
                 .post {
-                    audioGenres.value = audioGenreList
+                    _audioGenres.value = audioGenreList
                 }
         }
     }

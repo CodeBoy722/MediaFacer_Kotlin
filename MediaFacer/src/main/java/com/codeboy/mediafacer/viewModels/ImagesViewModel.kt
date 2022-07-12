@@ -3,6 +3,7 @@ package com.codeboy.mediafacer.viewModels
 import android.content.Context
 import android.os.Handler
 import android.os.Looper
+import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.codeboy.mediafacer.MediaFacer
@@ -14,8 +15,10 @@ import kotlinx.coroutines.async
 
 internal object ImagesViewModel: ViewModel() {
 
-    var images: MutableLiveData<ArrayList<ImageContent>> = MutableLiveData()
-    var imageFolders: MutableLiveData<ArrayList<ImageFolderContent>> = MutableLiveData()
+    private val Images: MutableLiveData<ArrayList<ImageContent>> = MutableLiveData()
+    val images: LiveData<ArrayList<ImageContent>> = Images
+    private val ImageFolders: MutableLiveData<ArrayList<ImageFolderContent>> = MutableLiveData()
+    val imageFolders: LiveData<ArrayList<ImageFolderContent>> = ImageFolders
     private var folders = ArrayList<ImageFolderContent>()
 
     fun loadNewItems(context: Context, paginationStart: Int, paginationLimit: Int, shouldPaginate: Boolean){
@@ -29,7 +32,7 @@ internal object ImagesViewModel: ViewModel() {
         }.invokeOnCompletion {
             Handler(Looper.getMainLooper())
                 .post{
-                    images.value = imageList
+                    Images.value = imageList
                 }
         }
     }
@@ -42,13 +45,12 @@ internal object ImagesViewModel: ViewModel() {
         }.invokeOnCompletion {
             Handler(Looper.getMainLooper())
                 .post{
-                    imageFolders.value = folders
+                    ImageFolders.value = folders
                 }
         }
     }
 
     override fun onCleared() {
-        //todo dispose model here
         super.onCleared()
     }
 }

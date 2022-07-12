@@ -18,7 +18,6 @@ import androidx.recyclerview.widget.RecyclerView
 import androidx.transition.Slide
 import com.codeboy.mediafacer.MediaFacer
 import com.codeboy.mediafacer.models.VideoContent
-import com.codeboy.mediafacer.models.VideoFolderContent
 import com.codeboy.mediafacerkotlin.MainActivity
 import com.codeboy.mediafacerkotlin.R
 import com.codeboy.mediafacerkotlin.databinding.FragmentVideosBinding
@@ -90,9 +89,7 @@ class VideosFragment() : Fragment() {
         val model = VideoViewModel()
         //observe the LifeData list of items and feed them to recyclerview each time there is an update
         model.videos.observe(viewLifecycleOwner) {
-            val newData = ArrayList<VideoContent>()
-            newData.addAll(it)
-            adapter.submitList(newData)
+            adapter.submitList(it)
             //notifyDataSetChanged on adapter after submitting list to avoid scroll lagging on recyclerview
             paginationStart = it.size //+ 1
             bindings.loader.visibility = View.GONE
@@ -131,9 +128,7 @@ class VideosFragment() : Fragment() {
 
         val model = VideoFolderViewModel()
         model.videoFolders.observe(viewLifecycleOwner) {
-            val newData = ArrayList<VideoFolderContent>()
-            newData.addAll(it)
-            adapter.submitList(newData)
+            adapter.submitList(it)
             paginationStart = it.size //+ 1
             /*Toast.makeText(
                 requireActivity(),
@@ -173,9 +168,9 @@ class VideosFragment() : Fragment() {
 
         val videoSearch = VideoSearchViewModel()
         videoSearch.videos.observe(viewLifecycleOwner){
-            val newData = ArrayList<VideoContent>()
-            newData.addAll(it)
-            adapter.submitList(newData)
+            val results = ArrayList<VideoContent>()
+            results.addAll(it)
+            adapter.submitList(results)
             paginationStart = it.size //+ 1
             bindings.loader.visibility = View.GONE
         }

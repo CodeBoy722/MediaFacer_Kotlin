@@ -3,6 +3,7 @@ package com.codeboy.mediafacerkotlin.viewModels
 import android.content.Context
 import android.os.Handler
 import android.os.Looper
+import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.codeboy.mediafacer.MediaFacer
@@ -14,7 +15,8 @@ import kotlinx.coroutines.async
 
 class ImageViewModel : ViewModel() {
 
-    var images: MutableLiveData<ArrayList<ImageContent>> = MutableLiveData()
+    private val _images: MutableLiveData<ArrayList<ImageContent>> = MutableLiveData()
+    val images: LiveData<ArrayList<ImageContent>> = _images
     private var imagesList = ArrayList<ImageContent>()
 
      fun loadNewItems(context: Context, paginationStart: Int, paginationLimit: Int, shouldPaginate: Boolean){
@@ -27,7 +29,7 @@ class ImageViewModel : ViewModel() {
          }.invokeOnCompletion {
              Handler(Looper.getMainLooper())
                  .post{
-                     images.value = imagesList
+                     _images.value = imagesList
                  }
          }
      }

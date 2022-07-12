@@ -3,6 +3,7 @@ package com.codeboy.mediafacerkotlin.viewModels
 import android.content.Context
 import android.os.Handler
 import android.os.Looper
+import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.codeboy.mediafacer.MediaFacer
@@ -13,7 +14,8 @@ import kotlinx.coroutines.async
 
 class ImageFolderViewModel: ViewModel() {
 
-    var imageFolders: MutableLiveData<ArrayList<ImageFolderContent>> = MutableLiveData()
+    private val _imageFolders: MutableLiveData<ArrayList<ImageFolderContent>> = MutableLiveData()
+    val imageFolders: LiveData<ArrayList<ImageFolderContent>> = _imageFolders
     private var imageFoldersList = ArrayList<ImageFolderContent>()
 
     fun loadNewItems(context: Context, paginationStart: Int, paginationLimit: Int, shouldPaginate: Boolean){
@@ -26,7 +28,7 @@ class ImageFolderViewModel: ViewModel() {
         }.invokeOnCompletion {
             Handler(Looper.getMainLooper())
                 .post{
-                    imageFolders.value = imageFoldersList
+                    _imageFolders.value = imageFoldersList
                 }
         }
     }

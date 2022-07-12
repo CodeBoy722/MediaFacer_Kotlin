@@ -82,9 +82,7 @@ class AudiosFragment() : Fragment() {
         val model = AudioViewModel()
         //observe the LifeData list of items and feed them to recyclerview each time there is an update
         model.audios.observe(viewLifecycleOwner) {
-            val newData = ArrayList<AudioContent>()
-            newData.addAll(it)
-            audiosAdapter.submitList(newData)
+            audiosAdapter.submitList(it)
             //notifyDataSetChanged on adapter after submitting list to avoid scroll lagging on recyclerview
             paginationStart = it.size //+ 1
             /*Toast.makeText(
@@ -129,9 +127,7 @@ class AudiosFragment() : Fragment() {
 
         val model = AudioBucketViewModel()
         model.audioBuckets.observe(viewLifecycleOwner) {
-            val newData = ArrayList<AudioBucketContent>()
-            newData.addAll(it)
-            audiosBucketAdapter.submitList(newData)
+            audiosBucketAdapter.submitList(it)
             paginationStart = it.size //+ 1
             bindings.loader.visibility = View.GONE
         }
@@ -166,9 +162,7 @@ class AudiosFragment() : Fragment() {
 
         val model = ArtistViewModel()
         model.audioArtists.observe(viewLifecycleOwner) {
-            val newData = ArrayList<AudioArtistContent>()
-            newData.addAll(it)
-            audiosBucketAdapter.submitList(newData)
+            audiosBucketAdapter.submitList(it)
             paginationStart = it.size //+ 1
             bindings.loader.visibility = View.GONE
         }
@@ -203,9 +197,7 @@ class AudiosFragment() : Fragment() {
 
         val model = AudioAlbumViewModel()
         model.audioAlbums.observe(viewLifecycleOwner) {
-            val newData = ArrayList<AudioAlbumContent>()
-            newData.addAll(it)
-            audiosAlbumAdapter.submitList(newData)
+            audiosAlbumAdapter.submitList(it)
             paginationStart = it.size //+ 1
             bindings.loader.visibility = View.GONE
         }
@@ -240,9 +232,7 @@ class AudiosFragment() : Fragment() {
 
         val model = AudioGenreViewModel()
         model.audioGenres.observe(viewLifecycleOwner) {
-            val newData = ArrayList<AudioGenreContent>()
-            newData.addAll(it)
-            audiosBucketAdapter.submitList(newData)
+            audiosBucketAdapter.submitList(it)
             paginationStart = it.size //+ 1
             bindings.loader.visibility = View.GONE
         }
@@ -272,9 +262,9 @@ class AudiosFragment() : Fragment() {
 
         val audioSearch = AudioSearchViewModel()
         audioSearch.audios.observe(viewLifecycleOwner){
-            val newData = ArrayList<AudioContent>()
-            newData.addAll(it)
-            audiosAdapter.submitList(newData)
+            val results = ArrayList<AudioContent>()
+            results.addAll(it)
+            audiosAdapter.submitList(results)
             paginationStart = it.size //+ 1
             bindings.loader.visibility = View.GONE
         }

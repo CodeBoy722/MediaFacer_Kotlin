@@ -3,6 +3,7 @@ package com.codeboy.mediafacer.viewModels
 import android.content.Context
 import android.os.Handler
 import android.os.Looper
+import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.codeboy.mediafacer.MediaFacer
@@ -11,12 +12,13 @@ import com.codeboy.mediafacer.models.VideoFolderContent
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.async
-import java.lang.reflect.Array
 
 internal object VideosViewModel: ViewModel() {
 
-    var videoFolders: MutableLiveData<ArrayList<VideoFolderContent>> = MutableLiveData()
-    var foundVideos: MutableLiveData<ArrayList<VideoContent>> = MutableLiveData()
+    private val VideoFolders: MutableLiveData<ArrayList<VideoFolderContent>> = MutableLiveData()
+    val videoFolders: LiveData<ArrayList<VideoFolderContent>> = VideoFolders
+    private val FoundVideos: MutableLiveData<ArrayList<VideoContent>> = MutableLiveData()
+    val foundVideos: LiveData<ArrayList<VideoContent>> = FoundVideos
     var videos: MutableLiveData<ArrayList<VideoContent>> = MutableLiveData()
 
     fun loadMoreVideoItems(context: Context, paginationStart: Int, paginationLimit: Int, shouldPaginate: Boolean){
@@ -48,7 +50,7 @@ internal object VideosViewModel: ViewModel() {
         }.invokeOnCompletion {
             Handler(Looper.getMainLooper())
                 .post{
-                    foundVideos.value = found
+                    FoundVideos.value = found
                 }
         }
     }
@@ -64,13 +66,12 @@ internal object VideosViewModel: ViewModel() {
         }.invokeOnCompletion {
             Handler(Looper.getMainLooper())
                 .post{
-                    videoFolders.value = folders
+                    VideoFolders.value = folders
                 }
         }
     }
 
     override fun onCleared() {
-        //todo dispose model here
         super.onCleared()
     }
 
