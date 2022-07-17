@@ -13,18 +13,18 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.async
 
-internal object ImagesViewModel: ViewModel() {
+internal class ImagesViewModel: ViewModel() {
 
-    private val Images: MutableLiveData<ArrayList<ImageContent>> = MutableLiveData()
-    val images: LiveData<ArrayList<ImageContent>> = Images
-    private val ImageFolders: MutableLiveData<ArrayList<ImageFolderContent>> = MutableLiveData()
-    val imageFolders: LiveData<ArrayList<ImageFolderContent>> = ImageFolders
+    private val _images: MutableLiveData<ArrayList<ImageContent>> = MutableLiveData()
+    val images: LiveData<ArrayList<ImageContent>> = _images
+    private val _imageFolders: MutableLiveData<ArrayList<ImageFolderContent>> = MutableLiveData()
+    val imageFolders: LiveData<ArrayList<ImageFolderContent>> = _imageFolders
     private var folders = ArrayList<ImageFolderContent>()
+    private var imagesList = ArrayList<ImageContent>()
 
     fun loadNewItems(context: Context, paginationStart: Int, paginationLimit: Int, shouldPaginate: Boolean){
-        val imageList = ArrayList<ImageContent>()
         CoroutineScope(Dispatchers.IO).async {
-            imageList.addAll(
+            imagesList.addAll(
                 MediaFacer
                     .withPagination(paginationStart, paginationLimit, shouldPaginate)
                     .getImages(context, MediaFacer.externalImagesContent)
@@ -32,7 +32,7 @@ internal object ImagesViewModel: ViewModel() {
         }.invokeOnCompletion {
             Handler(Looper.getMainLooper())
                 .post{
-                    Images.value = imageList
+                    _images.value = imagesList
                 }
         }
     }
@@ -45,7 +45,7 @@ internal object ImagesViewModel: ViewModel() {
         }.invokeOnCompletion {
             Handler(Looper.getMainLooper())
                 .post{
-                    ImageFolders.value = folders
+                    _imageFolders.value = folders
                 }
         }
     }

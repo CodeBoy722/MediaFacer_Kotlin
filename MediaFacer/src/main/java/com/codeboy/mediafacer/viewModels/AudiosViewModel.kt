@@ -13,12 +13,12 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.async
 
-internal object AudiosViewModel: ViewModel() {
+internal class AudiosViewModel: ViewModel() {
 
-    private val AudioBuckets: MutableLiveData<ArrayList<AudioBucketContent>> = MutableLiveData()
-    val audioBuckets: LiveData<ArrayList<AudioBucketContent>> = AudioBuckets
-    private val Audios: MutableLiveData<ArrayList<AudioContent>> = MutableLiveData()
-    val audios: LiveData<ArrayList<AudioContent>> = Audios
+    private val _audioBuckets: MutableLiveData<ArrayList<AudioBucketContent>> = MutableLiveData()
+    val audioBuckets: LiveData<ArrayList<AudioBucketContent>> = _audioBuckets
+    private val _audios: MutableLiveData<ArrayList<AudioContent>> = MutableLiveData()
+    val audios: LiveData<ArrayList<AudioContent>> = _audios
     var foundAudios: MutableLiveData<ArrayList<AudioContent>> = MutableLiveData()
 
     fun loadMoreAudioItems(context: Context, paginationStart: Int, paginationLimit: Int, shouldPaginate: Boolean){
@@ -32,7 +32,7 @@ internal object AudiosViewModel: ViewModel() {
         }.invokeOnCompletion {
             Handler(Looper.getMainLooper())
                 .post {
-                    Audios.value = audiosList
+                    _audios.value = audiosList
                 }
         }
     }
@@ -67,7 +67,7 @@ internal object AudiosViewModel: ViewModel() {
         }.invokeOnCompletion {
             Handler(Looper.getMainLooper())
                 .post{
-                    AudioBuckets.value = buckets
+                    _audioBuckets.value = buckets
                 }
         }
     }

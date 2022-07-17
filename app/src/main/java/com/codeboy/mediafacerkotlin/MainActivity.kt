@@ -1,21 +1,16 @@
 package com.codeboy.mediafacerkotlin
 
 import android.os.Bundle
-import android.os.Handler
-import android.os.Looper
 import android.util.DisplayMetrics
 import android.view.Gravity
 import android.view.View
 import android.view.animation.Animation
 import android.view.animation.AnimationUtils
-import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import androidx.transition.Slide
 import androidx.viewpager2.widget.ViewPager2
-import com.codeboy.mediafacer.MediaFacer
-import com.codeboy.mediafacer.MediaFacer.externalAudioContent
 import com.codeboy.mediafacer.models.*
 import com.codeboy.mediafacerkotlin.databinding.ActivityMainBinding
 import com.codeboy.mediafacerkotlin.fragments.*
@@ -24,9 +19,6 @@ import com.google.android.gms.ads.*
 import com.google.android.gms.ads.interstitial.InterstitialAd
 import com.google.android.gms.ads.interstitial.InterstitialAdLoadCallback
 import com.google.firebase.analytics.FirebaseAnalytics
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.async
 
 class MainActivity : AppCompatActivity() {
 
@@ -68,7 +60,7 @@ class MainActivity : AppCompatActivity() {
         bindings.bottomMenu.visibility = View.VISIBLE
     }
 
-    private fun testFacer(){
+    /*private fun testFacer(){
         var folders = ArrayList<AudioBucketContent>()
         CoroutineScope(Dispatchers.Main).async {
             folders = MediaFacer.getBuckets(this@MainActivity, externalAudioContent)
@@ -83,7 +75,7 @@ class MainActivity : AppCompatActivity() {
                     ).show()
                 }
         }
-    }
+    }*/
 
     private fun setUpBottomMenu(){
         val introFragmentList = ArrayList<Fragment>()

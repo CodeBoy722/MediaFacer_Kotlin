@@ -13,12 +13,12 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.async
 
-internal object VideosViewModel: ViewModel() {
+internal class VideosViewModel: ViewModel() {
 
-    private val VideoFolders: MutableLiveData<ArrayList<VideoFolderContent>> = MutableLiveData()
-    val videoFolders: LiveData<ArrayList<VideoFolderContent>> = VideoFolders
-    private val FoundVideos: MutableLiveData<ArrayList<VideoContent>> = MutableLiveData()
-    val foundVideos: LiveData<ArrayList<VideoContent>> = FoundVideos
+    private val _videoFolders: MutableLiveData<ArrayList<VideoFolderContent>> = MutableLiveData()
+    val videoFolders: LiveData<ArrayList<VideoFolderContent>> = _videoFolders
+    private val _foundVideos: MutableLiveData<ArrayList<VideoContent>> = MutableLiveData()
+    val foundVideos: LiveData<ArrayList<VideoContent>> = _foundVideos
     var videos: MutableLiveData<ArrayList<VideoContent>> = MutableLiveData()
 
     fun loadMoreVideoItems(context: Context, paginationStart: Int, paginationLimit: Int, shouldPaginate: Boolean){
@@ -50,7 +50,7 @@ internal object VideosViewModel: ViewModel() {
         }.invokeOnCompletion {
             Handler(Looper.getMainLooper())
                 .post{
-                    FoundVideos.value = found
+                    _foundVideos.value = found
                 }
         }
     }
@@ -66,7 +66,7 @@ internal object VideosViewModel: ViewModel() {
         }.invokeOnCompletion {
             Handler(Looper.getMainLooper())
                 .post{
-                    VideoFolders.value = folders
+                    _videoFolders.value = folders
                 }
         }
     }

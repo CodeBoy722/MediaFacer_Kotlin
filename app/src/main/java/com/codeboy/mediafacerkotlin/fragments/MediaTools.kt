@@ -30,6 +30,8 @@ class MediaTools() : Fragment() {
 
             val mediaPicker = MediaFacerPicker()
                 .addAllMediaSelection()
+                .setAudioDefaultAlbumArtDrawable(R.drawable.music_placeholder)
+                .setSelectionMenuTitles("Music","Videos","Photos")
                 .addMediaSelectionListener(object : MediaSelectionListener {
                     override fun onMediaItemsSelected(
                         audios: ArrayList<AudioContent>, videos: ArrayList<VideoContent>, Images: ArrayList<ImageContent>, ) {

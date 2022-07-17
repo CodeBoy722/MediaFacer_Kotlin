@@ -13,8 +13,9 @@ import com.bumptech.glide.request.RequestOptions
 import com.codeboy.mediafacer.R
 import com.codeboy.mediafacer.databinding.ImageSelectItemBinding
 import com.codeboy.mediafacer.models.ImageContent
+import com.codeboy.mediafacer.tools.MediaSelectionListener
 
-internal class ImageContentAdapter()
+internal class ImageContentAdapter(private val listener: MediaSelectionListener)
     : ListAdapter<ImageContent, ImageContentAdapter.ImageSelectViewHolder>(ImageDiffUtil()){
 
     var lastPosition = -1

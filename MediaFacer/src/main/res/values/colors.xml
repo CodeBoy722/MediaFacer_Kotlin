@@ -12,4 +12,17 @@
     <color name="aero_navy_blue">#BDECff</color>
     <color name="skyblue">#4BB4E9</color>
 
+
+    <!--    Darkmode colors-->
+    <color name="material_white_50">#FAFAFA</color>
+    <color name="material_white_100">#F5F5F5</color>
+    <color name="material_white_200">#EEEEEE</color>
+    <color name="material_white_300">#E0E0E0</color>
+    <color name="material_grey_400">#BDBDBD</color>
+    <color name="material_grey_500">#9E9E9E</color>
+    <color name="material_grey_600">#757575</color>
+    <color name="material_grey_700">#616161</color>
+    <color name="material_grey_800">#424242</color>
+    <color name="material_grey_900">#212121</color>
+
 </resources>

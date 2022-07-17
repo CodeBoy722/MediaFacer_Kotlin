@@ -13,8 +13,9 @@ import com.bumptech.glide.request.RequestOptions
 import com.codeboy.mediafacer.R
 import com.codeboy.mediafacer.databinding.VideoSelectItemBinding
 import com.codeboy.mediafacer.models.VideoContent
+import com.codeboy.mediafacer.tools.MediaSelectionListener
 
-internal class VideoContentAdapter()
+internal class VideoContentAdapter(private val listener: MediaSelectionListener)
     : ListAdapter<VideoContent, VideoContentAdapter.VideoSelectViewHolder>(VideoDiffUtil()){
 
     var lastPosition = -1

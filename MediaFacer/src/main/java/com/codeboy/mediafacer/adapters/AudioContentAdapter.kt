@@ -13,8 +13,9 @@ import com.bumptech.glide.request.RequestOptions
 import com.codeboy.mediafacer.R
 import com.codeboy.mediafacer.databinding.AudioSelectItemBinding
 import com.codeboy.mediafacer.models.AudioContent
+import com.codeboy.mediafacer.tools.MediaSelectionListener
 
-internal class AudioContentAdapter(private val defaultArt: Int)
+internal class AudioContentAdapter(private val defaultArt: Int,private val listener: MediaSelectionListener)
     : ListAdapter<AudioContent, AudioContentAdapter.AudioSelectViewHolder>(AudioDiffUtil()) {
 
     var lastPosition = -1
