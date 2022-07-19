@@ -1,12 +1,17 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-    <style name="bottom_menu">
+    <style name="picker_bottom_menu">
         <item name="android:background">@color/bright_navy_blue</item>
     </style>
 
-    <style name="main_background">
+    <style name="picker_fragments">
         <item name="android:background">@color/white</item>
+    </style>
+
+    <style name="picker_background">
+        <item name="android:background">@drawable/picker_background</item>
+        <item name="android:backgroundTint">@color/white</item>
     </style>
 
     <style name="CustomBottomSheetDialogTheme" parent="Theme.Design.BottomSheetDialog">

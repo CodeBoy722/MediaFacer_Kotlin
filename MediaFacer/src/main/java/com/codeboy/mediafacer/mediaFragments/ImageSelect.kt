@@ -36,13 +36,15 @@ internal class ImageSelect() : Fragment() {
         super.onViewCreated(view, savedInstanceState)
         bindings = FragmentImageSelectBinding.bind(view)
         bindings.lifecycleOwner = viewLifecycleOwner
-        initViews()
-    }
 
-    private fun initViews(){
         bindings.imageList.hasFixedSize()
         bindings.imageList.setHasFixedSize(true)
         bindings.imageList.setItemViewCacheSize(20)
+
+        initImages()
+    }
+
+    private fun initImages(){
         val numOfColumns = calculateNoOfColumns(requireActivity(), 82f)
         val layoutManager = GridLayoutManager(requireActivity(),numOfColumns)
         bindings.imageList.layoutManager = layoutManager

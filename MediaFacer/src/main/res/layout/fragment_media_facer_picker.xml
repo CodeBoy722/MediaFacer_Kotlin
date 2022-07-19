@@ -7,7 +7,7 @@
     <androidx.coordinatorlayout.widget.CoordinatorLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="@drawable/picker_background">
+        style="@style/picker_background">
 
         <com.google.android.material.appbar.AppBarLayout
             android:layout_width="match_parent"
@@ -21,8 +21,8 @@
 
                 <androidx.appcompat.widget.AppCompatImageButton
                     android:id="@+id/complete_selection"
-                    android:layout_width="45dp"
-                    android:layout_height="45dp"
+                    android:layout_width="35dp"
+                    android:layout_height="35dp"
                     android:layout_marginTop="8dp"
                     android:layout_marginEnd="8dp"
                     android:background="@color/transparent"
@@ -48,17 +48,17 @@
 
             </androidx.constraintlayout.widget.ConstraintLayout>
 
-
         </com.google.android.material.appbar.AppBarLayout>
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
+            android:nestedScrollingEnabled="true"
             app:layout_behavior="@string/appbar_scrolling_view_behavior">
 
             <androidx.viewpager2.widget.ViewPager2
                 android:id="@+id/media_pager"
-                android:layout_width="0dp"
+                android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 app:layout_constraintBottom_toTopOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
@@ -70,11 +70,11 @@
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:id="@+id/menus"
-            style="@style/bottom_menu"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_gravity="bottom|center"
-            app:layout_behavior="@string/hide_bottom_view_on_scroll_behavior">
+            app:layout_behavior="@string/hide_bottom_view_on_scroll_behavior"
+            style="@style/picker_bottom_menu">
 
             <androidx.appcompat.widget.AppCompatImageButton
                 android:id="@+id/audio_option"

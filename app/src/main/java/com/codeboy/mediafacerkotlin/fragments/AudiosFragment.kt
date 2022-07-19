@@ -33,7 +33,7 @@ class AudiosFragment() : Fragment() {
 
     private lateinit var bindings: FragmentAudiosBinding
     private var paginationStart = 0
-    private var paginationLimit = 75
+    private var paginationLimit = 100
     private var shouldPaginate = true
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
@@ -286,7 +286,7 @@ class AudiosFragment() : Fragment() {
                 // on every new search, clear the list in the view model and reset the pagination values to default
                 audioSearch.audiosList.clear()
                 paginationStart = 0
-                paginationLimit = 75
+                paginationLimit = 100
                 shouldPaginate = true
 
                 val searchText = newText.toString().trim()

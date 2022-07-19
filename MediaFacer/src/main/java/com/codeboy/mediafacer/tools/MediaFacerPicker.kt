@@ -5,10 +5,9 @@ import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
 import android.provider.MediaStore
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
-import android.view.Window
+import android.view.*
+import android.widget.FrameLayout
+import androidx.coordinatorlayout.widget.CoordinatorLayout
 import androidx.core.content.res.ResourcesCompat
 import androidx.fragment.app.Fragment
 import androidx.viewpager2.widget.ViewPager2
@@ -75,8 +74,10 @@ class MediaFacerPicker() : BottomSheetDialogFragment(), View.OnClickListener {
                         //view.minimumHeight = Resources.getSystem().displayMetrics.heightPixels
                     }
                     BottomSheetBehavior.STATE_COLLAPSED == i -> {
-                        /* hideAppBar(bi.appBarLayout)
-                                 showView(bi.profileLayout, getActionBarSize())*/
+
+                       /* val params = (bindings.menus.layoutParams as CoordinatorLayout.LayoutParams)
+                        params.gravity = Gravity.CENTER
+                        bindings.menus.layoutParams = params*/
                     }
                     BottomSheetBehavior.STATE_HIDDEN == i -> {
                         dismiss()
@@ -167,7 +168,7 @@ class MediaFacerPicker() : BottomSheetDialogFragment(), View.OnClickListener {
 
         when {
             addVideos -> {
-                videoSelect = VideoSelect()
+                videoSelect = VideoSelect(listener)
                 medias.add(videoSelect)
             }else -> {
             bindings.videoOption.visibility = View.GONE
@@ -177,7 +178,7 @@ class MediaFacerPicker() : BottomSheetDialogFragment(), View.OnClickListener {
 
         when {
             addAudios -> {
-                audioSelect = AudioSelect(customAlbumDrawable)
+                audioSelect = AudioSelect(customAlbumDrawable,listener)
                 medias.add(audioSelect)
             }else -> {
             bindings.audioOption.visibility = View.GONE
