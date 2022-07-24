@@ -21,7 +21,9 @@ internal class AudiosViewModel: ViewModel() {
     val audios: LiveData<ArrayList<AudioContent>> = _audios
     private val _foundAudios: MutableLiveData<ArrayList<AudioContent>> = MutableLiveData()
     val foundAudios : LiveData<ArrayList<AudioContent>> = _foundAudios
-    var audiosList = ArrayList<AudioContent>()
+
+    private var audiosList = ArrayList<AudioContent>()
+    var foundList = ArrayList<AudioContent>()
 
     fun loadMoreAudioItems(context: Context, paginationStart: Int, paginationLimit: Int, shouldPaginate: Boolean){
         CoroutineScope(Dispatchers.IO).async {
@@ -39,12 +41,9 @@ internal class AudiosViewModel: ViewModel() {
     }
 
     //search
-    fun searchAudioItems(context: Context, paginationStart: Int,
-                         paginationLimit: Int, shouldPaginate: Boolean,
-                         selectionType: String, selectionValue: String){
-        val found = ArrayList<AudioContent>()
+    fun searchAudioItems(context: Context, paginationStart: Int, paginationLimit: Int, shouldPaginate: Boolean, selectionType: String, selectionValue: String){
         CoroutineScope(Dispatchers.IO).async {
-            found.addAll(
+            foundList.addAll(
                 MediaFacer
                     .withPagination(paginationStart, paginationLimit, shouldPaginate)
                     .searchAudios(context, MediaFacer.externalAudioContent,selectionType,selectionValue)
@@ -52,7 +51,7 @@ internal class AudiosViewModel: ViewModel() {
         }.invokeOnCompletion {
             Handler(Looper.getMainLooper())
                 .post {
-                    _foundAudios.value = found
+                    _foundAudios.value = foundList
                 }
         }
     }
@@ -71,10 +70,6 @@ internal class AudiosViewModel: ViewModel() {
                     _audioBuckets.value = buckets
                 }
         }
-    }
-
-    override fun onCleared() {
-        super.onCleared()
     }
 
 }

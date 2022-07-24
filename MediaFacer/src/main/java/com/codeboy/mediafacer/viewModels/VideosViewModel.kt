@@ -21,7 +21,9 @@ internal class VideosViewModel: ViewModel() {
     val foundVideos: LiveData<ArrayList<VideoContent>> = _foundVideos
     private val _videos: MutableLiveData<ArrayList<VideoContent>> = MutableLiveData()
     val videos: LiveData<ArrayList<VideoContent>> = _videos
+
     var videoList = ArrayList<VideoContent>()
+    var foundList = ArrayList<VideoContent>()
 
     fun loadMoreVideoItems(context: Context, paginationStart: Int, paginationLimit: Int, shouldPaginate: Boolean){
         CoroutineScope(Dispatchers.IO).async {
@@ -41,9 +43,8 @@ internal class VideosViewModel: ViewModel() {
     //search
     fun searchVideoItems(context: Context, paginationStart: Int, paginationLimit: Int, shouldPaginate: Boolean,
                      selectionType: String, selectionValue: String){
-        val found = ArrayList<VideoContent>()
         CoroutineScope(Dispatchers.IO).async {
-            found.addAll(
+            foundList.addAll(
                 MediaFacer
                     .withPagination(paginationStart, paginationLimit, shouldPaginate)
                     .searchVideos(context, MediaFacer.externalVideoContent,selectionType,selectionValue)
@@ -51,7 +52,7 @@ internal class VideosViewModel: ViewModel() {
         }.invokeOnCompletion {
             Handler(Looper.getMainLooper())
                 .post{
-                    _foundVideos.value = found
+                    _foundVideos.value = foundList
                 }
         }
     }

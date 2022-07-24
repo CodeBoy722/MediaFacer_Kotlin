@@ -16,7 +16,7 @@
             android:layout_height="match_parent"
             android:scaleType="centerCrop" />
 
-        <CheckBox
+        <androidx.appcompat.widget.AppCompatCheckBox
             android:id="@+id/selector"
             android:layout_width="30dp"
             android:layout_height="30dp"

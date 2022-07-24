@@ -28,8 +28,9 @@ class MediaTools() : Fragment() {
 
         bindings.openPicker.setOnClickListener {
 
-            val mediaPicker = MediaFacerPicker()
+            MediaFacerPicker()
                 .addAllMediaSelection()
+                .setSelectionCompleteDrawable(com.codeboy.mediafacer.R.drawable.ic_media_check)
                 .setAudioDefaultAlbumArtDrawable(R.drawable.music_placeholder)
                 .setSelectionMenuTitles("Music","Videos","Photos")
                 .addMediaSelectionListener(object : MediaSelectionListener {

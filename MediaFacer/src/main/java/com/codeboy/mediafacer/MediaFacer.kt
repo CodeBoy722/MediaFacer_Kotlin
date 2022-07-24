@@ -1,10 +1,11 @@
+@file:Suppress("DEPRECATION")
+
 package com.codeboy.mediafacer
 
 import android.content.Context
 import android.database.Cursor
 import android.net.Uri
 import android.os.Build
-import android.provider.MediaStore
 import android.provider.MediaStore.Audio
 import android.provider.MediaStore.Images
 import android.provider.MediaStore.Video
@@ -622,7 +623,7 @@ object MediaFacer: VideoGet, AudioGet, ImageGet {
             val cursor = context.contentResolver.query(contentMedium, videoProjections,
                 "$selectionType like ? ",
                 arrayOf("%$selectionValue%"),
-                "LOWER (" + MediaStore.Audio.Media.DATE_MODIFIED + ") ASC")!!
+                "LOWER (" + Audio.Media.DATE_MODIFIED + ") ASC")!!
             var index = 0
             when {
                 cursor.moveToPosition(mediaPaginationStart) -> {

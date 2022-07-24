@@ -19,6 +19,7 @@ internal class ImagesViewModel: ViewModel() {
     val images: LiveData<ArrayList<ImageContent>> = _images
     private val _imageFolders: MutableLiveData<ArrayList<ImageFolderContent>> = MutableLiveData()
     val imageFolders: LiveData<ArrayList<ImageFolderContent>> = _imageFolders
+
     private var folders = ArrayList<ImageFolderContent>()
     private var imagesList = ArrayList<ImageContent>()
 
