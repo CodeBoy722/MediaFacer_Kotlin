@@ -1,5 +1,6 @@
 package com.codeboy.mediafacerkotlin.fragments
 
+import android.content.Intent
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextUtils
@@ -19,6 +20,7 @@ import androidx.transition.Slide
 import com.codeboy.mediafacer.MediaFacer
 import com.codeboy.mediafacer.models.VideoContent
 import com.codeboy.mediafacerkotlin.MainActivity
+import com.codeboy.mediafacerkotlin.PlayerActivity
 import com.codeboy.mediafacerkotlin.R
 import com.codeboy.mediafacerkotlin.databinding.FragmentVideosBinding
 import com.codeboy.mediafacerkotlin.dialogs.VideoDetails
@@ -73,8 +75,8 @@ class VideosFragment() : Fragment() {
 
         //init your adapter and bind it to recyclerview
         val adapter = VideoViewAdapter(object: VideoActionListener{
-            override fun onVideoItemClicked(videoItem: VideoContent) {
-                TODO("Not yet implemented")
+            override fun onVideoItemClicked(playPosition: Int, mediaItemList: ArrayList<VideoContent>) {
+                navigateToPlayer(playPosition, mediaItemList)
             }
 
             override fun onVideoItemLongClicked(videoItem: VideoContent) {
@@ -154,8 +156,8 @@ class VideosFragment() : Fragment() {
         val numOfColumns = calculateNoOfColumns(requireActivity(), 105f)
         val layoutManager = GridLayoutManager(requireActivity(),numOfColumns)
         val adapter = VideoViewAdapter(object: VideoActionListener{
-            override fun onVideoItemClicked(videoItem: VideoContent) {
-                //TODO("Not yet implemented")
+            override fun onVideoItemClicked(playPosition: Int, mediaItemList: ArrayList<VideoContent>) {
+                navigateToPlayer(playPosition, mediaItemList)
             }
 
             override fun onVideoItemLongClicked(videoItem: VideoContent) {
@@ -259,6 +261,17 @@ class VideosFragment() : Fragment() {
             false
         }
         popup.show()
+    }
+
+    private fun navigateToPlayer(playPosition: Int, mediaItemList: ArrayList<VideoContent>){
+        val player = Intent(requireActivity(), PlayerActivity::class.java)
+        player.action = "videos"
+        player.putExtra("play_position", playPosition)
+        player.putParcelableArrayListExtra("videos", mediaItemList)
+
+        player.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION)
+        startActivity(player)
+        requireActivity().overridePendingTransition(R.anim.fade_in, R.anim.fade_out)
     }
 
     override fun onDestroyView() {

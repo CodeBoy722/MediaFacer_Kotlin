@@ -4,13 +4,15 @@
     xmlns:tools="http://schemas.android.com/tools"
     tools:context=".PlayerActivity">
 
-    <androidx.constraintlayout.widget.ConstraintLayout
+    <FrameLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
+        <androidx.media3.ui.PlayerView
+            android:id="@+id/video_view"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"/>
 
-
-
-    </androidx.constraintlayout.widget.ConstraintLayout>
+    </FrameLayout>
 
 </layout>
