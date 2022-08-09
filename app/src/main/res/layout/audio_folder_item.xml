@@ -17,7 +17,7 @@
             app:layout_constraintEnd_toStartOf="@+id/folder_name"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            app:srcCompat="@drawable/ic_music_folder" />
+            app:srcCompat="@drawable/ic_music_folder_spinner" />
 
         <TextView
             android:id="@+id/folder_name"

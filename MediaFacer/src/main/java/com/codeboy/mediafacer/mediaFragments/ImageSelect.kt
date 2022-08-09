@@ -85,7 +85,7 @@ internal class ImageSelect() : Fragment() {
 
             val spinnerAdapter = ArrayAdapter(
                 requireActivity(),
-                R.layout.spinner_text,
+                R.layout.image_spinner_text,
                 folderNames
             )
             bindings.imageFolderSpinner.adapter = spinnerAdapter

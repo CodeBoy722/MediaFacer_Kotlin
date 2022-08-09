@@ -180,7 +180,6 @@ internal interface AudioGet {
     "LOWER (" + Audio.Media.TITLE + ") ASC")!! //"LOWER ("+Audio.Media.TITLE + ") ASC"
   }
 
-  //try {
   when {
       cursor.moveToFirst() -> {
        do {
@@ -224,9 +223,7 @@ internal interface AudioGet {
        } while (cursor.moveToNext())
       }
   }
-  /* }catch (ex: java.lang.Exception){
-    ex.printStackTrace()
-   }*/
+
   cursor.close()
   return albumAudios
  }

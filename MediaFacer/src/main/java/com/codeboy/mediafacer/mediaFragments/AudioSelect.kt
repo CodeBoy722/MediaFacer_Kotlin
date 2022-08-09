@@ -94,7 +94,7 @@ internal class AudioSelect() : Fragment() {
 
             val spinnerAdapter = ArrayAdapter(
                 requireActivity(),
-                R.layout.spinner_text,
+                R.layout.audio_spinner_text,
                 folderNames
             )
             bindings.audioFolderSpinner.adapter = spinnerAdapter

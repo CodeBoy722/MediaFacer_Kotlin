@@ -51,7 +51,4 @@ internal class ImagesViewModel: ViewModel() {
         }
     }
 
-    override fun onCleared() {
-        super.onCleared()
-    }
 }

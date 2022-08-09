@@ -77,7 +77,6 @@ internal class VideoSelect() : Fragment() {
         viewModel.loadMoreVideoItems(requireActivity(),paginationStart,paginationLimit,shouldPaginate)
     }
 
-
     private fun loadVideoFolders(){
         val adapter = VideoContentAdapter(listener)
         var videoFolders = ArrayList<VideoFolderContent>()
@@ -92,7 +91,7 @@ internal class VideoSelect() : Fragment() {
 
             val spinnerAdapter = ArrayAdapter(
                 requireActivity(),
-                R.layout.spinner_text,
+                R.layout.video_spinner_text,
                 folderNames
             )
             bindings.videoFolderSpinner.adapter = spinnerAdapter
@@ -153,6 +152,4 @@ internal class VideoSelect() : Fragment() {
             override fun afterTextChanged(p0: Editable?) {}
         })
     }
-
-
 }

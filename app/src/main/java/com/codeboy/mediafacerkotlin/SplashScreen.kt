@@ -40,9 +40,7 @@ class SplashScreen : AppCompatActivity() {
             }
             else -> requestStoragePermission()
         }
-
     }
-
 
     private fun requestStoragePermission() {
         Log.w("SplashScreen", "Storage permission is not granted. Requesting permission")

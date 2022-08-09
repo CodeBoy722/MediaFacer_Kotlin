@@ -17,7 +17,7 @@
             app:layout_constraintEnd_toStartOf="@+id/image_folder_name"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            app:srcCompat="@drawable/ic_image_folder" />
+            app:srcCompat="@drawable/ic_image_folder_spinner" />
 
         <TextView
             android:id="@+id/image_folder_name"

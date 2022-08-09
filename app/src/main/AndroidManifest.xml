@@ -22,19 +22,21 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.MediaFacerKotlin">
+        <activity
+            android:name=".PlayerActivity"
+            android:exported="false" />
 
         <meta-data
             android:name="com.google.android.gms.ads.APPLICATION_ID"
-            android:value="@string/admob_id"/>
-
+            android:value="@string/admob_id" />
         <meta-data
             android:name="com.google.android.gms.car.application"
             android:resource="@xml/automotive_app_desc" />
 
         <activity
             android:name=".SplashScreen"
-            android:screenOrientation="sensorPortrait"
-            android:exported="true">
+            android:exported="true"
+            android:screenOrientation="sensorPortrait">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -43,10 +45,9 @@
         </activity>
         <activity
             android:name=".MainActivity"
-            android:windowSoftInputMode="adjustPan"
+            android:exported="false"
             android:screenOrientation="sensorPortrait"
-            android:exported="false">
-        </activity>
+            android:windowSoftInputMode="adjustPan"></activity>
     </application>
 
 </manifest>

@@ -49,7 +49,6 @@ class MainActivity : AppCompatActivity() {
 
         initializeBannerAd()
         setUpBottomMenu()
-        //testFacer()
     }
 
     fun hideBottomMenu(){
@@ -59,23 +58,6 @@ class MainActivity : AppCompatActivity() {
     fun showBottomMenu(){
         bindings.bottomMenu.visibility = View.VISIBLE
     }
-
-    /*private fun testFacer(){
-        var folders = ArrayList<AudioBucketContent>()
-        CoroutineScope(Dispatchers.Main).async {
-            folders = MediaFacer.getBuckets(this@MainActivity, externalAudioContent)
-        }.invokeOnCompletion {
-            Handler(Looper.getMainLooper())
-                .post{
-                    folderList = folders
-                    Toast.makeText(
-                        this@MainActivity,
-                        "buckets " + folders.size.toString(),
-                        Toast.LENGTH_LONG
-                    ).show()
-                }
-        }
-    }*/
 
     private fun setUpBottomMenu(){
         val introFragmentList = ArrayList<Fragment>()
