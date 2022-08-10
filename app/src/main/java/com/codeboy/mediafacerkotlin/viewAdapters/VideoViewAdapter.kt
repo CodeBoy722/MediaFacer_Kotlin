@@ -1,5 +1,6 @@
 package com.codeboy.mediafacerkotlin.viewAdapters
 
+import android.provider.MediaStore
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -32,6 +33,7 @@ class VideoViewAdapter(private val listener: VideoActionListener)
             holder.itemView.startAnimation(anim)
             lastPosition = holder.adapterPosition
         }
+        holder.itemPosition = position
         holder.item = getItem(position)
         holder.bind()
     }
@@ -49,6 +51,7 @@ class VideoViewAdapter(private val listener: VideoActionListener)
     inner class VideoViewHolder(private val bindings: VideoItemBinding)
         : RecyclerView.ViewHolder(bindings.root), View.OnClickListener, View.OnLongClickListener{
         lateinit var item: VideoContent
+        var itemPosition = 0
         fun bind(){
             bindings.root.setOnLongClickListener(this)
             bindings.play.setOnClickListener(this)
@@ -60,7 +63,11 @@ class VideoViewAdapter(private val listener: VideoActionListener)
         }
 
         override fun onClick(v: View?) {
-
+            val itemList = ArrayList<VideoContent>()
+            for(item: VideoContent in currentList){
+                itemList.add(item)
+            }
+            listener.onVideoItemClicked(itemPosition,itemList)
         }
 
         override fun onLongClick(v: View?): Boolean {

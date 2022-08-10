@@ -1,5 +1,6 @@
 package com.codeboy.mediafacerkotlin.fragments
 
+import android.content.Intent
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
@@ -8,6 +9,7 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.GridLayoutManager
 import com.codeboy.mediafacer.models.VideoContent
 import com.codeboy.mediafacerkotlin.MainActivity
+import com.codeboy.mediafacerkotlin.PlayerActivity
 import com.codeboy.mediafacerkotlin.R
 import com.codeboy.mediafacerkotlin.databinding.FragmentVideoMediaDetailBinding
 import com.codeboy.mediafacerkotlin.dialogs.VideoDetails
@@ -53,8 +55,8 @@ class VideoContainerDetail() : Fragment() {
         bindings.mediaTitle.text = headTitle
 
         val audiosAdapter = VideoViewAdapter(object: VideoActionListener {
-            override fun onVideoItemClicked(videoItem: VideoContent) {
-                TODO("Not yet implemented")
+            override fun onVideoItemClicked(playPosition: Int, mediaItemList: ArrayList<VideoContent>) {
+                navigateToPlayer(playPosition, mediaItemList)
             }
 
             override fun onVideoItemLongClicked(videoItem: VideoContent) {
@@ -65,6 +67,17 @@ class VideoContainerDetail() : Fragment() {
         })
         audiosAdapter.submitList(videos)
         bindings.videoList.adapter = audiosAdapter
+    }
+
+    private fun navigateToPlayer(playPosition: Int, mediaItemList: ArrayList<VideoContent>){
+        val player = Intent(requireActivity(), PlayerActivity::class.java)
+        player.action = "videos"
+        player.putExtra("play_position", playPosition)
+        player.putParcelableArrayListExtra("videos", mediaItemList)
+
+        player.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION)
+        startActivity(player)
+        requireActivity().overridePendingTransition(R.anim.fade_in, R.anim.fade_out)
     }
 
     override fun onDetach() {
