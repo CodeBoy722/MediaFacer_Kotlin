@@ -1,3 +1,5 @@
+@file:Suppress("DEPRECATION")
+
 package com.codeboy.mediafacer
 
 import android.annotation.SuppressLint

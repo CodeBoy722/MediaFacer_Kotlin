@@ -2,14 +2,18 @@ package com.codeboy.mediafacerkotlin
 
 import android.annotation.SuppressLint
 import android.os.Bundle
+import android.util.Log
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.WindowCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.core.view.WindowInsetsControllerCompat
 import androidx.databinding.DataBindingUtil
 import androidx.media3.common.MediaItem
+import androidx.media3.common.MimeTypes
+import androidx.media3.common.Player
 import androidx.media3.common.util.Util
 import androidx.media3.exoplayer.ExoPlayer
+import androidx.media3.exoplayer.trackselection.DefaultTrackSelector
 import com.codeboy.mediafacer.models.VideoContent
 import com.codeboy.mediafacerkotlin.databinding.ActivityPlayerBinding
 
@@ -18,39 +22,71 @@ class PlayerActivity : AppCompatActivity() {
 
     private lateinit var bindings: ActivityPlayerBinding
     private var player: ExoPlayer? = null
+    private val TAG = "PlayerActivity"
 
-    private var playPosition  = 0
     private var mediaItems = ArrayList<MediaItem>()
+    private var rawVideos = ArrayList<VideoContent>()
 
     private var playWhenReady = true
     private var currentItem = 0
     private var playbackPosition = 0L
 
+    private val playbackStateListener: Player.Listener = playbackStateListener()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         bindings = DataBindingUtil.setContentView(this,R.layout.activity_player)
         bindings.lifecycleOwner = this
 
-        playPosition = intent.getIntExtra("play_position", 0)
-        val videos: ArrayList<VideoContent> = intent.getParcelableArrayListExtra("videos")!!
+        currentItem = intent.getIntExtra("play_position", 0)
+        rawVideos = intent.getParcelableArrayListExtra("videos")!!
 
-        for (item: VideoContent in videos){
+        for (item: VideoContent in rawVideos){
             mediaItems.add(MediaItem.fromUri(item.videoUri))
         }
         initializePlayer()
     }
 
     private fun initializePlayer() {
+        //for adaptive streaming
+        val trackSelector = DefaultTrackSelector(this).apply {
+            setParameters(buildUponParameters().setMaxVideoSizeSd())
+        }
+
         player = ExoPlayer.Builder(this)
+            .setTrackSelector(trackSelector)
             .build()
             .also { exoPlayer ->
                 bindings.videoView.player = exoPlayer
-                exoPlayer.setMediaItem( mediaItems[playPosition])
+
+               /* for(item: VideoContent in rawVideos){
+                    val adaptiveMediaItem = MediaItem.Builder()
+                        .setUri(item.videoUri)
+                        .setMimeType(MimeTypes.APPLICATION_MPD)
+                        .build()
+                    exoPlayer.addMediaItem(adaptiveMediaItem)
+                }*/
+
+                //exoPlayer.setMediaItem( mediaItems[playPosition])
+                exoPlayer.addMediaItems(mediaItems)
                 exoPlayer.playWhenReady = playWhenReady
                 exoPlayer.seekTo(currentItem, playbackPosition)
+                exoPlayer.addListener(playbackStateListener)
                 exoPlayer.prepare()
             }
+    }
+
+    private fun playbackStateListener() = object : Player.Listener {
+        override fun onPlaybackStateChanged(playbackState: Int) {
+            val stateString: String = when (playbackState) {
+                ExoPlayer.STATE_IDLE -> "ExoPlayer.STATE_IDLE      -"
+                ExoPlayer.STATE_BUFFERING -> "ExoPlayer.STATE_BUFFERING -"
+                ExoPlayer.STATE_READY -> "ExoPlayer.STATE_READY     -"
+                ExoPlayer.STATE_ENDED -> "ExoPlayer.STATE_ENDED     -"
+                else -> "UNKNOWN_STATE             -"
+            }
+            Log.d(TAG, "changed state to $stateString")
+        }
     }
 
     public override fun onStart() {
@@ -97,6 +133,7 @@ class PlayerActivity : AppCompatActivity() {
             playbackPosition = exoPlayer.currentPosition
             currentItem = exoPlayer.currentMediaItemIndex
             playWhenReady = exoPlayer.playWhenReady
+            exoPlayer.removeListener(playbackStateListener)
             exoPlayer.release()
         }
         player = null
