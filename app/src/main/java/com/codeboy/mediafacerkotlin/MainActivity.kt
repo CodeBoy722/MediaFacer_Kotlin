@@ -150,7 +150,6 @@ class MainActivity : AppCompatActivity() {
                     }
                     interstitialAd.show(this@MainActivity)
                 }
-
         })
     }
 

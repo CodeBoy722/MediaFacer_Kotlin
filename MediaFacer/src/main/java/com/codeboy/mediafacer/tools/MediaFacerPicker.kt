@@ -1,13 +1,8 @@
 package com.codeboy.mediafacer.tools
 
 import android.content.res.Resources
-import android.graphics.Color
-import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
-import android.provider.MediaStore
 import android.view.*
-import android.widget.FrameLayout
-import androidx.coordinatorlayout.widget.CoordinatorLayout
 import androidx.core.content.res.ResourcesCompat
 import androidx.fragment.app.Fragment
 import androidx.viewpager2.widget.ViewPager2
@@ -18,14 +13,10 @@ import com.codeboy.mediafacer.databinding.FragmentMediaFacerPickerBinding
 import com.codeboy.mediafacer.mediaFragments.AudioSelect
 import com.codeboy.mediafacer.mediaFragments.ImageSelect
 import com.codeboy.mediafacer.mediaFragments.VideoSelect
-import com.codeboy.mediafacer.models.AudioArtistContent
-import com.codeboy.mediafacer.models.AudioContent
-import com.codeboy.mediafacer.models.ImageContent
-import com.codeboy.mediafacer.models.VideoContent
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 
-class MediaFacerPicker() : BottomSheetDialogFragment(), View.OnClickListener {
+class MediaFacerPicker : BottomSheetDialogFragment(), View.OnClickListener {
 
     private lateinit var bindings: FragmentMediaFacerPickerBinding
     private lateinit var bottomSheetBehavior: BottomSheetBehavior<*>
@@ -62,7 +53,7 @@ class MediaFacerPicker() : BottomSheetDialogFragment(), View.OnClickListener {
         bindings.lifecycleOwner = viewLifecycleOwner
 
         bottomSheetBehavior = BottomSheetBehavior.from(view.parent as View)
-        bottomSheetBehavior.peekHeight = BottomSheetBehavior.PEEK_HEIGHT_AUTO;
+        bottomSheetBehavior.peekHeight = BottomSheetBehavior.PEEK_HEIGHT_AUTO
         view.minimumHeight = (Resources.getSystem().displayMetrics.heightPixels)
 
         bottomSheetBehavior.addBottomSheetCallback(object : BottomSheetBehavior.BottomSheetCallback() {
@@ -90,7 +81,7 @@ class MediaFacerPicker() : BottomSheetDialogFragment(), View.OnClickListener {
 
     override fun onStart() {
         super.onStart()
-        bottomSheetBehavior.state = BottomSheetBehavior.STATE_EXPANDED;
+        bottomSheetBehavior.state = BottomSheetBehavior.STATE_EXPANDED
         initMediaPicker()
     }
 
