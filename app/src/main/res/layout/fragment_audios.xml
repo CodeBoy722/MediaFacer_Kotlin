@@ -14,7 +14,7 @@
             android:id="@+id/audios_parent">
 
             <androidx.constraintlayout.widget.ConstraintLayout
-                android:id="@+id/constraintLayout"
+                android:id="@+id/audios_box"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 app:layout_constraintBottom_toTopOf="@+id/audios_list"
@@ -83,7 +83,7 @@
                 app:layout_constraintBottom_toTopOf="@+id/loader"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/constraintLayout" />
+                app:layout_constraintTop_toBottomOf="@+id/audios_box" />
 
             <androidx.constraintlayout.widget.ConstraintLayout
                 android:id="@+id/loader"

@@ -59,113 +59,155 @@
             <androidx.viewpager2.widget.ViewPager2
                 android:id="@+id/media_pager"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
+                android:layout_height="0dp"
                 app:layout_constraintBottom_toTopOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintHorizontal_bias="0.0"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent" />
+                app:layout_constraintTop_toTopOf="parent">
+
+            </androidx.viewpager2.widget.ViewPager2>
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:id="@+id/menus"
+            style="@style/picker_bottom_menu"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_gravity="bottom|center"
-            app:layout_behavior="@string/hide_bottom_view_on_scroll_behavior"
-            style="@style/picker_bottom_menu">
+            app:layout_behavior="@string/hide_bottom_view_on_scroll_behavior">
 
-            <androidx.appcompat.widget.AppCompatImageButton
-                android:id="@+id/audio_option"
-                android:layout_width="25dp"
-                android:layout_height="25dp"
-                android:layout_marginTop="8dp"
-                android:background="?attr/selectableItemBackground"
-                android:scaleType="fitXY"
-                android:src="@drawable/ic_audio_menu"
-                android:tint="@color/colors_bottom_menu"
-                app:layout_constraintBottom_toTopOf="@+id/audio_option_text"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toEndOf="@+id/video_option"
-                app:layout_constraintTop_toTopOf="parent"
-                tools:ignore="SpeakableTextPresentCheck" />
-
-            <androidx.appcompat.widget.AppCompatImageButton
-                android:id="@+id/video_option"
-                android:layout_width="25dp"
-                android:layout_height="25dp"
-                android:layout_marginTop="8dp"
-                android:background="?attr/selectableItemBackground"
-                android:scaleType="fitXY"
-                android:src="@drawable/ic_video_menu"
-                android:tint="@color/colors_bottom_menu"
-                app:layout_constraintBottom_toTopOf="@+id/video_option_text"
-                app:layout_constraintEnd_toStartOf="@+id/audio_option"
-                app:layout_constraintStart_toEndOf="@+id/image_option"
-                app:layout_constraintTop_toTopOf="parent"
-                tools:ignore="SpeakableTextPresentCheck" />
-
-            <androidx.appcompat.widget.AppCompatImageButton
-                android:id="@+id/image_option"
-                android:layout_width="25dp"
-                android:layout_height="25dp"
-                android:layout_marginStart="8dp"
-                android:layout_marginTop="8dp"
-                android:background="?attr/selectableItemBackground"
-                android:scaleType="fitXY"
-                android:src="@drawable/ic_image_menu"
-                android:tint="@color/colors_bottom_menu"
-                app:layout_constraintBottom_toTopOf="@+id/image_option_text"
-                app:layout_constraintEnd_toStartOf="@+id/video_option"
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:id="@+id/images_box"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toStartOf="@+id/videos_box"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent"
-                tools:ignore="SpeakableTextPresentCheck" />
+                app:layout_constraintTop_toTopOf="parent">
 
-            <TextView
-                android:id="@+id/audio_option_text"
+
+                <androidx.appcompat.widget.AppCompatTextView
+                    android:id="@+id/image_option_text"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="8dp"
+                    android:layout_marginEnd="8dp"
+                    android:layout_marginBottom="8dp"
+                    android:fontFamily="@font/notosans_regular"
+                    android:gravity="center"
+                    android:text="@string/images"
+                    android:textColor="@color/colors_bottom_menu"
+                    android:textSize="12sp"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/image_option" />
+
+                <androidx.appcompat.widget.AppCompatImageButton
+                    android:id="@+id/image_option"
+                    android:layout_width="25dp"
+                    android:layout_height="25dp"
+                    android:layout_marginTop="8dp"
+                    android:background="?attr/selectableItemBackground"
+                    android:scaleType="fitXY"
+                    android:src="@drawable/ic_image_menu"
+                    android:tint="@color/colors_bottom_menu"
+                    app:layout_constraintBottom_toTopOf="@+id/image_option_text"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"
+                    tools:ignore="SpeakableTextPresentCheck" />
+            </androidx.constraintlayout.widget.ConstraintLayout>
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:id="@+id/audios_box"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginBottom="8dp"
-                android:fontFamily="@font/notosans_regular"
-                android:gravity="center"
-                android:text="@string/audios"
-                android:textColor="@color/colors_bottom_menu"
-                android:textSize="12sp"
                 app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toEndOf="@+id/audio_option"
-                app:layout_constraintStart_toStartOf="@+id/audio_option"
-                app:layout_constraintTop_toBottomOf="@+id/audio_option" />
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toEndOf="@+id/videos_box"
+                app:layout_constraintTop_toTopOf="parent">
 
-            <TextView
-                android:id="@+id/video_option_text"
+
+                <androidx.appcompat.widget.AppCompatTextView
+                    android:id="@+id/audio_option_text"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="8dp"
+                    android:layout_marginEnd="8dp"
+                    android:layout_marginBottom="8dp"
+                    android:fontFamily="@font/notosans_regular"
+                    android:gravity="center"
+                    android:text="@string/audios"
+                    android:textColor="@color/colors_bottom_menu"
+                    android:textSize="12sp"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/audio_option" />
+
+                <androidx.appcompat.widget.AppCompatImageButton
+                    android:id="@+id/audio_option"
+                    android:layout_width="25dp"
+                    android:layout_height="25dp"
+                    android:layout_marginTop="8dp"
+                    android:background="?attr/selectableItemBackground"
+                    android:scaleType="fitXY"
+                    android:src="@drawable/ic_audio_menu"
+                    android:tint="@color/colors_bottom_menu"
+                    app:layout_constraintBottom_toTopOf="@+id/audio_option_text"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"
+                    tools:ignore="SpeakableTextPresentCheck" />
+            </androidx.constraintlayout.widget.ConstraintLayout>
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:id="@+id/videos_box"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginBottom="8dp"
-                android:fontFamily="@font/notosans_regular"
-                android:gravity="center"
-                android:text="@string/videos"
-                android:textColor="@color/colors_bottom_menu"
-                android:textSize="12sp"
                 app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toEndOf="@+id/video_option"
-                app:layout_constraintStart_toStartOf="@+id/video_option"
-                app:layout_constraintTop_toBottomOf="@+id/video_option" />
+                app:layout_constraintEnd_toStartOf="@+id/audios_box"
+                app:layout_constraintStart_toEndOf="@+id/images_box"
+                app:layout_constraintTop_toTopOf="parent">
 
-            <TextView
-                android:id="@+id/image_option_text"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="8dp"
-                android:fontFamily="@font/notosans_regular"
-                android:gravity="center"
-                android:text="@string/images"
-                android:textColor="@color/colors_bottom_menu"
-                android:textSize="12sp"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toEndOf="@+id/image_option"
-                app:layout_constraintStart_toStartOf="@+id/image_option"
-                app:layout_constraintTop_toBottomOf="@+id/image_option" />
+
+                <androidx.appcompat.widget.AppCompatTextView
+                    android:id="@+id/video_option_text"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="8dp"
+                    android:layout_marginEnd="8dp"
+                    android:layout_marginBottom="8dp"
+                    android:fontFamily="@font/notosans_regular"
+                    android:gravity="center"
+                    android:text="@string/videos"
+                    android:textColor="@color/colors_bottom_menu"
+                    android:textSize="12sp"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/video_option" />
+
+                <androidx.appcompat.widget.AppCompatImageButton
+                    android:id="@+id/video_option"
+                    android:layout_width="25dp"
+                    android:layout_height="25dp"
+                    android:layout_marginTop="8dp"
+                    android:background="?attr/selectableItemBackground"
+                    android:scaleType="fitXY"
+                    android:src="@drawable/ic_video_menu"
+                    android:tint="@color/colors_bottom_menu"
+                    app:layout_constraintBottom_toTopOf="@+id/video_option_text"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"
+                    tools:ignore="SpeakableTextPresentCheck" />
+            </androidx.constraintlayout.widget.ConstraintLayout>
+
+
         </androidx.constraintlayout.widget.ConstraintLayout>
 
     </androidx.coordinatorlayout.widget.CoordinatorLayout>

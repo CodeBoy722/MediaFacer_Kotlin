@@ -26,9 +26,9 @@ class MediaFacerPicker : BottomSheetDialogFragment(), View.OnClickListener {
     private var addAudios = false
 
     private var completeDrawableId = 0
-    private var audiosText: String = ""
-    private var videosText: String = ""
-    private var imagesText: String = ""
+    private var audiosText: String = "Music"
+    private var videosText: String = "Videos"
+    private var imagesText: String = "Images"
 
     private var customAlbumDrawable = R.drawable.music_placeholder
     private lateinit var listener: MediaSelectionListener
@@ -36,6 +36,10 @@ class MediaFacerPicker : BottomSheetDialogFragment(), View.OnClickListener {
     private lateinit var videoSelect: VideoSelect
     private lateinit var audioSelect: AudioSelect
     private lateinit var imageSelect: ImageSelect
+
+    private var imageFragPosition: Int? = null
+    private var videoFragPosition: Int? = null
+    private var audioFragPosition: Int? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -129,9 +133,9 @@ class MediaFacerPicker : BottomSheetDialogFragment(), View.OnClickListener {
     }
 
     private fun buildMediaPicker(){
-        bindings.audioOption.setOnClickListener(this)
-        bindings.videoOption.setOnClickListener(this)
-        bindings.imageOption.setOnClickListener(this)
+        bindings.audiosBox.setOnClickListener(this)
+        bindings.videosBox.setOnClickListener(this)
+        bindings.imagesBox.setOnClickListener(this)
 
         bindings.audioOptionText.text = audiosText
         bindings.videoOptionText.text = videosText
@@ -151,9 +155,9 @@ class MediaFacerPicker : BottomSheetDialogFragment(), View.OnClickListener {
             addImages -> {
                 imageSelect = ImageSelect(listener)
                 medias.add(imageSelect)
+                imageFragPosition = medias.size - 1
             }else -> {
-            bindings.imageOption.visibility = View.GONE
-            bindings.imageOptionText.visibility = View.GONE
+            bindings.imagesBox.visibility = View.GONE
             }
         }
 
@@ -161,9 +165,9 @@ class MediaFacerPicker : BottomSheetDialogFragment(), View.OnClickListener {
             addVideos -> {
                 videoSelect = VideoSelect(listener)
                 medias.add(videoSelect)
+                videoFragPosition = medias.size - 1
             }else -> {
-            bindings.videoOption.visibility = View.GONE
-            bindings.videoOptionText.visibility = View.GONE
+            bindings.videosBox.visibility = View.GONE
             }
         }
 
@@ -171,9 +175,9 @@ class MediaFacerPicker : BottomSheetDialogFragment(), View.OnClickListener {
             addAudios -> {
                 audioSelect = AudioSelect(customAlbumDrawable,listener)
                 medias.add(audioSelect)
+                audioFragPosition = medias.size - 1
             }else -> {
-            bindings.audioOption.visibility = View.GONE
-            bindings.audioOptionText.visibility = View.GONE
+            bindings.audiosBox.visibility = View.GONE
             }
         }
 
@@ -187,6 +191,14 @@ class MediaFacerPicker : BottomSheetDialogFragment(), View.OnClickListener {
         bindings.mediaPager.offscreenPageLimit = medias.size
         bindings.mediaPager.orientation = ViewPager2.ORIENTATION_HORIZONTAL
         bindings.mediaPager.adapter = pagerAdapter
+
+
+        bindings.mediaPager.registerOnPageChangeCallback(object: ViewPager2.OnPageChangeCallback(){
+            override fun onPageSelected(position: Int) {
+                super.onPageSelected(position)
+
+            }
+        })
     }
 
     // pass in your custom selecting complete drawable
@@ -212,13 +224,13 @@ class MediaFacerPicker : BottomSheetDialogFragment(), View.OnClickListener {
 
     override fun onClick(v: View) {
         when (v.id) {
-            R.id.audio_option -> {
+            R.id.audios_box -> {
 
             }
-            R.id.video_option -> {
+            R.id.videos_box -> {
 
             }
-            R.id.image_option -> {
+            R.id.images_box -> {
 
             }
         }
