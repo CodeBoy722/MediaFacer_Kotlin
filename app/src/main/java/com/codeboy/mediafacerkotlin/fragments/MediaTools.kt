@@ -34,7 +34,7 @@ class MediaTools() : Fragment() {
                 //.addVideoSelection()
                 .setSelectionCompleteDrawable(com.codeboy.mediafacer.R.drawable.ic_media_check)
                 .setAudioDefaultAlbumArtDrawable(R.drawable.music_placeholder)
-                //.setSelectionMenuTitles("Music","Videos","Photos")
+                .setSelectionMenuTitles("Music","Videos","Images")
                 .addMediaSelectionListener(object : MediaSelectionListener {
                     override fun onMediaItemsSelected(
                         audios: ArrayList<AudioContent>, videos: ArrayList<VideoContent>, Images: ArrayList<ImageContent>, ) {

@@ -22,7 +22,7 @@ internal class AudiosViewModel: ViewModel() {
     private val _foundAudios: MutableLiveData<ArrayList<AudioContent>> = MutableLiveData()
     val foundAudios : LiveData<ArrayList<AudioContent>> = _foundAudios
 
-    private var audiosList = ArrayList<AudioContent>()
+    var audiosList = ArrayList<AudioContent>()
     var foundList = ArrayList<AudioContent>()
 
     fun loadMoreAudioItems(context: Context, paginationStart: Int, paginationLimit: Int, shouldPaginate: Boolean){

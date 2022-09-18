@@ -22,7 +22,7 @@ internal class VideosViewModel: ViewModel() {
     private val _videos: MutableLiveData<ArrayList<VideoContent>> = MutableLiveData()
     val videos: LiveData<ArrayList<VideoContent>> = _videos
 
-    private var videoList = ArrayList<VideoContent>()
+    var videoList = ArrayList<VideoContent>()
     var foundList = ArrayList<VideoContent>()
 
     fun loadMoreVideoItems(context: Context, paginationStart: Int, paginationLimit: Int, shouldPaginate: Boolean){

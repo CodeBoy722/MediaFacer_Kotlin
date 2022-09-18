@@ -100,6 +100,7 @@ internal class VideoSelect() : Fragment() {
         bindings.videoFolderSpinner.onItemSelectedListener = object : AdapterView.OnItemSelectedListener{
             override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
                 if(position == 0){
+                    //todo fix bug here
                     loadVideos()
                 }else{
                     bindings.videoList.adapter = adapter

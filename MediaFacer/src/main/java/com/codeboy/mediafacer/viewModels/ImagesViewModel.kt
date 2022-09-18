@@ -21,7 +21,7 @@ internal class ImagesViewModel: ViewModel() {
     val imageFolders: LiveData<ArrayList<ImageFolderContent>> = _imageFolders
 
     private var folders = ArrayList<ImageFolderContent>()
-    private var imagesList = ArrayList<ImageContent>()
+    var imagesList = ArrayList<ImageContent>()
 
     fun loadNewItems(context: Context, paginationStart: Int, paginationLimit: Int, shouldPaginate: Boolean){
         CoroutineScope(Dispatchers.IO).async {

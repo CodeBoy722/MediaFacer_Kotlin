@@ -94,6 +94,7 @@ internal class ImageSelect() : Fragment() {
         bindings.imageFolderSpinner.onItemSelectedListener = object : AdapterView.OnItemSelectedListener{
             override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
                 if(position == 0){
+                    //todo fix bug here
                     loadImages()
                 }else{
                     bindings.imageList.adapter = adapter
