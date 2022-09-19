@@ -19,6 +19,7 @@ import androidx.recyclerview.widget.RecyclerView
 import androidx.transition.Slide
 import com.codeboy.mediafacer.MediaFacer
 import com.codeboy.mediafacer.models.VideoContent
+import com.codeboy.mediafacer.tools.Utils
 import com.codeboy.mediafacerkotlin.MainActivity
 import com.codeboy.mediafacerkotlin.PlayerActivity
 import com.codeboy.mediafacerkotlin.R
@@ -67,6 +68,9 @@ class VideosFragment() : Fragment() {
         val numOfColumns = calculateNoOfColumns(requireActivity(), 105f)
         val layoutManager = GridLayoutManager(requireActivity(),numOfColumns)
         bindings.videosList.layoutManager = layoutManager
+        bindings.videosList.addItemDecoration(
+            Utils.MarginItemDecoration(8)
+        )
         //bindings.videosList.itemAnimator = null
 
         paginationStart = 0

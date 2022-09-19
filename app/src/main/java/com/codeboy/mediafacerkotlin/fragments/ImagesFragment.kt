@@ -14,6 +14,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.transition.Slide
 import com.codeboy.mediafacer.models.ImageContent
+import com.codeboy.mediafacer.tools.Utils
 import com.codeboy.mediafacerkotlin.MainActivity
 import com.codeboy.mediafacerkotlin.R
 import com.codeboy.mediafacerkotlin.databinding.FragmentImagesBinding
@@ -59,6 +60,9 @@ class ImagesFragment() : Fragment() {
         val numOfColumns = calculateNoOfColumns(requireActivity(), 82f)
         val layoutManager = GridLayoutManager(requireActivity(),numOfColumns)
         bindings.imagesList.layoutManager = layoutManager
+        bindings.imagesList.addItemDecoration(
+            Utils.MarginItemDecoration(8)
+        )
         //bindings.imagesList.itemAnimator = null
 
         paginationStart = 0

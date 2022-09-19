@@ -51,7 +51,7 @@ internal class ImageSelect() : Fragment() {
         bindings.imageList.layoutManager = layoutManager
 
         bindings.imageList.addItemDecoration(
-            Utils.MarginItemDecoration(resources.getDimension(R.dimen.default_padding).toInt())
+            Utils.MarginItemDecoration(8)
         )
 
         viewModel = ImagesViewModel()

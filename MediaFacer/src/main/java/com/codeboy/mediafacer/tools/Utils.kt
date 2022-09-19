@@ -13,7 +13,7 @@ object Utils {
         val displayMetrics = context.resources.displayMetrics
         val screenWidthDp = displayMetrics.widthPixels / displayMetrics.density
         //return (screenWidthDp / columnWidthDp + 0.5).toInt()
-        return (screenWidthDp / columnWidthDp - 2).toInt()
+        return (screenWidthDp / columnWidthDp - 0.5).toInt()
     }
 
     class MarginItemDecoration(private val spaceHeight: Int) : RecyclerView.ItemDecoration() {

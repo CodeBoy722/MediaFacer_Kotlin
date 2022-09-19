@@ -44,6 +44,9 @@ class ImageContainerDetail() : Fragment() {
         val numOfColumns = Utils.calculateNoOfColumns(requireActivity(), 82f)
         val layoutManager = GridLayoutManager(requireActivity(),numOfColumns)
         bindings.imageList.layoutManager = layoutManager
+        bindings.imageList.addItemDecoration(
+            com.codeboy.mediafacer.tools.Utils.MarginItemDecoration(8)
+        )
 
         initContent()
     }

@@ -47,6 +47,10 @@ class VideoContainerDetail() : Fragment() {
         val layoutManager = GridLayoutManager(requireActivity(),numOfColumns)
         bindings.videoList.layoutManager = layoutManager
 
+        bindings.videoList.addItemDecoration(
+            com.codeboy.mediafacer.tools.Utils.MarginItemDecoration(8)
+        )
+
         initContent()
     }
 
