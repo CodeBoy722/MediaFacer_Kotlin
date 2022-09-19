@@ -15,6 +15,7 @@ import com.codeboy.mediafacer.databinding.FragmentImageSelectBinding
 import com.codeboy.mediafacer.models.ImageFolderContent
 import com.codeboy.mediafacer.tools.EndlessScrollListener
 import com.codeboy.mediafacer.tools.MediaSelectionListener
+import com.codeboy.mediafacer.tools.Utils
 import com.codeboy.mediafacer.tools.Utils.calculateNoOfColumns
 import com.codeboy.mediafacer.viewModels.ImagesViewModel
 
@@ -48,6 +49,10 @@ internal class ImageSelect() : Fragment() {
         val numOfColumns = calculateNoOfColumns(requireActivity(), 82f)
         layoutManager = GridLayoutManager(requireActivity(),numOfColumns)
         bindings.imageList.layoutManager = layoutManager
+
+        bindings.imageList.addItemDecoration(
+            Utils.MarginItemDecoration(resources.getDimension(R.dimen.default_padding).toInt())
+        )
 
         viewModel = ImagesViewModel()
         loadImageFolders()
