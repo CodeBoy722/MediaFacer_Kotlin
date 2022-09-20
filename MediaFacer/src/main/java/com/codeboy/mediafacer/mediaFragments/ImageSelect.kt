@@ -12,6 +12,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.codeboy.mediafacer.R
 import com.codeboy.mediafacer.adapters.ImageContentAdapter
 import com.codeboy.mediafacer.databinding.FragmentImageSelectBinding
+import com.codeboy.mediafacer.models.ImageContent
 import com.codeboy.mediafacer.models.ImageFolderContent
 import com.codeboy.mediafacer.tools.EndlessScrollListener
 import com.codeboy.mediafacer.tools.MediaSelectionListener
@@ -28,7 +29,10 @@ internal class ImageSelect() : Fragment() {
     private lateinit var bindings: FragmentImageSelectBinding
     private lateinit var viewModel: ImagesViewModel
     private lateinit var listener: MediaSelectionListener
+
     private lateinit var layoutManager: GridLayoutManager
+    private lateinit var scrollListener: EndlessScrollListener
+    private lateinit var adapter: ImageContentAdapter
 
     constructor(listener: MediaSelectionListener):this(){
         this.listener = listener
@@ -42,10 +46,16 @@ internal class ImageSelect() : Fragment() {
         super.onViewCreated(view, savedInstanceState)
         bindings = FragmentImageSelectBinding.bind(view)
         bindings.lifecycleOwner = viewLifecycleOwner
+        // init all views with defaults
+        initViews()
+    }
 
+    private fun initViews(){
         bindings.imageList.hasFixedSize()
         bindings.imageList.setHasFixedSize(true)
         bindings.imageList.setItemViewCacheSize(20)
+
+        //config grid layout manager
         val numOfColumns = calculateNoOfColumns(requireActivity(), 82f)
         layoutManager = GridLayoutManager(requireActivity(),numOfColumns)
         bindings.imageList.layoutManager = layoutManager
@@ -54,30 +64,37 @@ internal class ImageSelect() : Fragment() {
             Utils.MarginItemDecoration(8)
         )
 
+        //add adapter
+        adapter = ImageContentAdapter(listener)
+        bindings.imageList.adapter = adapter
+
+        //init images view model
         viewModel = ImagesViewModel()
+
+        //observe audio results from view model
+        viewModel.images.observe(viewLifecycleOwner) {
+            val results = ArrayList<ImageContent>()
+            results.addAll(it)
+            adapter.submitList(results)
+            paginationStart = it.size
+        }
+
+        //setup image folder selection
         loadImageFolders()
     }
 
     private fun loadImages(){
-        val adapter = ImageContentAdapter(listener)
-        bindings.imageList.adapter = adapter
-
-        viewModel.images.observe(viewLifecycleOwner) {
-            adapter.submitList(it)
-            paginationStart = it.size
-        }
-
-        bindings.imageList.addOnScrollListener(object: EndlessScrollListener(layoutManager){
+        scrollListener = object: EndlessScrollListener(layoutManager){
             override fun onLoadMore(page: Int, totalItemsCount: Int, view: RecyclerView?) {
                 viewModel.loadNewItems(requireActivity(),paginationStart,paginationLimit,shouldPaginate)
             }
-        })
+        }
+        bindings.imageList.addOnScrollListener(scrollListener)
 
         viewModel.loadNewItems(requireActivity(),paginationStart,paginationLimit,shouldPaginate)
     }
 
     private fun loadImageFolders(){
-        val adapter = ImageContentAdapter(listener)
         var imageFolders = ArrayList<ImageFolderContent>()
 
         viewModel.imageFolders.observe(viewLifecycleOwner) {
@@ -100,12 +117,15 @@ internal class ImageSelect() : Fragment() {
             override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
                 if(position == 0){
                     //todo fix bug here
+                    bindings.imageList.clearOnScrollListeners()
+                    viewModel.imagesList.clear()
+                    paginationStart = 0
+                    paginationLimit = 100
+                    shouldPaginate = true
                     loadImages()
                 }else{
-                    bindings.imageList.adapter = adapter
                     adapter.submitList(imageFolders[position - 1].images)
                 }
-
             }
             override fun onNothingSelected(parent: AdapterView<*>?) {}
         }

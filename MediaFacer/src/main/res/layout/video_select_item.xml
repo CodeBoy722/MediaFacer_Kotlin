@@ -5,7 +5,6 @@
     <androidx.cardview.widget.CardView
         android:layout_width="105dp"
         android:layout_height="105dp"
-        android:layout_marginTop="4dp"
         app:cardCornerRadius="10dp"
         android:elevation="10dp"
         android:background="?attr/selectableItemBackground">

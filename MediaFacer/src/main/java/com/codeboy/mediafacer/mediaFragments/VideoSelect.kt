@@ -20,6 +20,7 @@ import com.codeboy.mediafacer.models.VideoContent
 import com.codeboy.mediafacer.models.VideoFolderContent
 import com.codeboy.mediafacer.tools.EndlessScrollListener
 import com.codeboy.mediafacer.tools.MediaSelectionListener
+import com.codeboy.mediafacer.tools.Utils
 import com.codeboy.mediafacer.tools.Utils.calculateNoOfColumns
 import com.codeboy.mediafacer.viewModels.VideosViewModel
 
@@ -32,7 +33,11 @@ internal class VideoSelect() : Fragment() {
     private var paginationStart = 0
     private var paginationLimit = 100
     private var shouldPaginate = true
+
     private lateinit var layoutManager: GridLayoutManager
+    private lateinit var adapter: VideoContentAdapter
+    private lateinit var scrollListener: EndlessScrollListener
+    private lateinit var searchScrollListener: EndlessScrollListener
 
     constructor(listener: MediaSelectionListener): this(){
         this.listener = listener
@@ -46,39 +51,65 @@ internal class VideoSelect() : Fragment() {
         super.onViewCreated(view, savedInstanceState)
         bindings = FragmentVideoSelectBinding.bind(view)
         bindings.lifecycleOwner = viewLifecycleOwner
+        // init all views with defaults
+        initViews()
+    }
 
+    private fun initViews(){
         bindings.videoList.hasFixedSize()
         bindings.videoList.setHasFixedSize(true)
         bindings.videoList.setItemViewCacheSize(20)
+
+        //config grid layout manager
         val numOfColumns = calculateNoOfColumns(requireActivity(), 105f)
         layoutManager = GridLayoutManager(requireActivity(),numOfColumns)
         bindings.videoList.layoutManager = layoutManager
 
+        bindings.videoList.addItemDecoration(
+            Utils.MarginItemDecoration(8)
+        )
+
+        //add adapter
+        adapter = VideoContentAdapter(listener)
+        bindings.videoList.adapter = adapter
+
+        //init view model
         viewModel = VideosViewModel()
+
+        //observe video results for view model
+        viewModel.videos.observe(viewLifecycleOwner) {
+            val results = ArrayList<VideoContent>()
+            results.addAll(it)
+            adapter.submitList(results)
+            paginationStart = it.size
+        }
+
+        // observe video search results from view Model
+        viewModel.foundVideos.observe(viewLifecycleOwner){
+            val results = ArrayList<VideoContent>()
+            results.addAll(it)
+            adapter.submitList(results)
+            paginationStart = it.size //+ 1
+        }
+
+        //setup video search
         videoSearch()
+        //setup video folder selection
         loadVideoFolders()
     }
 
     private fun loadVideos(){
-        val adapter = VideoContentAdapter(listener)
-        bindings.videoList.adapter = adapter
-
-        viewModel.videos.observe(viewLifecycleOwner) {
-            adapter.submitList(it)
-            paginationStart = it.size
-        }
-
-        bindings.videoList.addOnScrollListener(object : EndlessScrollListener(layoutManager){
+        scrollListener = object: EndlessScrollListener(layoutManager){
             override fun onLoadMore(page: Int, totalItemsCount: Int, view: RecyclerView?) {
-               viewModel.loadMoreVideoItems(requireActivity(),paginationStart,paginationLimit,shouldPaginate)
+                viewModel.loadMoreVideoItems(requireActivity(),paginationStart,paginationLimit,shouldPaginate)
             }
-        })
+        }
+        bindings.videoList.addOnScrollListener(scrollListener)
 
         viewModel.loadMoreVideoItems(requireActivity(),paginationStart,paginationLimit,shouldPaginate)
     }
 
     private fun loadVideoFolders(){
-        val adapter = VideoContentAdapter(listener)
         var videoFolders = ArrayList<VideoFolderContent>()
 
         viewModel.videoFolders.observe(viewLifecycleOwner) {
@@ -101,9 +132,13 @@ internal class VideoSelect() : Fragment() {
             override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
                 if(position == 0){
                     //todo fix bug here
+                    bindings.videoList.clearOnScrollListeners()
+                    viewModel.videoList.clear()
+                    paginationStart = 0
+                    paginationLimit = 100
+                    shouldPaginate = true
                     loadVideos()
                 }else{
-                    bindings.videoList.adapter = adapter
                     adapter.submitList(videoFolders[position - 1].videos)
                 }
             }
@@ -114,28 +149,20 @@ internal class VideoSelect() : Fragment() {
     }
 
     private fun videoSearch(){
-        val adapter = VideoContentAdapter(listener)
         var searchHolder = ""
 
-        viewModel.foundVideos.observe(viewLifecycleOwner){
-            val results = ArrayList<VideoContent>()
-            results.addAll(it)
-            adapter.submitList(results)
-            paginationStart = it.size //+ 1
-        }
-
-        bindings.videoList.addOnScrollListener(object: EndlessScrollListener(layoutManager){
+        searchScrollListener = object: EndlessScrollListener(layoutManager){
             override fun onLoadMore(page: Int, totalItemsCount: Int, view: RecyclerView?) {
                 viewModel.searchVideoItems(requireActivity(),paginationStart,paginationLimit,shouldPaginate,
                     MediaFacer.videoSearchSelectionTypeDisplayName,searchHolder)
             }
-        })
+        }
 
         bindings.videoSearch.addTextChangedListener(object: TextWatcher {
             override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {}
             override fun onTextChanged(newText: CharSequence?, start: Int, before: Int, count: Int) {
-                bindings.videoList.layoutManager = layoutManager
-                bindings.videoList.adapter = adapter
+                bindings.videoList.clearOnScrollListeners()
+                bindings.videoList.addOnScrollListener(searchScrollListener)
 
                 // on every new search, clear the list in the view model and reset the pagination values to default
                 viewModel.foundList.clear()

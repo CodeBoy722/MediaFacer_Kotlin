@@ -222,16 +222,35 @@ class MediaFacerPicker : BottomSheetDialogFragment(), View.OnClickListener {
         return this
     }
 
+    private fun indicateSelectedFragment(fragmentPosition: Int){
+
+    }
+
     override fun onClick(v: View) {
         when (v.id) {
             R.id.audios_box -> {
-
+                when {
+                    audioFragPosition != null -> {
+                        bindings.mediaPager.setCurrentItem(audioFragPosition!!, true)
+                        indicateSelectedFragment(audioFragPosition!!)
+                    }
+                }
             }
             R.id.videos_box -> {
-
+                when {
+                    videoFragPosition != null -> {
+                        bindings.mediaPager.setCurrentItem(videoFragPosition!!, true)
+                        indicateSelectedFragment(videoFragPosition!!)
+                    }
+                }
             }
             R.id.images_box -> {
-
+                when {
+                    imageFragPosition != null -> {
+                        bindings.mediaPager.setCurrentItem(imageFragPosition!!, true)
+                        indicateSelectedFragment(imageFragPosition!!)
+                    }
+                }
             }
         }
     }
