@@ -130,9 +130,9 @@ internal class VideoSelect() : Fragment() {
 
         bindings.videoFolderSpinner.onItemSelectedListener = object : AdapterView.OnItemSelectedListener{
             override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
+                //clear scroll listener to avoid unwanted behavior in adapter
+                bindings.videoList.clearOnScrollListeners()
                 if(position == 0){
-                    //todo fix bug here
-                    bindings.videoList.clearOnScrollListeners()
                     viewModel.videoList.clear()
                     paginationStart = 0
                     paginationLimit = 100

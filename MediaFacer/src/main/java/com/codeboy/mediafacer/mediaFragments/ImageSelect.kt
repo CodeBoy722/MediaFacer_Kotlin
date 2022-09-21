@@ -73,6 +73,9 @@ internal class ImageSelect() : Fragment() {
 
         //observe audio results from view model
         viewModel.images.observe(viewLifecycleOwner) {
+            //note to use "it" directly the variable  imagesList in the view model must be private
+            //because of this, the adapter can't compute a change because it thinks is still has the same list
+            //"it" must be a final and immutable list to be used directly and have desired effect
             val results = ArrayList<ImageContent>()
             results.addAll(it)
             adapter.submitList(results)
@@ -115,9 +118,9 @@ internal class ImageSelect() : Fragment() {
 
         bindings.imageFolderSpinner.onItemSelectedListener = object : AdapterView.OnItemSelectedListener{
             override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
+                //clear scroll listener to avoid unwanted behavior in adapter
+                bindings.imageList.clearOnScrollListeners()
                 if(position == 0){
-                    //todo fix bug here
-                    bindings.imageList.clearOnScrollListeners()
                     viewModel.imagesList.clear()
                     paginationStart = 0
                     paginationLimit = 100

@@ -3,6 +3,7 @@ package com.codeboy.mediafacer.tools
 import android.content.res.Resources
 import android.os.Bundle
 import android.view.*
+import androidx.core.content.ContextCompat
 import androidx.core.content.res.ResourcesCompat
 import androidx.fragment.app.Fragment
 import androidx.viewpager2.widget.ViewPager2
@@ -25,7 +26,7 @@ class MediaFacerPicker : BottomSheetDialogFragment(), View.OnClickListener {
     private var addImages = false
     private var addAudios = false
 
-    private var completeDrawableId = 0
+    private var completeDrawableId: Int? = null
     private var audiosText: String = "Music"
     private var videosText: String = "Videos"
     private var imagesText: String = "Images"
@@ -40,6 +41,9 @@ class MediaFacerPicker : BottomSheetDialogFragment(), View.OnClickListener {
     private var imageFragPosition: Int? = null
     private var videoFragPosition: Int? = null
     private var audioFragPosition: Int? = null
+
+    private var selectedFragMenuColor  = R.color.material_grey_500
+    private var unSelectedFragMenuColor = R.color.white
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -141,9 +145,9 @@ class MediaFacerPicker : BottomSheetDialogFragment(), View.OnClickListener {
         bindings.videoOptionText.text = videosText
         bindings.imageOptionText.text = imagesText
 
-        if(completeDrawableId != 0){
+        if(completeDrawableId != null){
             bindings.completeSelection.setImageDrawable(ResourcesCompat
-                .getDrawable(requireActivity().resources,completeDrawableId,null))
+                .getDrawable(requireActivity().resources, completeDrawableId!!,null))
         }
 
         setUpSelectedMediaFragment()
@@ -196,7 +200,7 @@ class MediaFacerPicker : BottomSheetDialogFragment(), View.OnClickListener {
         bindings.mediaPager.registerOnPageChangeCallback(object: ViewPager2.OnPageChangeCallback(){
             override fun onPageSelected(position: Int) {
                 super.onPageSelected(position)
-
+                indicateSelectedFragment(position)
             }
         })
     }
@@ -222,8 +226,37 @@ class MediaFacerPicker : BottomSheetDialogFragment(), View.OnClickListener {
         return this
     }
 
-    private fun indicateSelectedFragment(fragmentPosition: Int){
+    //set fragment selection colors
+    fun setBottomItemSelectionColors(selectedColor: Int, unselectedColor: Int): MediaFacerPicker{
+        selectedFragMenuColor = selectedColor
+        unSelectedFragMenuColor = unselectedColor
+        return this
+    }
 
+    private fun indicateSelectedFragment(fragmentPosition: Int){
+        if(audioFragPosition == fragmentPosition){
+            bindings.audioOption.setColorFilter(ContextCompat.getColor(requireActivity(), selectedFragMenuColor), android.graphics.PorterDuff.Mode.SRC_IN)
+            bindings.audioOptionText.setTextColor(ContextCompat.getColor(requireActivity(), selectedFragMenuColor))
+        }else{
+            bindings.audioOption.setColorFilter(ContextCompat.getColor(requireActivity(), unSelectedFragMenuColor), android.graphics.PorterDuff.Mode.SRC_IN)
+            bindings.audioOptionText.setTextColor(ContextCompat.getColor(requireActivity(), unSelectedFragMenuColor))
+        }
+
+        if(imageFragPosition == fragmentPosition){
+            bindings.imageOption.setColorFilter(ContextCompat.getColor(requireActivity(), selectedFragMenuColor), android.graphics.PorterDuff.Mode.SRC_IN)
+            bindings.imageOptionText.setTextColor(ContextCompat.getColor(requireActivity(), selectedFragMenuColor))
+        }else{
+            bindings.imageOption.setColorFilter(ContextCompat.getColor(requireActivity(), unSelectedFragMenuColor), android.graphics.PorterDuff.Mode.SRC_IN)
+            bindings.imageOptionText.setTextColor(ContextCompat.getColor(requireActivity(), unSelectedFragMenuColor))
+        }
+
+        if(videoFragPosition == fragmentPosition){
+            bindings.videoOption.setColorFilter(ContextCompat.getColor(requireActivity(), selectedFragMenuColor), android.graphics.PorterDuff.Mode.SRC_IN)
+            bindings.videoOptionText.setTextColor(ContextCompat.getColor(requireActivity(), selectedFragMenuColor))
+        }else{
+            bindings.videoOption.setColorFilter(ContextCompat.getColor(requireActivity(), unSelectedFragMenuColor), android.graphics.PorterDuff.Mode.SRC_IN)
+            bindings.videoOptionText.setTextColor(ContextCompat.getColor(requireActivity(), unSelectedFragMenuColor))
+        }
     }
 
     override fun onClick(v: View) {
