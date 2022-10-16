@@ -23,6 +23,7 @@ import com.codeboy.mediafacer.tools.MediaSelectionListener
 import com.codeboy.mediafacer.tools.Utils
 import com.codeboy.mediafacer.tools.Utils.calculateNoOfColumns
 import com.codeboy.mediafacer.viewModels.VideosViewModel
+import kotlin.math.roundToInt
 
 internal class VideoSelect() : Fragment() {
 
@@ -61,13 +62,24 @@ internal class VideoSelect() : Fragment() {
         bindings.videoList.setItemViewCacheSize(20)
 
         //config grid layout manager
-        val numOfColumns = calculateNoOfColumns(requireActivity(), 105f)
+        val numOfColumns = calculateNoOfColumns(requireActivity(), 120f)
         layoutManager = GridLayoutManager(requireActivity(),numOfColumns)
+        //layoutManager.
         bindings.videoList.layoutManager = layoutManager
 
+       /* bindings.videoList.addItemDecoration(
+            Utils.MarginItemDecoration(16)
+        )*/
+
+        /*val px = (16 * resources.displayMetrics.density).roundToInt()
         bindings.videoList.addItemDecoration(
-            Utils.MarginItemDecoration(8)
-        )
+            Utils.MarginDecoration(16,false)
+        )*/
+
+       /* val px = (16 * resources.displayMetrics.density).roundToInt()
+        bindings.videoList.addItemDecoration(
+            Utils.GridSpacingItemDecoration(numOfColumns,px,true)
+        )*/
 
         //add adapter
         adapter = VideoContentAdapter(listener)

@@ -19,6 +19,7 @@ import com.codeboy.mediafacer.tools.MediaSelectionListener
 import com.codeboy.mediafacer.tools.Utils
 import com.codeboy.mediafacer.tools.Utils.calculateNoOfColumns
 import com.codeboy.mediafacer.viewModels.ImagesViewModel
+import kotlin.math.roundToInt
 
 internal class ImageSelect() : Fragment() {
 
@@ -56,13 +57,23 @@ internal class ImageSelect() : Fragment() {
         bindings.imageList.setItemViewCacheSize(20)
 
         //config grid layout manager
-        val numOfColumns = calculateNoOfColumns(requireActivity(), 82f)
+        val numOfColumns = calculateNoOfColumns(requireActivity(), 90f)
         layoutManager = GridLayoutManager(requireActivity(),numOfColumns)
         bindings.imageList.layoutManager = layoutManager
 
+       /* bindings.imageList.addItemDecoration(
+            Utils.MarginItemDecoration(16)
+        )*/
+
+        /*val px = (16 * resources.displayMetrics.density).roundToInt()
         bindings.imageList.addItemDecoration(
-            Utils.MarginItemDecoration(8)
-        )
+            Utils.MarginDecoration(16,false)
+        )*/
+
+        /*val px = (16 * resources.displayMetrics.density).roundToInt()
+        bindings.imageList.addItemDecoration(
+            Utils.GridSpacingItemDecoration(numOfColumns,px,false)
+        )*/
 
         //add adapter
         adapter = ImageContentAdapter(listener)
