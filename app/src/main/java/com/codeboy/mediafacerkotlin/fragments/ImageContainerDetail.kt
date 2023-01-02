@@ -46,7 +46,7 @@ class ImageContainerDetail() : Fragment() {
         //val layoutManager = GridLayoutManager(requireActivity(),numOfColumns)
         val layoutManager = FlexboxLayoutManager(context).apply {
             justifyContent = JustifyContent.SPACE_EVENLY
-            alignItems = AlignItems.CENTER
+            alignItems = AlignItems.FLEX_START
             flexDirection = FlexDirection.ROW
             flexWrap = FlexWrap.WRAP
         }
