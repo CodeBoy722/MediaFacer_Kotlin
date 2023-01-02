@@ -24,6 +24,9 @@ import com.codeboy.mediafacer.tools.Utils
 import com.codeboy.mediafacer.tools.Utils.calculateNoOfColumns
 import com.codeboy.mediafacer.viewModels.VideosViewModel
 import com.google.android.flexbox.*
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.async
 import kotlin.math.roundToInt
 
 internal class VideoSelect() : Fragment() {
@@ -150,7 +153,11 @@ internal class VideoSelect() : Fragment() {
             override fun onNothingSelected(parent: AdapterView<*>?) {}
         }
 
-        viewModel.loadVideoBucketItems(requireActivity())
+        CoroutineScope(Dispatchers.Main).async {
+            viewModel.loadVideoBucketItems(requireActivity())
+        }.invokeOnCompletion {
+            loadVideos()
+        }
     }
 
     private fun videoSearch(){

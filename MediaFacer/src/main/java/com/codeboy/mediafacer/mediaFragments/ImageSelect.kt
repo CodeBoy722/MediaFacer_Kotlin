@@ -20,6 +20,9 @@ import com.codeboy.mediafacer.tools.Utils
 import com.codeboy.mediafacer.tools.Utils.calculateNoOfColumns
 import com.codeboy.mediafacer.viewModels.ImagesViewModel
 import com.google.android.flexbox.*
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.async
 import kotlin.math.roundToInt
 
 internal class ImageSelect() : Fragment() {
@@ -68,7 +71,6 @@ internal class ImageSelect() : Fragment() {
         }
         bindings.imageList.layoutManager = layoutManager
 
-
         //add adapter
         adapter = ImageContentAdapter(listener)
         bindings.imageList.adapter = adapter
@@ -76,7 +78,7 @@ internal class ImageSelect() : Fragment() {
         //init images view model
         viewModel = ImagesViewModel()
 
-        //observe audio results from view model
+        //observe image results from view model
         viewModel.images.observe(viewLifecycleOwner) {
             //note to use "it" directly the variable  imagesList in the view model must be private
             //because of this, the adapter can't compute a change because it thinks is still has the same list
@@ -98,7 +100,6 @@ internal class ImageSelect() : Fragment() {
             }
         }
         bindings.imageList.addOnScrollListener(scrollListener)
-
         viewModel.loadNewItems(requireActivity(),paginationStart,paginationLimit,shouldPaginate)
     }
 
@@ -138,7 +139,11 @@ internal class ImageSelect() : Fragment() {
             override fun onNothingSelected(parent: AdapterView<*>?) {}
         }
 
-        viewModel.loadFolders(requireActivity())
+        CoroutineScope(Dispatchers.Main).async {
+            viewModel.loadFolders(requireActivity())
+        }.invokeOnCompletion {
+            loadImages()
+        }
     }
 
 }
