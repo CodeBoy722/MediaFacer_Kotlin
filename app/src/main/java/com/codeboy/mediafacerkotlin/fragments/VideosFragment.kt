@@ -34,6 +34,7 @@ import com.codeboy.mediafacerkotlin.viewAdapters.VideoViewAdapter
 import com.codeboy.mediafacerkotlin.viewModels.VideoFolderViewModel
 import com.codeboy.mediafacerkotlin.viewModels.VideoSearchViewModel
 import com.codeboy.mediafacerkotlin.viewModels.VideoViewModel
+import com.google.android.flexbox.*
 
 class VideosFragment() : Fragment() {
 
@@ -65,8 +66,14 @@ class VideosFragment() : Fragment() {
 
     private fun initVideos(){
         // init and setup your recyclerview with a layout manager
-        val numOfColumns = calculateNoOfColumns(requireActivity(), 120f)
-        val layoutManager = GridLayoutManager(requireActivity(),numOfColumns)
+        val numOfColumns = calculateNoOfColumns(requireActivity(), 115f)
+        //val layoutManager = GridLayoutManager(requireActivity(),numOfColumns)
+        val layoutManager = FlexboxLayoutManager(context).apply {
+            justifyContent = JustifyContent.SPACE_EVENLY
+            alignItems = AlignItems.CENTER
+            flexDirection = FlexDirection.ROW
+            flexWrap = FlexWrap.WRAP
+        }
         bindings.videosList.layoutManager = layoutManager
         /*bindings.videosList.addItemDecoration(
             Utils.MarginItemDecoration(8)
@@ -157,8 +164,14 @@ class VideosFragment() : Fragment() {
     }
 
     private fun setupVideoSearch(){
-        val numOfColumns = calculateNoOfColumns(requireActivity(), 105f)
-        val layoutManager = GridLayoutManager(requireActivity(),numOfColumns)
+        val numOfColumns = calculateNoOfColumns(requireActivity(), 115f)
+        //val layoutManager = GridLayoutManager(requireActivity(),numOfColumns)
+        val layoutManager = FlexboxLayoutManager(context).apply {
+            justifyContent = JustifyContent.SPACE_EVENLY
+            alignItems = AlignItems.CENTER
+            flexDirection = FlexDirection.ROW
+            flexWrap = FlexWrap.WRAP
+        }
         val adapter = VideoViewAdapter(object: VideoActionListener{
             override fun onVideoItemClicked(playPosition: Int, mediaItemList: ArrayList<VideoContent>) {
                 navigateToPlayer(playPosition, mediaItemList)

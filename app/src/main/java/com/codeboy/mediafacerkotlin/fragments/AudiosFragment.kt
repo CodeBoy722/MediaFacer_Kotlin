@@ -28,6 +28,7 @@ import com.codeboy.mediafacerkotlin.utils.EndlessScrollListener
 import com.codeboy.mediafacerkotlin.utils.Utils
 import com.codeboy.mediafacerkotlin.viewAdapters.*
 import com.codeboy.mediafacerkotlin.viewModels.*
+import com.google.android.flexbox.*
 
 class AudiosFragment() : Fragment() {
 
@@ -179,8 +180,14 @@ class AudiosFragment() : Fragment() {
     }
 
     private fun initAlbums(){
-        val numOfColumns = Utils.calculateNoOfColumns(requireActivity(), 130f)
-        val layoutManager = GridLayoutManager(requireActivity(),numOfColumns)
+        val numOfColumns = Utils.calculateNoOfColumns(requireActivity(), 125f)
+        //val layoutManager = GridLayoutManager(requireActivity(),numOfColumns)
+        val layoutManager = FlexboxLayoutManager(context).apply {
+            justifyContent = JustifyContent.SPACE_EVENLY
+            alignItems = AlignItems.CENTER
+            flexDirection = FlexDirection.ROW
+            flexWrap = FlexWrap.WRAP
+        }
         bindings.audiosList.layoutManager = layoutManager
         //bindings.audiosList.itemAnimator = null
 
@@ -214,8 +221,14 @@ class AudiosFragment() : Fragment() {
     }
 
     private fun initGenres(){
-        val numOfColumns = Utils.calculateNoOfColumns(requireActivity(), 120f)
-        val layoutManager = GridLayoutManager(requireActivity(),numOfColumns)
+        val numOfColumns = Utils.calculateNoOfColumns(requireActivity(), 1250f)
+        //val layoutManager = GridLayoutManager(requireActivity(),numOfColumns)
+        val layoutManager = FlexboxLayoutManager(context).apply {
+            justifyContent = JustifyContent.SPACE_EVENLY
+            alignItems = AlignItems.CENTER
+            flexDirection = FlexDirection.ROW
+            flexWrap = FlexWrap.WRAP
+        }
         bindings.audiosList.layoutManager = layoutManager
         //bindings.audiosList.itemAnimator = null
 

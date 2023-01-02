@@ -4,6 +4,7 @@ import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.StaggeredGridLayoutManager
+import com.google.android.flexbox.FlexboxLayoutManager
 
 abstract class EndlessScrollListener : RecyclerView.OnScrollListener {
     // The minimum amount of items to have below your current scroll position
@@ -25,6 +26,11 @@ abstract class EndlessScrollListener : RecyclerView.OnScrollListener {
 
     constructor(layoutManager: LinearLayoutManager) {
         mLayoutManager = layoutManager
+    }
+
+    constructor(layoutManager: FlexboxLayoutManager) {
+        mLayoutManager = layoutManager
+        visibleThreshold *= layoutManager.itemCount
     }
 
     constructor(layoutManager: GridLayoutManager) {
@@ -67,8 +73,10 @@ abstract class EndlessScrollListener : RecyclerView.OnScrollListener {
                     (mLayoutManager as GridLayoutManager).findLastVisibleItemPosition()
             }
             is LinearLayoutManager -> {
-                lastVisibleItemPosition =
-                    (mLayoutManager as LinearLayoutManager).findLastVisibleItemPosition()
+                lastVisibleItemPosition = (mLayoutManager as LinearLayoutManager).findLastVisibleItemPosition()
+            }
+            is FlexboxLayoutManager -> {
+                lastVisibleItemPosition = (mLayoutManager as FlexboxLayoutManager).findLastVisibleItemPosition()
             }
         }
 

@@ -3,13 +3,11 @@
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <androidx.cardview.widget.CardView
-        android:layout_width="120dp"
-        android:layout_height="120dp"
+        android:layout_width="115dp"
+        android:layout_height="115dp"
         android:background="?attr/selectableItemBackground"
         android:elevation="10dp"
-        android:layout_marginStart="3dp"
-        android:layout_marginEnd="3dp"
-        android:layout_marginTop="4dp"
+        android:layout_marginTop="8dp"
         app:cardCornerRadius="10dp">
 
         <androidx.appcompat.widget.AppCompatImageView

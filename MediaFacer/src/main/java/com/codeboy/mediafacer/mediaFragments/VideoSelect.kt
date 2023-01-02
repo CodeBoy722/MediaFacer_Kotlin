@@ -23,6 +23,7 @@ import com.codeboy.mediafacer.tools.MediaSelectionListener
 import com.codeboy.mediafacer.tools.Utils
 import com.codeboy.mediafacer.tools.Utils.calculateNoOfColumns
 import com.codeboy.mediafacer.viewModels.VideosViewModel
+import com.google.android.flexbox.*
 import kotlin.math.roundToInt
 
 internal class VideoSelect() : Fragment() {
@@ -35,7 +36,7 @@ internal class VideoSelect() : Fragment() {
     private var paginationLimit = 100
     private var shouldPaginate = true
 
-    private lateinit var layoutManager: GridLayoutManager
+    private lateinit var layoutManager: FlexboxLayoutManager
     private lateinit var adapter: VideoContentAdapter
     private lateinit var scrollListener: EndlessScrollListener
     private lateinit var searchScrollListener: EndlessScrollListener
@@ -62,24 +63,16 @@ internal class VideoSelect() : Fragment() {
         bindings.videoList.setItemViewCacheSize(20)
 
         //config grid layout manager
-        val numOfColumns = calculateNoOfColumns(requireActivity(), 120f)
-        layoutManager = GridLayoutManager(requireActivity(),numOfColumns)
+        val numOfColumns = calculateNoOfColumns(requireActivity(), 115f)
+        //layoutManager = GridLayoutManager(requireActivity(),numOfColumns)
+        layoutManager = FlexboxLayoutManager(context).apply {
+            justifyContent = JustifyContent.SPACE_EVENLY
+            alignItems = AlignItems.CENTER
+            flexDirection = FlexDirection.ROW
+            flexWrap = FlexWrap.WRAP
+        }
         //layoutManager.
         bindings.videoList.layoutManager = layoutManager
-
-       /* bindings.videoList.addItemDecoration(
-            Utils.MarginItemDecoration(16)
-        )*/
-
-        /*val px = (16 * resources.displayMetrics.density).roundToInt()
-        bindings.videoList.addItemDecoration(
-            Utils.MarginDecoration(16,false)
-        )*/
-
-       /* val px = (16 * resources.displayMetrics.density).roundToInt()
-        bindings.videoList.addItemDecoration(
-            Utils.GridSpacingItemDecoration(numOfColumns,px,true)
-        )*/
 
         //add adapter
         adapter = VideoContentAdapter(listener)

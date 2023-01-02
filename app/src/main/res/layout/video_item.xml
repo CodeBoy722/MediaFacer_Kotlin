@@ -6,13 +6,11 @@
     <!--android:layout_marginTop="4dp"-->
 
     <androidx.cardview.widget.CardView
-        android:layout_width="120dp"
-        android:layout_height="120dp"
+        android:layout_width="115dp"
+        android:layout_height="115dp"
         app:cardCornerRadius="10dp"
         android:elevation="8dp"
-        android:layout_marginStart="3dp"
-        android:layout_marginEnd="3dp"
-        android:layout_marginTop="4dp"
+        android:layout_marginTop="8dp"
         android:background="?attr/selectableItemBackground">
 
         <androidx.appcompat.widget.AppCompatImageView

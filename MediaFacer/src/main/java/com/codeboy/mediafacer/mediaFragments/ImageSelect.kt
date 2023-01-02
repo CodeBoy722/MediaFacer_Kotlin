@@ -19,6 +19,7 @@ import com.codeboy.mediafacer.tools.MediaSelectionListener
 import com.codeboy.mediafacer.tools.Utils
 import com.codeboy.mediafacer.tools.Utils.calculateNoOfColumns
 import com.codeboy.mediafacer.viewModels.ImagesViewModel
+import com.google.android.flexbox.*
 import kotlin.math.roundToInt
 
 internal class ImageSelect() : Fragment() {
@@ -31,7 +32,7 @@ internal class ImageSelect() : Fragment() {
     private lateinit var viewModel: ImagesViewModel
     private lateinit var listener: MediaSelectionListener
 
-    private lateinit var layoutManager: GridLayoutManager
+    private lateinit var layoutManager: FlexboxLayoutManager
     private lateinit var scrollListener: EndlessScrollListener
     private lateinit var adapter: ImageContentAdapter
 
@@ -57,23 +58,16 @@ internal class ImageSelect() : Fragment() {
         bindings.imageList.setItemViewCacheSize(20)
 
         //config grid layout manager
-        val numOfColumns = calculateNoOfColumns(requireActivity(), 90f)
-        layoutManager = GridLayoutManager(requireActivity(),numOfColumns)
+        val numOfColumns = calculateNoOfColumns(requireActivity(), 85f)
+        //layoutManager = GridLayoutManager(requireActivity(),numOfColumns)
+        layoutManager = FlexboxLayoutManager(context).apply {
+            justifyContent = JustifyContent.SPACE_EVENLY
+            alignItems = AlignItems.CENTER
+            flexDirection = FlexDirection.ROW
+            flexWrap = FlexWrap.WRAP
+        }
         bindings.imageList.layoutManager = layoutManager
 
-       /* bindings.imageList.addItemDecoration(
-            Utils.MarginItemDecoration(16)
-        )*/
-
-        /*val px = (16 * resources.displayMetrics.density).roundToInt()
-        bindings.imageList.addItemDecoration(
-            Utils.MarginDecoration(16,false)
-        )*/
-
-        /*val px = (16 * resources.displayMetrics.density).roundToInt()
-        bindings.imageList.addItemDecoration(
-            Utils.GridSpacingItemDecoration(numOfColumns,px,false)
-        )*/
 
         //add adapter
         adapter = ImageContentAdapter(listener)

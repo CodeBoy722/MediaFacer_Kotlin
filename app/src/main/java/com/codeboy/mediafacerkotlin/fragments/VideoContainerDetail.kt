@@ -16,6 +16,7 @@ import com.codeboy.mediafacerkotlin.dialogs.VideoDetails
 import com.codeboy.mediafacerkotlin.listeners.VideoActionListener
 import com.codeboy.mediafacerkotlin.utils.Utils
 import com.codeboy.mediafacerkotlin.viewAdapters.VideoViewAdapter
+import com.google.android.flexbox.*
 
 class VideoContainerDetail() : Fragment() {
 
@@ -43,8 +44,14 @@ class VideoContainerDetail() : Fragment() {
         bindings.videoList.hasFixedSize()
         bindings.videoList.setHasFixedSize(true)
         bindings.videoList.setItemViewCacheSize(20)
-        val numOfColumns = Utils.calculateNoOfColumns(requireActivity(), 105f)
-        val layoutManager = GridLayoutManager(requireActivity(),numOfColumns)
+        val numOfColumns = Utils.calculateNoOfColumns(requireActivity(), 115f)
+        //val layoutManager = GridLayoutManager(requireActivity(),numOfColumns)
+        val layoutManager = FlexboxLayoutManager(context).apply {
+            justifyContent = JustifyContent.SPACE_EVENLY
+            alignItems = AlignItems.CENTER
+            flexDirection = FlexDirection.ROW
+            flexWrap = FlexWrap.WRAP
+        }
         bindings.videoList.layoutManager = layoutManager
 
         bindings.videoList.addItemDecoration(

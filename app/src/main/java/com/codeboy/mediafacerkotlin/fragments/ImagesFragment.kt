@@ -27,6 +27,7 @@ import com.codeboy.mediafacerkotlin.viewAdapters.ImageFolderAdapter
 import com.codeboy.mediafacerkotlin.viewAdapters.ImageViewAdapter
 import com.codeboy.mediafacerkotlin.viewModels.ImageFolderViewModel
 import com.codeboy.mediafacerkotlin.viewModels.ImageViewModel
+import com.google.android.flexbox.*
 
 class ImagesFragment() : Fragment() {
 
@@ -57,8 +58,14 @@ class ImagesFragment() : Fragment() {
 
     private fun initImages(){
         // init and setup your recyclerview with a layout manager
-        val numOfColumns = calculateNoOfColumns(requireActivity(), 90f)
-        val layoutManager = GridLayoutManager(requireActivity(),numOfColumns)
+        val numOfColumns = calculateNoOfColumns(requireActivity(), 85f)
+        //val layoutManager = GridLayoutManager(requireActivity(),numOfColumns)
+        val layoutManager = FlexboxLayoutManager(context).apply {
+            justifyContent = JustifyContent.SPACE_EVENLY
+            alignItems = AlignItems.CENTER
+            flexDirection = FlexDirection.ROW
+            flexWrap = FlexWrap.WRAP
+        }
         bindings.imagesList.layoutManager = layoutManager
       /*  bindings.imagesList.addItemDecoration(
             Utils.MarginItemDecoration(8)

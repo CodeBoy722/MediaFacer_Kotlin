@@ -14,6 +14,7 @@ import com.codeboy.mediafacerkotlin.dialogs.ImageDetails
 import com.codeboy.mediafacerkotlin.listeners.ImageActionListener
 import com.codeboy.mediafacerkotlin.utils.Utils
 import com.codeboy.mediafacerkotlin.viewAdapters.ImageViewAdapter
+import com.google.android.flexbox.*
 
 class ImageContainerDetail() : Fragment() {
 
@@ -41,8 +42,14 @@ class ImageContainerDetail() : Fragment() {
         bindings.imageList.hasFixedSize()
         bindings.imageList.setHasFixedSize(true)
         bindings.imageList.setItemViewCacheSize(20)
-        val numOfColumns = Utils.calculateNoOfColumns(requireActivity(), 82f)
-        val layoutManager = GridLayoutManager(requireActivity(),numOfColumns)
+        val numOfColumns = Utils.calculateNoOfColumns(requireActivity(), 85f)
+        //val layoutManager = GridLayoutManager(requireActivity(),numOfColumns)
+        val layoutManager = FlexboxLayoutManager(context).apply {
+            justifyContent = JustifyContent.SPACE_EVENLY
+            alignItems = AlignItems.CENTER
+            flexDirection = FlexDirection.ROW
+            flexWrap = FlexWrap.WRAP
+        }
         bindings.imageList.layoutManager = layoutManager
         bindings.imageList.addItemDecoration(
             com.codeboy.mediafacer.tools.Utils.MarginItemDecoration(8)
