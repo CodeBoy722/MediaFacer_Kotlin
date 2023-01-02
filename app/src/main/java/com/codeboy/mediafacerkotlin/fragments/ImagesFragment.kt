@@ -57,12 +57,12 @@ class ImagesFragment() : Fragment() {
 
     private fun initImages(){
         // init and setup your recyclerview with a layout manager
-        val numOfColumns = calculateNoOfColumns(requireActivity(), 82f)
+        val numOfColumns = calculateNoOfColumns(requireActivity(), 90f)
         val layoutManager = GridLayoutManager(requireActivity(),numOfColumns)
         bindings.imagesList.layoutManager = layoutManager
-        bindings.imagesList.addItemDecoration(
+      /*  bindings.imagesList.addItemDecoration(
             Utils.MarginItemDecoration(8)
-        )
+        )*/
         //bindings.imagesList.itemAnimator = null
 
         paginationStart = 0

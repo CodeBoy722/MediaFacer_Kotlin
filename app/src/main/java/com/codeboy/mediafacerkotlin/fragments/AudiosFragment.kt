@@ -214,7 +214,7 @@ class AudiosFragment() : Fragment() {
     }
 
     private fun initGenres(){
-        val numOfColumns = Utils.calculateNoOfColumns(requireActivity(), 130f)
+        val numOfColumns = Utils.calculateNoOfColumns(requireActivity(), 120f)
         val layoutManager = GridLayoutManager(requireActivity(),numOfColumns)
         bindings.audiosList.layoutManager = layoutManager
         //bindings.audiosList.itemAnimator = null

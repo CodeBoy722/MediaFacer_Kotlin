@@ -65,12 +65,12 @@ class VideosFragment() : Fragment() {
 
     private fun initVideos(){
         // init and setup your recyclerview with a layout manager
-        val numOfColumns = calculateNoOfColumns(requireActivity(), 105f)
+        val numOfColumns = calculateNoOfColumns(requireActivity(), 120f)
         val layoutManager = GridLayoutManager(requireActivity(),numOfColumns)
         bindings.videosList.layoutManager = layoutManager
-        bindings.videosList.addItemDecoration(
+        /*bindings.videosList.addItemDecoration(
             Utils.MarginItemDecoration(8)
-        )
+        )*/
         //bindings.videosList.itemAnimator = null
 
         paginationStart = 0
