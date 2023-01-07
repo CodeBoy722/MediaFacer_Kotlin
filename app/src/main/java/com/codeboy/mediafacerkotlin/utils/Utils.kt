@@ -3,7 +3,9 @@ package com.codeboy.mediafacerkotlin.utils
 import android.content.Context
 import android.graphics.Rect
 import android.view.View
+import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
+import com.codeboy.mediafacer.models.ImageContent
 
 object Utils {
 
@@ -30,7 +32,15 @@ object Utils {
         }
     }
 
+    class ImageDiffUtil : DiffUtil.ItemCallback<ImageContent>() {
+        override fun areItemsTheSame(oldItem: ImageContent, newItem: ImageContent): Boolean {
+            return oldItem.name == newItem.name
+        }
 
+        override fun areContentsTheSame(oldItem: ImageContent, newItem: ImageContent): Boolean {
+            return oldItem.imageId == newItem.imageId
+        }
+    }
 
 
 

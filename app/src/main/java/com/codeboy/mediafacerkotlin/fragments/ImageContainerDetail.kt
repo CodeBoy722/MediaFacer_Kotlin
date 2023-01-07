@@ -5,7 +5,10 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.animation.Animation
+import android.view.animation.AnimationUtils
 import androidx.recyclerview.widget.GridLayoutManager
+import androidx.transition.Fade
 import com.codeboy.mediafacer.models.ImageContent
 import com.codeboy.mediafacerkotlin.MainActivity
 import com.codeboy.mediafacerkotlin.R
@@ -63,8 +66,20 @@ class ImageContainerDetail() : Fragment() {
         bindings.mediaTitle.text = headTitle
 
         val audiosAdapter = ImageViewAdapter(object: ImageActionListener {
-            override fun onImageItemClicked(imageItem: ImageContent) {
-                //TODO("Not yet implemented")
+            override fun onImageItemClicked(imagePosition: Int, imageList: ArrayList<ImageContent>) {
+                val imageBrowser = ImageDisplayFragment(0, 0,imageList,imagePosition, false)
+                val fade = Fade()
+                imageBrowser.enterTransition = fade
+                imageBrowser.exitTransition = fade
+                val anim: Animation = AnimationUtils.loadAnimation(requireActivity(), R.anim.animation_fall_down)
+                parentFragmentManager
+                    .beginTransaction()
+                    .replace(R.id.activity_parent, imageBrowser, imageBrowser.javaClass.canonicalName)
+                    .setReorderingAllowed(true)
+                    .addToBackStack(null)
+                    .commit()
+                imageBrowser.view?.startAnimation(anim)
+                (requireActivity() as MainActivity).hideBottomMenu()
             }
 
             override fun onImageItemLongClicked(imageItem: ImageContent) {

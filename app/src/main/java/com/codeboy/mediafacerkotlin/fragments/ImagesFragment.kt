@@ -12,6 +12,7 @@ import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import androidx.transition.Fade
 import androidx.transition.Slide
 import com.codeboy.mediafacer.models.ImageContent
 import com.codeboy.mediafacer.tools.Utils
@@ -78,8 +79,20 @@ class ImagesFragment() : Fragment() {
 
         //init your adapter and bind it to recyclerview
         val adapter = ImageViewAdapter(object: ImageActionListener{
-            override fun onImageItemClicked(imageItem: ImageContent) {
-                //TODO("Not yet implemented")
+            override fun onImageItemClicked(imagePosition: Int, imageList: ArrayList<ImageContent>) {
+                val imageBrowser = ImageDisplayFragment(paginationStart, paginationLimit,imageList,imagePosition, true)
+                val fade = Fade()
+                imageBrowser.enterTransition = fade
+                imageBrowser.exitTransition = fade
+                val anim: Animation = AnimationUtils.loadAnimation(requireActivity(), R.anim.animation_fall_down)
+                parentFragmentManager
+                    .beginTransaction()
+                    .replace(R.id.activity_parent, imageBrowser, imageBrowser.javaClass.canonicalName)
+                    .setReorderingAllowed(true)
+                    .addToBackStack(null)
+                    .commit()
+                imageBrowser.view?.startAnimation(anim)
+                (requireActivity() as MainActivity).hideBottomMenu()
             }
 
             override fun onImageItemLongClicked(imageItem: ImageContent) {

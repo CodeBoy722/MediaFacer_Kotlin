@@ -4,7 +4,7 @@ import com.codeboy.mediafacer.models.ImageContent
 
 interface ImageActionListener {
 
-    fun onImageItemClicked(imageItem: ImageContent)
+    fun onImageItemClicked(imagePosition: Int, imageList: ArrayList<ImageContent>)
 
     fun  onImageItemLongClicked(imageItem: ImageContent)
 

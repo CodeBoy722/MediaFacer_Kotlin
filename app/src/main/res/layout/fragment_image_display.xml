@@ -5,8 +5,12 @@
     tools:context=".fragments.ImageDisplayFragment">
 
     <FrameLayout
+        android:id="@+id/displayParent"
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        android:clickable="true"
+        android:focusable="true"
+        android:background="@color/black">
 
         <androidx.viewpager2.widget.ViewPager2
             android:id="@+id/imagesPager"
@@ -16,7 +20,7 @@
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/imagesIndicator"
             android:layout_width="match_parent"
-            android:layout_height="80dp"
+            android:layout_height="100dp"
             android:layout_gravity="bottom|center"
             android:layout_marginBottom="8dp"/>
 

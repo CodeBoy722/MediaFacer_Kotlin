@@ -28,10 +28,10 @@ class VideoViewAdapter(private val listener: VideoActionListener)
     }
 
     override fun onBindViewHolder(holder: VideoViewHolder, position: Int) {
-        if(holder.adapterPosition > lastPosition){
+        if(holder.layoutPosition > lastPosition){
             val anim: Animation = AnimationUtils.loadAnimation(holder.itemView.context, R.anim.animation_fall_down)
             holder.itemView.startAnimation(anim)
-            lastPosition = holder.adapterPosition
+            lastPosition = holder.layoutPosition
         }
         holder.itemPosition = position
         holder.item = getItem(position)

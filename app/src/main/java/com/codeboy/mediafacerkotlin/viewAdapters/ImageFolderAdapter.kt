@@ -24,10 +24,10 @@ class ImageFolderAdapter(private val listener: ImageContainerActionListener): Li
     }
 
     override fun onBindViewHolder(holder: ImageFolderViewHolder, position: Int) {
-        if(holder.adapterPosition > lastPosition){
+        if(holder.layoutPosition > lastPosition){
             val anim: Animation = AnimationUtils.loadAnimation(holder.itemView.context, R.anim.animation_fall_down)
             holder.itemView.startAnimation(anim)
-            lastPosition = holder.adapterPosition
+            lastPosition = holder.layoutPosition
         }
         holder.item = getItem(position)
         holder.bind()
