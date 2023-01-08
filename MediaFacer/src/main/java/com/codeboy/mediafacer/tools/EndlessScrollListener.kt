@@ -30,7 +30,6 @@ abstract class EndlessScrollListener : RecyclerView.OnScrollListener {
 
     constructor(layoutManager: FlexboxLayoutManager) {
         mLayoutManager = layoutManager
-        visibleThreshold *= layoutManager.itemCount
     }
 
     constructor(layoutManager: GridLayoutManager) {
