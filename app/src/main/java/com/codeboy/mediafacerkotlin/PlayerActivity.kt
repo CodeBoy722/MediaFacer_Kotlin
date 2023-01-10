@@ -9,7 +9,6 @@ import androidx.core.view.WindowInsetsCompat
 import androidx.core.view.WindowInsetsControllerCompat
 import androidx.databinding.DataBindingUtil
 import androidx.media3.common.MediaItem
-import androidx.media3.common.MimeTypes
 import androidx.media3.common.Player
 import androidx.media3.common.util.Util
 import androidx.media3.exoplayer.ExoPlayer
@@ -22,7 +21,7 @@ class PlayerActivity : AppCompatActivity() {
 
     private lateinit var bindings: ActivityPlayerBinding
     private var player: ExoPlayer? = null
-    private val TAG = "PlayerActivity"
+    private val TAG = "player_activity"
 
     private var mediaItems = ArrayList<MediaItem>()
     private var rawVideos = ArrayList<VideoContent>()
@@ -47,6 +46,7 @@ class PlayerActivity : AppCompatActivity() {
         initializePlayer()
     }
 
+    @androidx.annotation.OptIn(androidx.media3.common.util.UnstableApi::class)
     private fun initializePlayer() {
         //for adaptive streaming
         val trackSelector = DefaultTrackSelector(this).apply {
@@ -68,12 +68,14 @@ class PlayerActivity : AppCompatActivity() {
                 }*/
 
                 //exoPlayer.setMediaItem( mediaItems[playPosition])
+
                 exoPlayer.addMediaItems(mediaItems)
                 exoPlayer.playWhenReady = playWhenReady
                 exoPlayer.seekTo(currentItem, playbackPosition)
                 exoPlayer.addListener(playbackStateListener)
                 exoPlayer.prepare()
             }
+
     }
 
     private fun playbackStateListener() = object : Player.Listener {
@@ -89,6 +91,7 @@ class PlayerActivity : AppCompatActivity() {
         }
     }
 
+    @androidx.annotation.OptIn(androidx.media3.common.util.UnstableApi::class)
     public override fun onStart() {
         super.onStart()
         if (Util.SDK_INT > 23) {
@@ -96,6 +99,7 @@ class PlayerActivity : AppCompatActivity() {
         }
     }
 
+    @androidx.annotation.OptIn(androidx.media3.common.util.UnstableApi::class)
     public override fun onResume() {
         super.onResume()
         hideSystemUi()
@@ -104,6 +108,7 @@ class PlayerActivity : AppCompatActivity() {
         }
     }
 
+    @androidx.annotation.OptIn(androidx.media3.common.util.UnstableApi::class)
     public override fun onPause() {
         super.onPause()
         if (Util.SDK_INT <= 23) {
@@ -111,7 +116,7 @@ class PlayerActivity : AppCompatActivity() {
         }
     }
 
-
+    @androidx.annotation.OptIn(androidx.media3.common.util.UnstableApi::class)
     public override fun onStop() {
         super.onStop()
         if (Util.SDK_INT > 23) {
