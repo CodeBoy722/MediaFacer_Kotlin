@@ -1,6 +1,7 @@
 package com.codeboy.mediafacerkotlin
 
 import android.annotation.SuppressLint
+import android.os.Build
 import android.os.Bundle
 import android.util.Log
 import androidx.appcompat.app.AppCompatActivity
@@ -38,7 +39,11 @@ class PlayerActivity : AppCompatActivity() {
         bindings.lifecycleOwner = this
 
         currentItem = intent.getIntExtra("play_position", 0)
-        rawVideos = intent.getParcelableArrayListExtra("videos")!!
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            rawVideos = intent.getParcelableArrayListExtra("videos",VideoContent::class.java)!!
+        }else{
+            rawVideos = intent.getParcelableArrayListExtra("videos")!!
+        }
 
         for (item: VideoContent in rawVideos){
             mediaItems.add(MediaItem.fromUri(item.videoUri))
@@ -68,11 +73,11 @@ class PlayerActivity : AppCompatActivity() {
                 }*/
 
                 //exoPlayer.setMediaItem( mediaItems[playPosition])
-
                 exoPlayer.addMediaItems(mediaItems)
-                exoPlayer.playWhenReady = playWhenReady
                 exoPlayer.seekTo(currentItem, playbackPosition)
                 exoPlayer.addListener(playbackStateListener)
+                exoPlayer.playWhenReady = playWhenReady
+                exoPlayer.playbackState
                 exoPlayer.prepare()
             }
 
@@ -94,16 +99,14 @@ class PlayerActivity : AppCompatActivity() {
     @androidx.annotation.OptIn(androidx.media3.common.util.UnstableApi::class)
     public override fun onStart() {
         super.onStart()
-        if (Util.SDK_INT > 23) {
-            initializePlayer()
-        }
+        initializePlayer()
     }
 
     @androidx.annotation.OptIn(androidx.media3.common.util.UnstableApi::class)
     public override fun onResume() {
         super.onResume()
         hideSystemUi()
-        if ((Util.SDK_INT <= 23 || player == null)) {
+        if (player == null) {
             initializePlayer()
         }
     }
@@ -111,17 +114,17 @@ class PlayerActivity : AppCompatActivity() {
     @androidx.annotation.OptIn(androidx.media3.common.util.UnstableApi::class)
     public override fun onPause() {
         super.onPause()
-        if (Util.SDK_INT <= 23) {
-            releasePlayer()
-        }
+        playWhenReady = false
+        player?.playWhenReady = playWhenReady
+        releasePlayer()
     }
 
     @androidx.annotation.OptIn(androidx.media3.common.util.UnstableApi::class)
     public override fun onStop() {
         super.onStop()
-        if (Util.SDK_INT > 23) {
-            releasePlayer()
-        }
+        playWhenReady = false
+        player?.playWhenReady = playWhenReady
+        releasePlayer()
     }
 
     @SuppressLint("InlinedApi")
@@ -141,7 +144,7 @@ class PlayerActivity : AppCompatActivity() {
             exoPlayer.removeListener(playbackStateListener)
             exoPlayer.release()
         }
-        player = null
+        player?.stop()
     }
 
 }
