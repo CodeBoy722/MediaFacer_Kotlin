@@ -63,7 +63,6 @@ class PlayerActivity : AppCompatActivity() {
             .build()
             .also { exoPlayer ->
                 bindings.videoView.player = exoPlayer
-
                /* for(item: VideoContent in rawVideos){
                     val adaptiveMediaItem = MediaItem.Builder()
                         .setUri(item.videoUri)
@@ -76,8 +75,6 @@ class PlayerActivity : AppCompatActivity() {
                 exoPlayer.addMediaItems(mediaItems)
                 exoPlayer.seekTo(currentItem, playbackPosition)
                 exoPlayer.addListener(playbackStateListener)
-                exoPlayer.playWhenReady = playWhenReady
-                exoPlayer.playbackState
                 exoPlayer.prepare()
             }
 
@@ -93,14 +90,29 @@ class PlayerActivity : AppCompatActivity() {
                 else -> "UNKNOWN_STATE             -"
             }
             Log.d(TAG, "changed state to $stateString")
+            when(playbackState){
+                ExoPlayer.STATE_READY -> {
+                    playWhenReady = true
+                    player?.playWhenReady = playWhenReady
+                }
+                ExoPlayer.STATE_BUFFERING -> {
+                    //show a toast to tell user it buffering or unstable internet
+                }
+                ExoPlayer.STATE_ENDED -> {
+                    playWhenReady = false
+                }
+                ExoPlayer.STATE_IDLE -> {
+                    //here you can set items and prepare
+                }
+            }
         }
     }
 
-    @androidx.annotation.OptIn(androidx.media3.common.util.UnstableApi::class)
+   /* @androidx.annotation.OptIn(androidx.media3.common.util.UnstableApi::class)
     public override fun onStart() {
         super.onStart()
         initializePlayer()
-    }
+    }*/
 
     @androidx.annotation.OptIn(androidx.media3.common.util.UnstableApi::class)
     public override fun onResume() {
@@ -108,6 +120,9 @@ class PlayerActivity : AppCompatActivity() {
         hideSystemUi()
         if (player == null) {
             initializePlayer()
+        }else{
+            playWhenReady = true
+            player?.playWhenReady = playWhenReady
         }
     }
 
@@ -116,12 +131,10 @@ class PlayerActivity : AppCompatActivity() {
         super.onPause()
         playWhenReady = false
         player?.playWhenReady = playWhenReady
-        releasePlayer()
     }
 
-    @androidx.annotation.OptIn(androidx.media3.common.util.UnstableApi::class)
-    public override fun onStop() {
-        super.onStop()
+    override fun onDestroy() {
+        super.onDestroy()
         playWhenReady = false
         player?.playWhenReady = playWhenReady
         releasePlayer()
