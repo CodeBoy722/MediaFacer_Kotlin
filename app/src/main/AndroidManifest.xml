@@ -21,10 +21,6 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.MediaFacerKotlin">
-        <service
-            android:name=".MusicService"
-            android:enabled="true"
-            android:exported="true"></service>
 
         <activity
             android:name=".PlayerActivity"
@@ -33,9 +29,6 @@
         <meta-data
             android:name="com.google.android.gms.ads.APPLICATION_ID"
             android:value="@string/admob_id" />
-        <meta-data
-            android:name="com.google.android.gms.car.application"
-            android:resource="@xml/automotive_app_desc" />
 
         <activity
             android:name=".SplashScreen"
@@ -47,16 +40,29 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+
         <activity
             android:name=".MainActivity"
             android:exported="false"
             android:screenOrientation="sensorPortrait"
             android:windowSoftInputMode="adjustPan" />
 
+        <meta-data
+            android:name="com.google.android.gms.car.application"
+            android:resource="@xml/automotive_app_desc" />
+
+       <!-- The Attribution Icon is used in places where media content takes precedence, such as on media cards.
+        Consider reusing the small icon used for notifications. This icon must be monochrome.
+        You can specify an icon that is used to represent your app using the following manifest declaration:-->
+        <meta-data
+            android:name="androidx.car.app.TintableAttributionIcon"
+            android:resource="@drawable/ic_audio" />
+
         <service
             android:name=".musicSession.MusicService"
             android:enabled="true"
-            android:exported="true" >
+            android:exported="true"
+            android:icon="@mipmap/ic_launcher">
             <intent-filter>
                 <action android:name="android.intent.action.MEDIA_BUTTON" />
                 <action android:name="android.media.AUDIO_BECOMING_NOISY" />
