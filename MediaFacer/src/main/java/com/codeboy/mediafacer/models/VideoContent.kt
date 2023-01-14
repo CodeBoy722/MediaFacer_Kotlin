@@ -3,9 +3,10 @@ package com.codeboy.mediafacer.models
 import android.media.MediaMetadata
 import android.os.Parcel
 import android.os.Parcelable
+import java.io.Serializable
 import java.util.*
 
-class VideoContent(): Parcelable {
+class VideoContent(): Parcelable, Serializable {
 
     var id: Int = 0
     var name: String = ""

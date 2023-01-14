@@ -1,6 +1,8 @@
 package com.codeboy.mediafacer.models
 
-class ImageFolderContent() {
+import java.io.Serializable
+
+class ImageFolderContent(): Serializable {
     var folderPath: String = ""
     var folderName: String = ""
     var images: ArrayList<ImageContent> = ArrayList()

@@ -1,8 +1,9 @@
 package com.codeboy.mediafacer.models
 
+import java.io.Serializable
 import java.util.*
 
-class ImageContent() {
+class ImageContent(): Serializable {
 
     var name: String = ""
     var bucketName: String = ""

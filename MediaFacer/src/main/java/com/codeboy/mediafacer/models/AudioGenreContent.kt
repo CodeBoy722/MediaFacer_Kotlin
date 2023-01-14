@@ -1,6 +1,8 @@
 package com.codeboy.mediafacer.models
 
-class AudioGenreContent {
+import java.io.Serializable
+
+class AudioGenreContent: Serializable {
 
     var audios = ArrayList<AudioContent>()
     var genreName: String = ""

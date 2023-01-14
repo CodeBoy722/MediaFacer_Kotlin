@@ -1,5 +1,7 @@
 package com.codeboy.mediafacerkotlin.fragments
 
+import android.app.ActivityManager
+import android.content.Context
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextUtils
@@ -24,6 +26,7 @@ import com.codeboy.mediafacerkotlin.databinding.FragmentAudiosBinding
 import com.codeboy.mediafacerkotlin.dialogs.AudioDetails
 import com.codeboy.mediafacerkotlin.listeners.AudioActionListener
 import com.codeboy.mediafacerkotlin.listeners.AudioContainerActionListener
+import com.codeboy.mediafacerkotlin.musicSession.MusicService
 import com.codeboy.mediafacerkotlin.utils.EndlessScrollListener
 import com.codeboy.mediafacerkotlin.utils.Utils
 import com.codeboy.mediafacerkotlin.viewAdapters.*
@@ -57,6 +60,7 @@ class AudiosFragment() : Fragment() {
         setupAudioSearch()
         initAudios()
     }
+
 
     private fun initAudios(){
         // init and setup your recyclerview with a layout manager
@@ -381,4 +385,18 @@ class AudiosFragment() : Fragment() {
         viewModelStore.clear()
         super.onDestroyView()
     }
+
+
+    //MusicService Section, functions for music playback with media session and exoplayer -------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+    fun isServiceRunning(context: Context): Boolean {
+        val manager = context.getSystemService(Context.ACTIVITY_SERVICE) as ActivityManager
+        for (service in manager.getRunningServices(Integer.MAX_VALUE)) {
+            if (service.service.className == MusicService::class.java.name) {
+                return true
+            }
+        }
+        return false
+    }
+
 }

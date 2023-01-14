@@ -1,6 +1,8 @@
 package com.codeboy.mediafacer.models
 
-class AudioArtistContent {
+import java.io.Serializable
+
+class AudioArtistContent: Serializable {
 
     var artistName: String = ""
     var albums = ArrayList<AudioAlbumContent>()

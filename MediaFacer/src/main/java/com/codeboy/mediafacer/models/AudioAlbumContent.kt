@@ -1,8 +1,9 @@
 package com.codeboy.mediafacer.models
 
 import android.net.Uri
+import java.io.Serializable
 
-class AudioAlbumContent {
+class AudioAlbumContent: Serializable {
 
     var albumName: String = ""
     var albumId: String = ""

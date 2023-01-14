@@ -1,6 +1,8 @@
 package com.codeboy.mediafacer.models
 
-class AudioBucketContent() {
+import java.io.Serializable
+
+class AudioBucketContent(): Serializable {
 
     var bucketName: String = ""
     var bucketPath: String = ""

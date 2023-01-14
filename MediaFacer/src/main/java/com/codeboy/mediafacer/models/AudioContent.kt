@@ -2,9 +2,10 @@ package com.codeboy.mediafacer.models
 
 import android.media.MediaMetadata
 import android.net.Uri
+import java.io.Serializable
 import java.util.*
 
-class AudioContent() {
+class AudioContent(): Serializable {
 
     var name: String = ""
     var title: String = ""
