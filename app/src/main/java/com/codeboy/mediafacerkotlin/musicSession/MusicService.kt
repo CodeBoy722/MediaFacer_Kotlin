@@ -1,19 +1,17 @@
 package com.codeboy.mediafacerkotlin.musicSession
 
-import android.content.BroadcastReceiver
-import android.content.Context
-import android.content.Intent
-import android.content.IntentFilter
+import android.app.PendingIntent
+import android.content.*
 import android.media.AudioFocusRequest
 import android.media.AudioManager
 import android.media.AudioManager.OnAudioFocusChangeListener
-import android.os.Build
-import android.os.Bundle
-import android.os.IBinder
+import android.os.*
 import android.support.v4.media.MediaMetadataCompat
 import android.support.v4.media.session.MediaSessionCompat
+import android.support.v4.media.session.PlaybackStateCompat
 import androidx.lifecycle.Observer
 import androidx.media.MediaBrowserServiceCompat
+import androidx.media.session.MediaButtonReceiver
 import androidx.media3.common.Player
 import androidx.media3.exoplayer.ExoPlayer
 import com.codeboy.mediafacer.models.AudioContent
@@ -22,6 +20,7 @@ import com.codeboy.mediafacerkotlin.viewModels.AudioViewModel
 
 abstract class MusicService : MediaBrowserServiceCompat(), OnAudioFocusChangeListener, Player.Listener{
 
+    private val LOG_TAG = "MusicSet"
     private lateinit var mAudioManager: AudioManager
     private lateinit var mMediaSessionCompat: MediaSessionCompat
     private lateinit var player: ExoPlayer
@@ -116,7 +115,86 @@ abstract class MusicService : MediaBrowserServiceCompat(), OnAudioFocusChangeLis
     }
 
     private fun setupMediaSession(){
+        val mediaButtonReceiver = ComponentName(
+            applicationContext,
+            MusicPlaybackButtonReceiver::class.java
+        )
+        mMediaSessionCompat = MediaSessionCompat(
+            applicationContext,
+            LOG_TAG,
+            mediaButtonReceiver,
+            null
+        )
+        mMediaSessionCompat.setFlags(MediaSessionCompat.FLAG_HANDLES_QUEUE_COMMANDS)
 
+        val mediaButtonIntent = Intent(Intent.ACTION_MEDIA_BUTTON)
+        mediaButtonIntent.setClass(this, MediaButtonReceiver::class.java)
+
+        val pendingIntent = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            PendingIntent.getBroadcast(this,0, mediaButtonIntent,
+                PendingIntent.FLAG_IMMUTABLE.and(PendingIntent.FLAG_UPDATE_CURRENT)
+            )
+        } else {
+            PendingIntent.getBroadcast(this, 0, mediaButtonIntent,
+                PendingIntent.FLAG_UPDATE_CURRENT
+            )
+        }
+
+        mMediaSessionCompat.setMediaButtonReceiver(pendingIntent)
+        mMediaSessionCompat.setPlaybackState(buildState(PlaybackStateCompat.STATE_NONE.toLong()))
+
+        mMediaSessionCompat.setCallback(object : MediaSessionCompat.Callback() {
+            override fun onPlay() {
+                super.onPlay()
+            }
+
+            override fun onPause() {
+                super.onPause()
+            }
+
+            override fun onSkipToNext() {
+                super.onSkipToNext()
+            }
+
+            override fun onSkipToPrevious() {
+                super.onSkipToPrevious()
+            }
+
+            override fun onFastForward() {
+                super.onFastForward()
+            }
+
+            override fun onRewind() {
+                super.onRewind()
+            }
+
+            override fun onStop() {
+                super.onStop()
+            }
+
+            override fun onSeekTo(pos: Long) {
+                super.onSeekTo(pos)
+            }
+        })
+
+        mMediaSessionCompat.isActive = true
+        sessionToken = mMediaSessionCompat.sessionToken
+
+    }
+
+    private fun buildState(state: Long): PlaybackStateCompat? {
+        return PlaybackStateCompat.Builder().setActions(
+            PlaybackStateCompat.ACTION_PLAY or PlaybackStateCompat.ACTION_PLAY_PAUSE
+                    or PlaybackStateCompat.ACTION_SKIP_TO_NEXT or PlaybackStateCompat.ACTION_SKIP_TO_PREVIOUS
+                    or PlaybackStateCompat.ACTION_SEEK_TO or PlaybackStateCompat.ACTION_REWIND or PlaybackStateCompat.ACTION_STOP
+                    or PlaybackStateCompat.ACTION_FAST_FORWARD or PlaybackStateCompat.ACTION_PAUSE
+        )
+            .setState(
+                state.toInt(),
+                player.currentPosition,
+                1f,
+                SystemClock.elapsedRealtime()
+            ).build()
     }
 
     private fun initNoisyReceiver() {

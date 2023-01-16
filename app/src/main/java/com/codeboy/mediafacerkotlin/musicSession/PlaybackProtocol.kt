@@ -1,6 +1,7 @@
 package com.codeboy.mediafacerkotlin.musicSession
 
 import android.widget.ImageView
+import androidx.appcompat.widget.AppCompatImageButton
 import androidx.databinding.BindingAdapter
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
@@ -14,7 +15,11 @@ object PlaybackProtocol: ViewModel() {
     //check if the music service is running
     var isMusicServiceRunning: Boolean = false
 
-    var isMusicPlaying: Boolean = false
+    private val _isMusicPlaying : MutableLiveData<Boolean> = MutableLiveData()
+    var isMusicPlaying: LiveData<Boolean> = _isMusicPlaying
+    fun setIsMusicPlaying(status: Boolean){
+        _isMusicPlaying.value = status
+    }
 
     private val _currentMusic: MutableLiveData<AudioContent> = MutableLiveData()
     val currentMusic: LiveData<AudioContent> = _currentMusic
@@ -25,14 +30,26 @@ object PlaybackProtocol: ViewModel() {
 
 
     object ProfilePicBindingAdapter {
-        @BindingAdapter("ProfilePic")
+        @BindingAdapter("MusicArt")
         @JvmStatic
-        fun setProfilePic(view: ImageView?, link: String?) {
-            Glide.with(view!!)
+        fun setMusicArt(view: ImageView, link: String) {
+            Glide.with(view)
                 .load(link)
                 .centerCrop().circleCrop()
                 .placeholder(R.drawable.music_placeholder)
                 .into(view)
+        }
+    }
+
+    object PlayButtonBindingAdapter {
+        @BindingAdapter("PlayButton")
+        @JvmStatic
+        fun setPlayButton(view: AppCompatImageButton, status: Boolean) {
+            if (status){
+
+            }else{
+
+            }
         }
     }
 

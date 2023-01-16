@@ -10,9 +10,9 @@ class MusicPlaybackButtonReceiver: MediaButtonReceiver() {
     override fun onReceive(context: Context?, intent: Intent?) {
         super.onReceive(context, intent)
         if (intent != null){
-            if (intent.action == PlaybackStateCompat.ACTION_PLAY){
+          /*  if (intent.action == PlaybackStateCompat.ACTION_PLAY){
 
-            }
+            }*/
         }
     }
 }
