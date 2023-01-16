@@ -21,7 +21,7 @@ import com.codeboy.mediafacerkotlin.databinding.ActivityPlayerBinding
 class PlayerActivity : AppCompatActivity() {
 
     private lateinit var bindings: ActivityPlayerBinding
-    private var player: ExoPlayer? = null
+    private lateinit var player: ExoPlayer
     private val TAG = "player_activity"
 
     private var mediaItems = ArrayList<MediaItem>()
@@ -93,7 +93,7 @@ class PlayerActivity : AppCompatActivity() {
             when(playbackState){
                 ExoPlayer.STATE_READY -> {
                     playWhenReady = true
-                    player?.playWhenReady = playWhenReady
+                    player.playWhenReady = playWhenReady
                 }
                 ExoPlayer.STATE_BUFFERING -> {
                     //show a toast to tell user it buffering or unstable internet
@@ -122,7 +122,7 @@ class PlayerActivity : AppCompatActivity() {
             initializePlayer()
         }else{
             playWhenReady = true
-            player?.playWhenReady = playWhenReady
+            player.playWhenReady = playWhenReady
         }
     }
 
@@ -130,13 +130,13 @@ class PlayerActivity : AppCompatActivity() {
     public override fun onPause() {
         super.onPause()
         playWhenReady = false
-        player?.playWhenReady = playWhenReady
+        player.playWhenReady = playWhenReady
     }
 
     override fun onDestroy() {
         super.onDestroy()
         playWhenReady = false
-        player?.playWhenReady = playWhenReady
+        player.playWhenReady = playWhenReady
         releasePlayer()
     }
 
@@ -150,14 +150,14 @@ class PlayerActivity : AppCompatActivity() {
     }
 
     private fun releasePlayer() {
-        player?.let { exoPlayer ->
+        player.let { exoPlayer ->
             playbackPosition = exoPlayer.currentPosition
             currentItem = exoPlayer.currentMediaItemIndex
             playWhenReady = exoPlayer.playWhenReady
             exoPlayer.removeListener(playbackStateListener)
             exoPlayer.release()
         }
-        player?.stop()
+        player.stop()
     }
 
 }

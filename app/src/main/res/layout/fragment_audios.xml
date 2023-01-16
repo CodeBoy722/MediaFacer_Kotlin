@@ -4,6 +4,12 @@
     xmlns:tools="http://schemas.android.com/tools"
     tools:context=".fragments.AudiosFragment">
 
+    <data>
+        <variable
+            name="playbackProtocol"
+            type="com.codeboy.mediafacerkotlin.musicSession.PlaybackProtocol"/>
+    </data>
+
     <FrameLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent">
@@ -157,6 +163,7 @@
                     android:layout_height="50dp"
                     android:layout_marginStart="8dp"
                     android:background="@drawable/circle_green"
+                    app:musicArt="@{playbackProtocol.currentMusic.artUri}"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent"
@@ -172,7 +179,7 @@
                     android:ellipsize="end"
                     android:fontFamily="@font/notosans_bold"
                     android:maxLines="2"
-                    android:text="@string/title"
+                    android:text="@{playbackProtocol.currentMusic.title}"
                     android:textSize="14sp"
                     app:layout_constraintBottom_toTopOf="@+id/textView3"
                     app:layout_constraintEnd_toStartOf="@+id/imageButton3"
@@ -189,7 +196,7 @@
                     android:ellipsize="end"
                     android:fontFamily="@font/notosans_regular"
                     android:maxLines="1"
-                    android:text="@string/artist"
+                    android:text="@{playbackProtocol.currentMusic.artist}"
                     android:textSize="12sp"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toStartOf="@+id/imageButton3"

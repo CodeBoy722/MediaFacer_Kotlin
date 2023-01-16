@@ -1,8 +1,11 @@
 package com.codeboy.mediafacerkotlin.fragments
 
-import android.app.ActivityManager
-import android.content.Context
+import android.content.ComponentName
+import android.media.session.PlaybackState
 import android.os.Bundle
+import android.support.v4.media.MediaBrowserCompat
+import android.support.v4.media.session.MediaControllerCompat
+import android.support.v4.media.session.PlaybackStateCompat
 import android.text.Editable
 import android.text.TextUtils
 import android.text.TextWatcher
@@ -14,12 +17,11 @@ import android.view.animation.Animation
 import android.view.animation.AnimationUtils
 import androidx.appcompat.widget.PopupMenu
 import androidx.fragment.app.Fragment
-import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.transition.Slide
 import com.codeboy.mediafacer.MediaFacer
-import com.codeboy.mediafacer.models.*
+import com.codeboy.mediafacer.models.AudioContent
 import com.codeboy.mediafacerkotlin.MainActivity
 import com.codeboy.mediafacerkotlin.R
 import com.codeboy.mediafacerkotlin.databinding.FragmentAudiosBinding
@@ -27,6 +29,7 @@ import com.codeboy.mediafacerkotlin.dialogs.AudioDetails
 import com.codeboy.mediafacerkotlin.listeners.AudioActionListener
 import com.codeboy.mediafacerkotlin.listeners.AudioContainerActionListener
 import com.codeboy.mediafacerkotlin.musicSession.MusicService
+import com.codeboy.mediafacerkotlin.musicSession.PlaybackProtocol
 import com.codeboy.mediafacerkotlin.utils.EndlessScrollListener
 import com.codeboy.mediafacerkotlin.utils.Utils
 import com.codeboy.mediafacerkotlin.viewAdapters.*
@@ -40,6 +43,10 @@ class AudiosFragment() : Fragment() {
     private var paginationLimit = 100
     private var shouldPaginate = true
 
+    private lateinit var musicServiceBrowserCompat: MediaBrowserCompat
+    private lateinit var musicServiceController: MediaControllerCompat
+    var mCurrentState = 0
+
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         return inflater.inflate(R.layout.fragment_audios, container, false)
     }
@@ -48,6 +55,7 @@ class AudiosFragment() : Fragment() {
         super.onViewCreated(view, savedInstanceState)
         bindings = FragmentAudiosBinding.bind(view)
         bindings.lifecycleOwner = viewLifecycleOwner
+        bindings.playbackProtocol = PlaybackProtocol
 
         bindings.audioOptions.setOnClickListener {
             showMenu(it)
@@ -61,6 +69,20 @@ class AudiosFragment() : Fragment() {
         initAudios()
     }
 
+    override fun onStart() {
+        super.onStart()
+        //check connection to music service and proceed
+        if(!PlaybackProtocol.isMusicServiceRunning){
+            //start or bind the service here
+            MediaBrowserCompat(requireActivity(),
+                ComponentName(requireActivity(), MusicService::class.java), mMediaBrowserConnectionCallback, requireActivity().intent.extras).apply {
+                connect()
+                musicServiceBrowserCompat = this
+            }
+        }else{
+            //other setups
+        }
+    }
 
     private fun initAudios(){
         // init and setup your recyclerview with a layout manager
@@ -386,17 +408,47 @@ class AudiosFragment() : Fragment() {
         super.onDestroyView()
     }
 
-
     //MusicService Section, functions for music playback with media session and exoplayer -------------------------------------------------------------------------------------------------------------------------------------------------------------
 
-    fun isServiceRunning(context: Context): Boolean {
-        val manager = context.getSystemService(Context.ACTIVITY_SERVICE) as ActivityManager
-        for (service in manager.getRunningServices(Integer.MAX_VALUE)) {
-            if (service.service.className == MusicService::class.java.name) {
-                return true
+    private val mMediaControllerCallback: MediaControllerCompat.Callback =
+        object : MediaControllerCompat.Callback() {
+            override fun onPlaybackStateChanged(state: PlaybackStateCompat) {
+                super.onPlaybackStateChanged(state)
+                when (state.state) {
+                    PlaybackStateCompat.STATE_PLAYING -> mCurrentState = PlaybackState.STATE_PLAYING
+                    PlaybackStateCompat.STATE_PAUSED -> mCurrentState = PlaybackState.STATE_PAUSED
+                    PlaybackStateCompat.STATE_STOPPED -> mCurrentState = PlaybackState.STATE_STOPPED
+                    PlaybackStateCompat.STATE_SKIPPING_TO_NEXT -> mCurrentState = PlaybackState.STATE_SKIPPING_TO_NEXT
+                    PlaybackStateCompat.STATE_SKIPPING_TO_PREVIOUS -> mCurrentState = PlaybackState.STATE_SKIPPING_TO_PREVIOUS
+                    PlaybackStateCompat.STATE_REWINDING -> mCurrentState = PlaybackState.STATE_REWINDING
+                    PlaybackStateCompat.STATE_FAST_FORWARDING -> mCurrentState = PlaybackState.STATE_FAST_FORWARDING
+                    PlaybackStateCompat.STATE_BUFFERING -> {}
+                    PlaybackStateCompat.STATE_CONNECTING -> mCurrentState = PlaybackState.STATE_CONNECTING
+                    PlaybackStateCompat.STATE_ERROR -> mCurrentState = PlaybackState.STATE_ERROR
+                    PlaybackStateCompat.STATE_NONE -> mCurrentState = PlaybackState.STATE_NONE
+                    PlaybackStateCompat.STATE_SKIPPING_TO_QUEUE_ITEM -> mCurrentState = PlaybackState.STATE_SKIPPING_TO_QUEUE_ITEM
+                }
+            }
+
+            override fun onSessionReady() {
+                super.onSessionReady()
             }
         }
-        return false
-    }
+
+    private val mMediaBrowserConnectionCallback: MediaBrowserCompat.ConnectionCallback =
+        object : MediaBrowserCompat.ConnectionCallback() {
+            override fun onConnected() {
+                super.onConnected()
+                try {
+                    musicServiceController = MediaControllerCompat(
+                        requireActivity(),
+                        musicServiceBrowserCompat.sessionToken
+                    )
+                    musicServiceController.registerCallback(mMediaControllerCallback)
+                } catch (e: java.lang.Exception) {
+                    e.printStackTrace()
+                }
+            }
+        }
 
 }
