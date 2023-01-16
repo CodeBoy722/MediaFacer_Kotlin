@@ -3,6 +3,7 @@ package com.codeboy.mediafacer.models
 import android.media.MediaMetadata
 import android.os.Parcel
 import android.os.Parcelable
+import android.support.v4.media.MediaMetadataCompat
 import java.io.Serializable
 import java.util.*
 
@@ -38,6 +39,18 @@ class VideoContent(): Parcelable, Serializable {
             .putLong(MediaMetadata.METADATA_KEY_DURATION, duration)
             .build()
     }
+
+    fun getMediaMetadataCompat(): MediaMetadataCompat{
+        return MediaMetadataCompat.Builder()
+            .putString(MediaMetadata.METADATA_KEY_MEDIA_ID, videoUri)
+            .putString(MediaMetadata.METADATA_KEY_ARTIST, artist)
+            .putString(MediaMetadata.METADATA_KEY_TITLE, name)
+            .putString(MediaMetadata.METADATA_KEY_ALBUM_ART_URI, videoUri)
+            .putString(MediaMetadata.METADATA_KEY_ART_URI, videoUri)
+            .putLong(MediaMetadata.METADATA_KEY_DURATION, duration)
+            .build()
+    }
+
 
     override fun writeToParcel(parcel: Parcel, flags: Int) {
         parcel.writeInt(id)
