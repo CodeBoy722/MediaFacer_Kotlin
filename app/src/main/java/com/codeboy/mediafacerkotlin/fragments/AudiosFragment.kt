@@ -1,6 +1,7 @@
 package com.codeboy.mediafacerkotlin.fragments
 
 import android.content.ComponentName
+import android.graphics.drawable.AnimationDrawable
 import android.media.session.PlaybackState
 import android.os.Bundle
 import android.support.v4.media.MediaBrowserCompat
@@ -46,6 +47,7 @@ class AudiosFragment() : Fragment() {
     private lateinit var musicServiceBrowserCompat: MediaBrowserCompat
     private lateinit var musicServiceController: MediaControllerCompat
     var mCurrentState = 0
+    private lateinit var animationDrawable: AnimationDrawable
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         return inflater.inflate(R.layout.fragment_audios, container, false)
@@ -60,6 +62,10 @@ class AudiosFragment() : Fragment() {
         bindings.audioOptions.setOnClickListener {
             showMenu(it)
         }
+
+        animationDrawable = bindings.player.background as AnimationDrawable
+        animationDrawable.setEnterFadeDuration(5000)
+        animationDrawable.setExitFadeDuration(2000)
 
         bindings.audiosList.hasFixedSize()
         bindings.audiosList.setHasFixedSize(true)
@@ -445,6 +451,7 @@ class AudiosFragment() : Fragment() {
                         musicServiceBrowserCompat.sessionToken
                     )
                     musicServiceController.registerCallback(mMediaControllerCallback)
+                    //musicServiceController.transportControls.play()
                 } catch (e: java.lang.Exception) {
                     e.printStackTrace()
                 }

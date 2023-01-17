@@ -32,7 +32,7 @@ object PlaybackProtocol: ViewModel() {
     object ProfilePicBindingAdapter {
         @BindingAdapter("MusicArt")
         @JvmStatic
-        fun setMusicArt(view: ImageView, link: String) {
+        private fun setMusicArt(view: ImageView, link: String) {
             Glide.with(view)
                 .load(link)
                 .centerCrop().circleCrop()
@@ -44,7 +44,7 @@ object PlaybackProtocol: ViewModel() {
     object PlayButtonBindingAdapter {
         @BindingAdapter("PlayButton")
         @JvmStatic
-        fun setPlayButton(view: AppCompatImageButton, status: Boolean) {
+        private fun setPlayButton(view: AppCompatImageButton, status: Boolean) {
             if (status){
 
             }else{

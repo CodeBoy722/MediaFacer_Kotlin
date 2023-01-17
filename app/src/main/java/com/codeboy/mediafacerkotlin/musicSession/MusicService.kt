@@ -20,7 +20,7 @@ import com.codeboy.mediafacerkotlin.viewModels.AudioViewModel
 
 abstract class MusicService : MediaBrowserServiceCompat(), OnAudioFocusChangeListener, Player.Listener{
 
-    private val LOG_TAG = "MusicSet"
+    private val LOG_TAG = "MediaFacer Music"
     private lateinit var mAudioManager: AudioManager
     private lateinit var mMediaSessionCompat: MediaSessionCompat
     private lateinit var player: ExoPlayer
@@ -115,29 +115,18 @@ abstract class MusicService : MediaBrowserServiceCompat(), OnAudioFocusChangeLis
     }
 
     private fun setupMediaSession(){
-        val mediaButtonReceiver = ComponentName(
-            applicationContext,
-            MusicPlaybackButtonReceiver::class.java
-        )
-        mMediaSessionCompat = MediaSessionCompat(
-            applicationContext,
-            LOG_TAG,
-            mediaButtonReceiver,
-            null
-        )
+        val mediaButtonReceiverName = ComponentName(applicationContext, MusicPlaybackButtonReceiver::class.java)
+        mMediaSessionCompat = MediaSessionCompat(applicationContext, LOG_TAG, mediaButtonReceiverName, null)
         mMediaSessionCompat.setFlags(MediaSessionCompat.FLAG_HANDLES_QUEUE_COMMANDS)
 
         val mediaButtonIntent = Intent(Intent.ACTION_MEDIA_BUTTON)
-        mediaButtonIntent.setClass(this, MediaButtonReceiver::class.java)
+        //mediaButtonIntent.setClass(this, MediaButtonReceiver::class.java)
+        mediaButtonIntent.setClass(this, MusicPlaybackButtonReceiver::class.java)
 
         val pendingIntent = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            PendingIntent.getBroadcast(this,0, mediaButtonIntent,
-                PendingIntent.FLAG_IMMUTABLE.and(PendingIntent.FLAG_UPDATE_CURRENT)
-            )
+            PendingIntent.getBroadcast(this,0, mediaButtonIntent, PendingIntent.FLAG_IMMUTABLE.and(PendingIntent.FLAG_UPDATE_CURRENT))
         } else {
-            PendingIntent.getBroadcast(this, 0, mediaButtonIntent,
-                PendingIntent.FLAG_UPDATE_CURRENT
-            )
+            PendingIntent.getBroadcast(this, 0, mediaButtonIntent, PendingIntent.FLAG_UPDATE_CURRENT)
         }
 
         mMediaSessionCompat.setMediaButtonReceiver(pendingIntent)
