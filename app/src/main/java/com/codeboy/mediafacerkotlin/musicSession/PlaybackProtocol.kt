@@ -1,5 +1,6 @@
 package com.codeboy.mediafacerkotlin.musicSession
 
+import android.net.Uri
 import android.widget.ImageView
 import androidx.appcompat.widget.AppCompatImageButton
 import androidx.databinding.BindingAdapter
@@ -9,6 +10,9 @@ import androidx.lifecycle.ViewModel
 import com.bumptech.glide.Glide
 import com.codeboy.mediafacer.models.AudioContent
 import com.codeboy.mediafacerkotlin.R
+import androidx.appcompat.content.res.AppCompatResources
+import androidx.appcompat.widget.AppCompatImageView
+import androidx.core.content.res.ResourcesCompat
 
 object PlaybackProtocol: ViewModel() {
 
@@ -28,13 +32,12 @@ object PlaybackProtocol: ViewModel() {
         _currentMusic.value = music
     }
 
-
     object ProfilePicBindingAdapter {
         @BindingAdapter("MusicArt")
         @JvmStatic
-        private fun setMusicArt(view: ImageView, link: String) {
+        fun setMusicArt(view: AppCompatImageView, link: Uri?) {
             Glide.with(view)
-                .load(link)
+                .load(link?: R.drawable.music_placeholder)
                 .centerCrop().circleCrop()
                 .placeholder(R.drawable.music_placeholder)
                 .into(view)
@@ -44,11 +47,13 @@ object PlaybackProtocol: ViewModel() {
     object PlayButtonBindingAdapter {
         @BindingAdapter("PlayButton")
         @JvmStatic
-        private fun setPlayButton(view: AppCompatImageButton, status: Boolean) {
+        fun setPlayButton(view: AppCompatImageButton, status: Boolean) {
             if (status){
-
+                val drawable = ResourcesCompat.getDrawable(view.context.resources, R.drawable.ic_pause, null)
+                view.setImageDrawable(drawable)
             }else{
-
+                val drawable = ResourcesCompat.getDrawable(view.context.resources, R.drawable.ic_play, null)
+                view.setImageDrawable(drawable)
             }
         }
     }
