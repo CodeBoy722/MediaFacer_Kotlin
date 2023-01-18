@@ -5,20 +5,27 @@ import android.content.*
 import android.media.AudioFocusRequest
 import android.media.AudioManager
 import android.media.AudioManager.OnAudioFocusChangeListener
-import android.os.*
+import android.os.Build
+import android.os.Bundle
+import android.os.SystemClock
+import android.support.v4.media.MediaBrowserCompat
 import android.support.v4.media.MediaMetadataCompat
 import android.support.v4.media.session.MediaSessionCompat
 import android.support.v4.media.session.PlaybackStateCompat
+import android.text.TextUtils
 import androidx.lifecycle.Observer
 import androidx.media.MediaBrowserServiceCompat
 import androidx.media.session.MediaButtonReceiver
+import androidx.media3.common.MediaItem
 import androidx.media3.common.Player
 import androidx.media3.exoplayer.ExoPlayer
+import androidx.media3.exoplayer.trackselection.DefaultTrackSelector
 import com.codeboy.mediafacer.models.AudioContent
+import com.codeboy.mediafacerkotlin.R
 import com.codeboy.mediafacerkotlin.utils.MusicDataUtil
 import com.codeboy.mediafacerkotlin.viewModels.AudioViewModel
 
-abstract class MusicService : MediaBrowserServiceCompat(), OnAudioFocusChangeListener, Player.Listener{
+class MusicService : MediaBrowserServiceCompat(), OnAudioFocusChangeListener, Player.Listener{
 
     private val LOG_TAG = "MediaFacer Music"
     private lateinit var mAudioManager: AudioManager
@@ -79,14 +86,27 @@ abstract class MusicService : MediaBrowserServiceCompat(), OnAudioFocusChangeLis
          }
 
          initNoisyReceiver()
+         setupExoPlayer()
+         setupMediaSession()
      }
 
-     override fun onBind(intent: Intent): IBinder {
-        TODO("Return the communication channel to the service.")
+    override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
+        MediaButtonReceiver.handleIntent(mMediaSessionCompat, intent)
+        return super.onStartCommand(intent, flags, startId)
     }
 
+    /*override fun onBind(intent: Intent): IBinder {
+        TODO("Return the communication channel to the service.")
+    }*/
+
     override fun onGetRoot(clientPackageName: String, clientUid: Int, rootHints: Bundle?): BrowserRoot? {
-        TODO("Not yet implemented")
+        return if (TextUtils.equals(clientPackageName, packageName)) {
+            BrowserRoot(getString(R.string.app_name), null)
+        } else null
+    }
+
+    override fun onLoadChildren(parentId: String, result: Result<MutableList<MediaBrowserCompat.MediaItem>>) {
+
     }
 
     override fun onDestroy() {
@@ -110,8 +130,28 @@ abstract class MusicService : MediaBrowserServiceCompat(), OnAudioFocusChangeLis
         }
     }
 
+    @androidx.annotation.OptIn(androidx.media3.common.util.UnstableApi::class)
     private fun setupExoPlayer(){
+        val mediaItems = ArrayList<MediaItem>()
 
+        for (item: AudioContent in musicList){
+            mediaItems.add(MediaItem.fromUri(item.musicUri))
+        }
+        val trackSelector = DefaultTrackSelector(this).apply {
+            setParameters(buildUponParameters().setMaxVideoSizeSd())
+        }
+        val currentItem = 0
+        val playbackPosition = 0L
+
+        player = ExoPlayer.Builder(this)
+            .setTrackSelector(trackSelector)
+            .build()
+            .also { exoPlayer ->
+                exoPlayer.addMediaItems(mediaItems)
+                exoPlayer.seekTo(currentItem, playbackPosition)
+                exoPlayer.addListener(this)
+                exoPlayer.prepare()
+            }
     }
 
     private fun setupMediaSession(){
@@ -222,7 +262,21 @@ abstract class MusicService : MediaBrowserServiceCompat(), OnAudioFocusChangeLis
     }
 
     override fun onPlaybackStateChanged(playbackState: Int) {
-        super.onPlaybackStateChanged(playbackState)
+        when(playbackState){
+            ExoPlayer.STATE_READY -> {
+                player.playWhenReady = true
+            }
+            ExoPlayer.STATE_BUFFERING -> {
+                //show a toast to tell user it buffering or unstable internet
+            }
+            ExoPlayer.STATE_ENDED -> {
+                //playWhenReady = false
+            }
+            ExoPlayer.STATE_IDLE -> {
+                //here you can set items and prepare
+            }
+        }
+
     }
 
 

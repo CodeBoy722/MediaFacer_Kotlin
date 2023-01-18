@@ -1,5 +1,6 @@
 package com.codeboy.mediafacerkotlin.fragments
 
+import android.content.ComponentName
 import android.graphics.drawable.AnimationDrawable
 import android.media.session.PlaybackState
 import android.os.Bundle
@@ -28,6 +29,7 @@ import com.codeboy.mediafacerkotlin.databinding.FragmentAudiosBinding
 import com.codeboy.mediafacerkotlin.dialogs.AudioDetails
 import com.codeboy.mediafacerkotlin.listeners.AudioActionListener
 import com.codeboy.mediafacerkotlin.listeners.AudioContainerActionListener
+import com.codeboy.mediafacerkotlin.musicSession.MusicService
 import com.codeboy.mediafacerkotlin.musicSession.PlaybackProtocol
 import com.codeboy.mediafacerkotlin.utils.EndlessScrollListener
 import com.codeboy.mediafacerkotlin.utils.Utils
@@ -80,11 +82,11 @@ class AudiosFragment() : Fragment() {
         //check connection to music service and proceed
         if(!PlaybackProtocol.isMusicServiceRunning){
             //start or bind the service here
-          /*  MediaBrowserCompat(requireActivity(),
+            MediaBrowserCompat(requireActivity(),
                 ComponentName(requireActivity(), MusicService::class.java), mMediaBrowserConnectionCallback, requireActivity().intent.extras).apply {
                 connect()
                 musicServiceBrowserCompat = this
-            }*/
+            }
         }else{
             //other setups
         }
