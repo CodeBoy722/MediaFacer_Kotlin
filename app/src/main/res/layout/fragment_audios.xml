@@ -179,7 +179,7 @@
                     android:layout_marginEnd="8dp"
                     android:ellipsize="end"
                     android:fontFamily="@font/notosans_bold"
-                    android:maxLines="2"
+                    android:maxLines="1"
                     android:text="@{playbackProtocol.currentMusic.title}"
                     android:textSize="14sp"
                     app:layout_constraintBottom_toTopOf="@+id/textView3"
