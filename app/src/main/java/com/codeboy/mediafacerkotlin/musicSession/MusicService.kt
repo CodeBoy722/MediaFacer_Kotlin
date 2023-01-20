@@ -105,6 +105,10 @@ abstract class MusicService : MediaBrowserServiceCompat(), OnAudioFocusChangeLis
 
     //build media items for media playback
     private fun setupUpMusicList(musicList: ArrayList<AudioContent>){
+
+       /* val imageUri = Uri.parse("https://example.com/image.jpg")
+        val bitmap = MediaStore.Images.Media.getBitmap(contentResolver, imageUri)*/
+
         for (musicItem in musicList){
             musicMetaDataList.add(musicItem.getMediaMetaDataCompat())
         }
