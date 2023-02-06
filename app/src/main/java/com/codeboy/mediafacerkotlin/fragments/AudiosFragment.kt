@@ -19,6 +19,7 @@ import android.view.animation.Animation
 import android.view.animation.AnimationUtils
 import androidx.appcompat.widget.PopupMenu
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.transition.Slide
@@ -33,6 +34,7 @@ import com.codeboy.mediafacerkotlin.listeners.AudioContainerActionListener
 import com.codeboy.mediafacerkotlin.musicSession.MusicService
 import com.codeboy.mediafacerkotlin.musicSession.PlaybackProtocol
 import com.codeboy.mediafacerkotlin.utils.EndlessScrollListener
+import com.codeboy.mediafacerkotlin.utils.MusicDataUtil
 import com.codeboy.mediafacerkotlin.utils.Utils
 import com.codeboy.mediafacerkotlin.viewAdapters.*
 import com.codeboy.mediafacerkotlin.viewModels.*
@@ -81,7 +83,7 @@ class AudiosFragment() : Fragment() {
     override fun onStart() {
         super.onStart()
         //check connection to music service and proceed
-        startAndBindMusicService()
+        prepareMusicPlayback()
     }
 
     private fun initAudios(){
@@ -410,8 +412,30 @@ class AudiosFragment() : Fragment() {
 
     //MusicService Section, functions for music playback with media session and exoplayer -------------------------------------------------------------------------------------------------------------------------------------------------------------
 
+    private fun prepareMusicPlayback(){
+        //load the music list first
+        var musicList = ArrayList<AudioContent>()
+        musicList = MusicDataUtil(requireActivity()).getLastPlaylist()
+
+        if(musicList.isEmpty()){
+            //load new musicList from MediaFacer
+            val model = AudioViewModel()
+            model.audios.observe(viewLifecycleOwner, Observer {
+                musicList = it
+                PlaybackProtocol.setCurrentMusic(musicList[0])
+                PlaybackProtocol.setMusicList(musicList)
+                startAndBindMusicService()
+            })
+            model.loadNewItems(requireActivity(),0,150,false)
+        }else{
+            PlaybackProtocol.setCurrentMusic(musicList[0])
+            PlaybackProtocol.setMusicList(musicList)
+            startAndBindMusicService()
+            //setupUpMusicList(musicList)
+        }
+    }
+
     private fun startAndBindMusicService(){
-        // Create a new intent with the ACTION_MEDIA_BROWSER_SERVICE action
         val intent = Intent(requireActivity(), MusicService::class.java)
         requireActivity().startService(intent)
 

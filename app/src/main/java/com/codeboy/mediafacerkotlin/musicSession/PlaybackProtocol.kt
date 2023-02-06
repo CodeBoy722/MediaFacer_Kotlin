@@ -32,6 +32,13 @@ object PlaybackProtocol: ViewModel() {
         _currentMusic.value = music
     }
 
+    private val _musicList: MutableLiveData<ArrayList<AudioContent>> = MutableLiveData()
+    val musicList: LiveData<ArrayList<AudioContent>> = _musicList
+
+    fun setMusicList(musicList: ArrayList<AudioContent>){
+        _musicList.value = musicList
+    }
+
     object ProfilePicBindingAdapter {
         @BindingAdapter("MusicArt")
         @JvmStatic

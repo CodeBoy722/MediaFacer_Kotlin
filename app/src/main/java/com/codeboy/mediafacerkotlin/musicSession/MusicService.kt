@@ -33,6 +33,9 @@ import com.codeboy.mediafacerkotlin.MainActivity
 import com.codeboy.mediafacerkotlin.R
 import com.codeboy.mediafacerkotlin.utils.MusicDataUtil
 import com.codeboy.mediafacerkotlin.viewModels.AudioViewModel
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.async
 import java.io.FileNotFoundException
 import java.io.InputStream
 
@@ -45,14 +48,17 @@ class MusicService : MediaBrowserServiceCompat(), OnAudioFocusChangeListener, Pl
     private var musicList: ArrayList<AudioContent> = ArrayList()
     private var musicMetaDataList: ArrayList<MediaMetadataCompat> = ArrayList()
     private lateinit var currentTrack: MediaMetadataCompat
+
+    //position of current music
     private var trackPosition = 0
+    //the seeking position of the current track
+    //save and get it from audio data util
+    private var playbackPosition = 0L
 
-
-    private val model = AudioViewModel()
     private val observer = Observer<ArrayList<AudioContent>> { it ->
         //Live data value has changed
         musicList = it
-        PlaybackProtocol.setCurrentMusic(musicList[0])
+        //PlaybackProtocol.setCurrentMusic(musicList[0])
         setupUpMusicList(musicList)
     }
     private lateinit var playerNotification: PlayerNotificationManager
@@ -89,19 +95,12 @@ class MusicService : MediaBrowserServiceCompat(), OnAudioFocusChangeListener, Pl
          }
 
          //load the last playlist or new playlist if there is none
-         musicList = MusicDataUtil(this).getLastPlaylist()
-         if(musicList.isEmpty()){
-             //load new musicList from MediaFacer
-             model.audios.observeForever(observer)
-             model.loadNewItems(this,0,150,false)
-         }else{
-             PlaybackProtocol.setCurrentMusic(musicList[trackPosition])
-             setupUpMusicList(musicList)
-         }
+         PlaybackProtocol.musicList.observeForever(observer)
 
          initNoisyReceiver()
-         setupExoPlayer()
          setupMediaSession()
+         setupExoPlayer()
+
      }
 
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
@@ -128,8 +127,8 @@ class MusicService : MediaBrowserServiceCompat(), OnAudioFocusChangeListener, Pl
         //save the last playlist so next time it reads from preferences
         MusicDataUtil(this).saveLastPlaylist(musicList)
         //check if audioViewModel had observers on musicList and remove them
-        if (model.audios.hasActiveObservers()){
-            model.audios.removeObserver(observer)
+        if (PlaybackProtocol.musicList.hasActiveObservers()){
+            PlaybackProtocol.musicList.removeObserver(observer)
         }
         player.removeListener(this)
         player.release()
@@ -142,7 +141,6 @@ class MusicService : MediaBrowserServiceCompat(), OnAudioFocusChangeListener, Pl
     private fun setupUpMusicList(musicList: ArrayList<AudioContent>){
        /* val imageUri = Uri.parse("https://example.com/image.jpg")
         val bitmap = MediaStore.Images.Media.getBitmap(contentResolver, imageUri)*/
-
         for (musicItem in musicList){
             musicMetaDataList.add(musicItem.getMediaMetaDataCompat())
         }
@@ -159,15 +157,13 @@ class MusicService : MediaBrowserServiceCompat(), OnAudioFocusChangeListener, Pl
         val trackSelector = DefaultTrackSelector(this).apply {
             setParameters(buildUponParameters())
         }
-        val currentItem = 0
-        val playbackPosition = 0L
 
         player = ExoPlayer.Builder(this)
             .setTrackSelector(trackSelector)
             .build()
             .also { exoPlayer ->
                 exoPlayer.addMediaItems(mediaItems)
-                exoPlayer.seekTo(currentItem, playbackPosition)
+                exoPlayer.seekTo(trackPosition, playbackPosition)
                 exoPlayer.addListener(this)
                 exoPlayer.prepare()
             }
@@ -198,6 +194,7 @@ class MusicService : MediaBrowserServiceCompat(), OnAudioFocusChangeListener, Pl
                 }
                 return BitmapFactory.decodeStream(inputStream)
             }
+
         }).setNotificationListener(object: NotificationListener{
             override fun onNotificationCancelled(notificationId: Int, dismissedByUser: Boolean) {
                 stopSelf()
@@ -268,6 +265,8 @@ class MusicService : MediaBrowserServiceCompat(), OnAudioFocusChangeListener, Pl
             override fun onSeekTo(pos: Long) {
                 super.onSeekTo(pos)
             }
+
+            
         })
 
         mMediaSessionCompat.setMetadata(currentTrack)
@@ -284,7 +283,7 @@ class MusicService : MediaBrowserServiceCompat(), OnAudioFocusChangeListener, Pl
         )
             .setState(
                 state.toInt(),
-                player.currentPosition,
+                playbackPosition,
                 1f,
                 SystemClock.elapsedRealtime()
             ).build()
@@ -323,6 +322,24 @@ class MusicService : MediaBrowserServiceCompat(), OnAudioFocusChangeListener, Pl
                 }*/
             }
         }
+    }
+
+    override fun onLoadChildren(
+        parentId: String,
+        result: Result<MutableList<MediaBrowserCompat.MediaItem>>,
+        options: Bundle
+    ) {
+        super.onLoadChildren(parentId, result, options)
+    }
+
+    override fun onSeekBackIncrementChanged(seekBackIncrementMs: Long) {
+        super.onSeekBackIncrementChanged(seekBackIncrementMs)
+        playbackPosition = seekBackIncrementMs
+    }
+
+    override fun onSeekForwardIncrementChanged(seekForwardIncrementMs: Long) {
+        super.onSeekForwardIncrementChanged(seekForwardIncrementMs)
+        playbackPosition = seekForwardIncrementMs
     }
 
     override fun onPlaybackStateChanged(playbackState: Int) {
