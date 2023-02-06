@@ -1,6 +1,7 @@
 package com.codeboy.mediafacerkotlin.fragments
 
 import android.content.ComponentName
+import android.content.Intent
 import android.graphics.drawable.AnimationDrawable
 import android.media.session.PlaybackState
 import android.os.Bundle
@@ -64,10 +65,10 @@ class AudiosFragment() : Fragment() {
             showMenu(it)
         }
 
-        animationDrawable = bindings.player.background as AnimationDrawable
+       /* animationDrawable = bindings.player.background as AnimationDrawable
         animationDrawable.setEnterFadeDuration(5000)
         animationDrawable.setExitFadeDuration(2000)
-        animationDrawable.start()
+        animationDrawable.start()*/
 
         bindings.audiosList.hasFixedSize()
         bindings.audiosList.setHasFixedSize(true)
@@ -80,16 +81,7 @@ class AudiosFragment() : Fragment() {
     override fun onStart() {
         super.onStart()
         //check connection to music service and proceed
-        if(!PlaybackProtocol.isMusicServiceRunning){
-            //start or bind the service here
-            MediaBrowserCompat(requireActivity(),
-                ComponentName(requireActivity(), MusicService::class.java), mMediaBrowserConnectionCallback, requireActivity().intent.extras).apply {
-                connect()
-                musicServiceBrowserCompat = this
-            }
-        }else{
-            //other setups
-        }
+        startAndBindMusicService()
     }
 
     private fun initAudios(){
@@ -417,6 +409,18 @@ class AudiosFragment() : Fragment() {
     }
 
     //MusicService Section, functions for music playback with media session and exoplayer -------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+    private fun startAndBindMusicService(){
+        // Create a new intent with the ACTION_MEDIA_BROWSER_SERVICE action
+        val intent = Intent(requireActivity(), MusicService::class.java)
+        requireActivity().startService(intent)
+
+        MediaBrowserCompat(requireActivity(),
+            ComponentName(requireActivity(), MusicService::class.java), mMediaBrowserConnectionCallback, requireActivity().intent.extras).apply {
+            connect()
+            musicServiceBrowserCompat = this
+        }
+    }
 
     private val mMediaControllerCallback: MediaControllerCompat.Callback =
         object : MediaControllerCompat.Callback() {

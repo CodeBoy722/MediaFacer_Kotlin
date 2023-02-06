@@ -20,43 +20,46 @@ class MusicPlaybackButtonReceiver: MediaButtonReceiver() {
                     intent.getParcelableExtra<KeyEvent>(Intent.EXTRA_KEY_EVENT)
                 }
                 if (keyEvent != null) {
-                    if (keyEvent.action == KeyEvent.ACTION_UP) {
-                        val audioManager = context?.getSystemService(Context.AUDIO_SERVICE) as AudioManager
-                        when (keyEvent.keyCode) {
-                            KeyEvent.KEYCODE_VOLUME_UP -> audioManager.adjustStreamVolume(
-                                AudioManager.STREAM_MUSIC,
-                                AudioManager.ADJUST_RAISE,
-                                AudioManager.FLAG_PLAY_SOUND
-                            )
-                            KeyEvent.KEYCODE_VOLUME_DOWN -> {
+                    when (keyEvent.action) {
+                        KeyEvent.ACTION_UP -> {
+                            val audioManager = context?.getSystemService(Context.AUDIO_SERVICE) as AudioManager
+                            when (keyEvent.keyCode) {
+                                KeyEvent.KEYCODE_VOLUME_UP -> audioManager.adjustStreamVolume(
+                                    AudioManager.STREAM_MUSIC,
+                                    AudioManager.ADJUST_RAISE,
+                                    AudioManager.FLAG_PLAY_SOUND
+                                )
 
+                                KeyEvent.KEYCODE_VOLUME_DOWN -> {
+
+                                }
                             }
+                        }
 
-                            KeyEvent.KEYCODE_MEDIA_PLAY -> {
-
-                            }
-
-                            KeyEvent.KEYCODE_MEDIA_PAUSE -> {
-
-                            }
-
-                            KeyEvent.KEYCODE_MEDIA_NEXT -> {
-
-                            }
-
-                            KeyEvent.KEYCODE_MEDIA_PREVIOUS -> {
-
-                            }
-
-                            KeyEvent.KEYCODE_MEDIA_FAST_FORWARD -> {
-
-                            }
-
-                            KeyEvent.KEYCODE_MEDIA_REWIND -> {
-
-                            }
+                        KeyEvent.KEYCODE_MEDIA_PLAY -> {
 
                         }
+
+                        KeyEvent.KEYCODE_MEDIA_PAUSE -> {
+
+                        }
+
+                        KeyEvent.KEYCODE_MEDIA_NEXT -> {
+
+                        }
+
+                        KeyEvent.KEYCODE_MEDIA_PREVIOUS -> {
+
+                        }
+
+                        KeyEvent.KEYCODE_MEDIA_FAST_FORWARD -> {
+
+                        }
+
+                        KeyEvent.KEYCODE_MEDIA_REWIND -> {
+
+                        }
+
                     }
                 }
             }

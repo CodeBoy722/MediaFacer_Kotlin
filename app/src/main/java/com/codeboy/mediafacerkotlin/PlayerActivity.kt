@@ -15,6 +15,7 @@ import androidx.media3.common.Player
 import androidx.media3.common.util.Util
 import androidx.media3.exoplayer.ExoPlayer
 import androidx.media3.exoplayer.trackselection.DefaultTrackSelector
+import androidx.media3.ui.PlayerNotificationManager
 import com.codeboy.mediafacer.models.VideoContent
 import com.codeboy.mediafacerkotlin.databinding.ActivityPlayerBinding
 
@@ -49,6 +50,7 @@ class PlayerActivity : AppCompatActivity() {
         for (item: VideoContent in rawVideos){
             mediaItems.add(MediaItem.fromUri(item.videoUri))
         }
+
         initializePlayer()
     }
 
