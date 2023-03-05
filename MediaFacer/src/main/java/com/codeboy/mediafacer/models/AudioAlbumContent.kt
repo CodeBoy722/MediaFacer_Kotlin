@@ -7,7 +7,7 @@ class AudioAlbumContent: Serializable {
 
     var albumName: String = ""
     var albumId: String = ""
-    var albumArtUri: Uri = Uri.EMPTY
+    var albumArtUri: String = ""
     var albumArtist: String = ""
     var albumAudios: ArrayList<AudioContent> = ArrayList()
     var albumSize = albumAudios.size

@@ -28,5 +28,6 @@
         content easily and seamlessly with support for both internal and external content mediums.
         This application is an example/illustration of what you can do with MediaFacer.</string>
 
+    <string name="description">Playing Music in background, Don\'t stop</string>
 
 </resources>

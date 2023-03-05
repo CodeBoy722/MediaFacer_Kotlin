@@ -1,5 +1,6 @@
 package com.codeboy.mediafacerkotlin.viewAdapters
 
+import android.net.Uri
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -54,7 +55,7 @@ class AudioViewAdapter(private val listener: AudioActionListener)
             bindings.root.setOnLongClickListener(this)
             bindings.play.setOnClickListener(this)
             Glide.with(bindings.art)
-                .load(item.artUri)
+                .load(Uri.parse(item.artUri))
                 .apply(RequestOptions().centerCrop().circleCrop())
                 .placeholder(R.drawable.music_placeholder)
                 .into(bindings.art)

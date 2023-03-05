@@ -42,7 +42,7 @@ object PlaybackProtocol: ViewModel() {
     object ProfilePicBindingAdapter {
         @BindingAdapter("MusicArt")
         @JvmStatic
-        fun setMusicArt(view: AppCompatImageView, link: Uri?) {
+        fun setMusicArt(view: AppCompatImageView, link: String?) {
             Glide.with(view)
                 .load(link?: R.drawable.music_placeholder)
                 .centerCrop().circleCrop()

@@ -13,7 +13,7 @@ class AudioContent(): Serializable {
     var artist: String = ""
     var album: String = ""
     var genre: String = ""
-    var artUri: Uri = Uri.EMPTY
+    var artUri: String = ""
     var musicSize: Long = 0
     var duration: Long = 0
     var musicId: Long = 0
