@@ -125,6 +125,14 @@ class MusicService : MediaBrowserServiceCompat(), OnAudioFocusChangeListener, Pl
 
     }
 
+    /*override fun onLoadChildren(
+        parentId: String,
+        result: Result<MutableList<MediaBrowserCompat.MediaItem>>,
+        options: Bundle
+    ) {
+        super.onLoadChildren(parentId, result, options)
+    }*/
+
     @androidx.annotation.OptIn(androidx.media3.common.util.UnstableApi::class)
     override fun  onDestroy() {
         playerNotification.setPlayer(null)
@@ -300,14 +308,29 @@ class MusicService : MediaBrowserServiceCompat(), OnAudioFocusChangeListener, Pl
                 }
                 super.onNotificationPosted(notificationId, notification, ongoing)
             }
-        })
+        }).setSmallIconResourceId(R.drawable.logo)
+            .setNextActionIconResourceId(R.drawable.ic_next)
+            .setPreviousActionIconResourceId(R.drawable.ic_previous)
+            .setPlayActionIconResourceId(R.drawable.ic_play)
+            .setPauseActionIconResourceId(R.drawable.ic_pause)
+            //.setStopActionIconResourceId(androidx.media3.ui.R.drawable.exo_icon_stop)
 
         playerNotification = playerNotificationBuilder.build()
+
+        playerNotification.setUseStopAction(true)
+        playerNotification.setUseFastForwardAction(false)
+        playerNotification.setUseRewindAction(false)
+        playerNotification.setUseNextActionInCompactView(true)
+        playerNotification.setUsePreviousActionInCompactView(true)
+        playerNotification.setUseChronometer(true)
+
         playerNotification.setPlayer(player)
         playerNotification.setMediaSessionToken(mMediaSessionCompat.sessionToken)
 
-        val sessionConnector = MediaSessionConnector(mMediaSessionCompat)
-        sessionConnector.setQueueNavigator(object: TimelineQueueNavigator{
+
+
+        /*val sessionConnector = MediaSessionConnector(mMediaSessionCompat)
+        sessionConnector.setQueueNavigator(object: TimelineQueueNavigator() {
             override fun getMediaDescription(
                 player: ExoPlayer,
                 windowIndex: Int
@@ -316,7 +339,7 @@ class MusicService : MediaBrowserServiceCompat(), OnAudioFocusChangeListener, Pl
             }
 
         })
-        sessionConnector.setPlayer(player)
+        sessionConnector.setPlayer(player)*/
 
     }
 
@@ -368,14 +391,6 @@ class MusicService : MediaBrowserServiceCompat(), OnAudioFocusChangeListener, Pl
                 }*/
             }
         }
-    }
-
-    override fun onLoadChildren(
-        parentId: String,
-        result: Result<MutableList<MediaBrowserCompat.MediaItem>>,
-        options: Bundle
-    ) {
-        super.onLoadChildren(parentId, result, options)
     }
 
     override fun onSeekBackIncrementChanged(seekBackIncrementMs: Long) {

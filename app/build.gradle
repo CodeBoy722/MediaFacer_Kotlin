@@ -71,6 +71,8 @@ dependencies {
     implementation "androidx.media3:media3-exoplayer-dash:$mediaVersion"
     implementation "com.google.android.exoplayer:extension-mediasession:2.18.4"
 
+    //implementation "com.google.android.exoplayer:extension-mediasession:2.18.4"
+
     implementation 'com.google.code.gson:gson:2.10.1'
 
 }
