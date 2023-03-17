@@ -29,5 +29,6 @@
         This application is an example/illustration of what you can do with MediaFacer.</string>
 
     <string name="description">Playing Music in background, Don\'t stop</string>
+    <string name="channel_name">media_facer_audio_playback</string>
 
 </resources>

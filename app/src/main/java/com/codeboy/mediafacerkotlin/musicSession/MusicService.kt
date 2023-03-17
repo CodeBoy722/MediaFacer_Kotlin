@@ -1,6 +1,7 @@
 package com.codeboy.mediafacerkotlin.musicSession
 
 import android.app.Notification
+import android.app.NotificationManager
 import android.app.PendingIntent
 import android.content.*
 import android.content.pm.ServiceInfo
@@ -12,10 +13,8 @@ import android.media.AudioManager.OnAudioFocusChangeListener
 import android.net.Uri
 import android.os.Build
 import android.os.Bundle
-import android.os.ResultReceiver
 import android.os.SystemClock
 import android.support.v4.media.MediaBrowserCompat
-import android.support.v4.media.MediaDescriptionCompat
 import android.support.v4.media.MediaMetadataCompat
 import android.support.v4.media.session.MediaSessionCompat
 import android.support.v4.media.session.PlaybackStateCompat
@@ -32,16 +31,10 @@ import androidx.media3.ui.PlayerNotificationManager.MediaDescriptionAdapter
 import androidx.media3.ui.PlayerNotificationManager.NotificationListener
 import com.codeboy.mediafacer.models.AudioContent
 import com.codeboy.mediafacerkotlin.MainActivity
+import com.codeboy.mediafacerkotlin.MediaFacerApp
 import com.codeboy.mediafacerkotlin.MediaFacerApp.NotificationSource.NOTIFICATION_ID
 import com.codeboy.mediafacerkotlin.R
 import com.codeboy.mediafacerkotlin.utils.MusicDataUtil
-import com.codeboy.mediafacerkotlin.viewModels.AudioViewModel
-import com.google.android.exoplayer2.ext.mediasession.MediaSessionConnector
-import com.google.android.exoplayer2.ext.mediasession.MediaSessionConnector.QueueNavigator
-import com.google.android.exoplayer2.ext.mediasession.TimelineQueueNavigator
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.async
 import java.io.FileNotFoundException
 import java.io.InputStream
 
@@ -68,6 +61,7 @@ class MusicService : MediaBrowserServiceCompat(), OnAudioFocusChangeListener, Pl
         setupUpMusicList(musicList)
     }
     private lateinit var playerNotification: PlayerNotificationManager
+    private lateinit var notificationManager: NotificationManager
 
     private val mNoisyReceiver: BroadcastReceiver = object : BroadcastReceiver() {
         override fun onReceive(context: Context, intent: Intent) {
@@ -103,6 +97,7 @@ class MusicService : MediaBrowserServiceCompat(), OnAudioFocusChangeListener, Pl
          //load the last playlist or new playlist if there is none
          PlaybackProtocol.musicList.observeForever(observer)
 
+         notificationManager = this.getSystemService(NOTIFICATION_SERVICE) as NotificationManager
          initNoisyReceiver()
          setupMediaSession()
          setupExoPlayer()
@@ -223,7 +218,8 @@ class MusicService : MediaBrowserServiceCompat(), OnAudioFocusChangeListener, Pl
                 mMediaSessionCompat.setMetadata(currentTrack)
                 player.seekToNextMediaItem()
                 PlaybackProtocol.setCurrentMusic(musicList[trackPosition])
-                playerNotification.setPlayer(player)
+                //playerNotification.setPlayer(player)
+                buildPlayerNotification()
             }
 
             override fun onSkipToPrevious() {
@@ -238,7 +234,8 @@ class MusicService : MediaBrowserServiceCompat(), OnAudioFocusChangeListener, Pl
                 mMediaSessionCompat.setMetadata(currentTrack)
                 player.seekToPreviousMediaItem()
                 PlaybackProtocol.setCurrentMusic(musicList[trackPosition])
-                playerNotification.setPlayer(player)
+                //playerNotification.setPlayer(player)
+                buildPlayerNotification()
             }
 
             override fun onFastForward() {
@@ -268,8 +265,12 @@ class MusicService : MediaBrowserServiceCompat(), OnAudioFocusChangeListener, Pl
     @androidx.annotation.OptIn(androidx.media3.common.util.UnstableApi::class)
     private fun buildPlayerNotification(){
         val playerNotificationBuilder = PlayerNotificationManager.Builder(
-            this,NOTIFICATION_ID,NOTIFICATION_ID.toString()
-        ).setMediaDescriptionAdapter(object: MediaDescriptionAdapter{
+            this,NOTIFICATION_ID, MediaFacerApp.NotificationSource.channelID
+        ).setChannelNameResourceId(R.string.channel_name)
+
+            .setChannelDescriptionResourceId(R.string.description)
+
+            .setMediaDescriptionAdapter(object: MediaDescriptionAdapter{
             override fun getCurrentContentTitle(player: Player): CharSequence {
                 return musicList[trackPosition].title
             }
@@ -296,24 +297,26 @@ class MusicService : MediaBrowserServiceCompat(), OnAudioFocusChangeListener, Pl
 
         }).setNotificationListener(object: NotificationListener{
             override fun onNotificationCancelled(notificationId: Int, dismissedByUser: Boolean) {
-                stopSelf()
                 super.onNotificationCancelled(notificationId, dismissedByUser)
+                //notificationManager.cancel(notificationId)
+                stopSelf()
             }
 
             override fun onNotificationPosted(notificationId: Int, notification: Notification, ongoing: Boolean) {
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
-                    startForeground(NOTIFICATION_ID,notification, ServiceInfo.FOREGROUND_SERVICE_TYPE_MEDIA_PLAYBACK)
-                }else{
-                    startForeground(NOTIFICATION_ID, notification)
-                }
                 super.onNotificationPosted(notificationId, notification, ongoing)
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+                    startForeground(notificationId,notification, ServiceInfo.FOREGROUND_SERVICE_TYPE_MEDIA_PLAYBACK)
+                }else{
+                    startForeground(notificationId, notification)
+                }
+                //notificationManager.notify(notificationId, notification)
             }
-        }).setSmallIconResourceId(R.drawable.logo)
-            .setNextActionIconResourceId(R.drawable.ic_next)
-            .setPreviousActionIconResourceId(R.drawable.ic_previous)
+        }).setSmallIconResourceId(R.drawable.ic_logo_notiv)
+            .setNextActionIconResourceId(R.drawable.ic_skip_next)
+            .setPreviousActionIconResourceId(R.drawable.ic_skip_previous)
             .setPlayActionIconResourceId(R.drawable.ic_play)
             .setPauseActionIconResourceId(R.drawable.ic_pause)
-            //.setStopActionIconResourceId(androidx.media3.ui.R.drawable.exo_icon_stop)
+            .setStopActionIconResourceId(R.drawable.ic_cancel)
 
         playerNotification = playerNotificationBuilder.build()
 
@@ -326,20 +329,6 @@ class MusicService : MediaBrowserServiceCompat(), OnAudioFocusChangeListener, Pl
 
         playerNotification.setPlayer(player)
         playerNotification.setMediaSessionToken(mMediaSessionCompat.sessionToken)
-
-
-
-        /*val sessionConnector = MediaSessionConnector(mMediaSessionCompat)
-        sessionConnector.setQueueNavigator(object: TimelineQueueNavigator() {
-            override fun getMediaDescription(
-                player: ExoPlayer,
-                windowIndex: Int
-            ): MediaDescriptionCompat {
-                TODO("Not yet implemented")
-            }
-
-        })
-        sessionConnector.setPlayer(player)*/
 
     }
 
@@ -417,9 +406,10 @@ class MusicService : MediaBrowserServiceCompat(), OnAudioFocusChangeListener, Pl
                 trackPosition  += 1
                 currentTrack = musicMetaDataList[trackPosition]
                 mMediaSessionCompat.setMetadata(currentTrack)
-                player.seekToNextMediaItem()
+                //player.seekToNextMediaItem()
+                mMediaSessionCompat.controller.transportControls.skipToNext()
                 PlaybackProtocol.setCurrentMusic(musicList[trackPosition])
-                playerNotification.setPlayer(player)
+                //playerNotification.setPlayer(player)
             }
             ExoPlayer.STATE_IDLE -> {
                 //here you can set items and prepare
