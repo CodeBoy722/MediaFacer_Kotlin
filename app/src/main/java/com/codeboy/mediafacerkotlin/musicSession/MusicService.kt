@@ -1,19 +1,16 @@
 package com.codeboy.mediafacerkotlin.musicSession
 
-import android.app.Notification
 import android.app.NotificationManager
-import android.app.PendingIntent
 import android.content.*
-import android.content.pm.ServiceInfo
-import android.graphics.Bitmap
-import android.graphics.BitmapFactory
 import android.media.AudioFocusRequest
 import android.media.AudioManager
 import android.media.AudioManager.OnAudioFocusChangeListener
-import android.net.Uri
+import android.media.browse.MediaBrowser
+import androidx.media3.session.MediaSession
 import android.os.Build
 import android.os.Bundle
 import android.os.SystemClock
+import android.service.media.MediaBrowserService
 import android.support.v4.media.MediaBrowserCompat
 import android.support.v4.media.MediaMetadataCompat
 import android.support.v4.media.session.MediaSessionCompat
@@ -22,27 +19,22 @@ import android.text.TextUtils
 import androidx.lifecycle.Observer
 import androidx.media.MediaBrowserServiceCompat
 import androidx.media.session.MediaButtonReceiver
+import androidx.media3.common.AudioAttributes
+import androidx.media3.common.C
 import androidx.media3.common.MediaItem
 import androidx.media3.common.Player
 import androidx.media3.exoplayer.ExoPlayer
 import androidx.media3.exoplayer.trackselection.DefaultTrackSelector
 import androidx.media3.ui.PlayerNotificationManager
-import androidx.media3.ui.PlayerNotificationManager.MediaDescriptionAdapter
-import androidx.media3.ui.PlayerNotificationManager.NotificationListener
 import com.codeboy.mediafacer.models.AudioContent
-import com.codeboy.mediafacerkotlin.MainActivity
-import com.codeboy.mediafacerkotlin.MediaFacerApp
-import com.codeboy.mediafacerkotlin.MediaFacerApp.NotificationSource.NOTIFICATION_ID
 import com.codeboy.mediafacerkotlin.R
 import com.codeboy.mediafacerkotlin.utils.MusicDataUtil
-import java.io.FileNotFoundException
-import java.io.InputStream
 
 class MusicService : MediaBrowserServiceCompat(), OnAudioFocusChangeListener, Player.Listener{
 
     private val LOG_TAG = "MediaFacer Music"
     private lateinit var mAudioManager: AudioManager
-    private lateinit var mMediaSessionCompat: MediaSessionCompat
+    private lateinit var mediaSession: MediaSession
     private lateinit var player: ExoPlayer
     private var musicList: ArrayList<AudioContent> = ArrayList()
     private var musicMetaDataList: ArrayList<MediaMetadataCompat> = ArrayList()
@@ -99,13 +91,13 @@ class MusicService : MediaBrowserServiceCompat(), OnAudioFocusChangeListener, Pl
 
          notificationManager = this.getSystemService(NOTIFICATION_SERVICE) as NotificationManager
          initNoisyReceiver()
-         setupMediaSession()
-         setupExoPlayer()
+         //setupMediaSession()
+         setupPlayerSession()
 
      }
 
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
-        MediaButtonReceiver.handleIntent(mMediaSessionCompat, intent)
+        //MediaButtonReceiver.handleIntent(mediaSession, intent)
         //return super.onStartCommand(intent, flags, startId)
         return START_STICKY
     }
@@ -116,21 +108,17 @@ class MusicService : MediaBrowserServiceCompat(), OnAudioFocusChangeListener, Pl
         } else null
     }
 
-    override fun onLoadChildren(parentId: String, result: Result<MutableList<MediaBrowserCompat.MediaItem>>) {
-
+    override fun onLoadChildren(
+        parentId: String,
+        result: Result<MutableList<MediaBrowserCompat.MediaItem>>
+    ) {
+        TODO("Not yet implemented")
     }
 
-    /*override fun onLoadChildren(
-        parentId: String,
-        result: Result<MutableList<MediaBrowserCompat.MediaItem>>,
-        options: Bundle
-    ) {
-        super.onLoadChildren(parentId, result, options)
-    }*/
 
     @androidx.annotation.OptIn(androidx.media3.common.util.UnstableApi::class)
     override fun  onDestroy() {
-        playerNotification.setPlayer(null)
+        //playerNotification.setPlayer(null)
         //tell activity components that service is stopping
         PlaybackProtocol.isMusicServiceRunning = false
         //save the last playlist so next time it reads from preferences
@@ -157,7 +145,7 @@ class MusicService : MediaBrowserServiceCompat(), OnAudioFocusChangeListener, Pl
     }
 
     @androidx.annotation.OptIn(androidx.media3.common.util.UnstableApi::class)
-    private fun setupExoPlayer(){
+    private fun setupPlayerSession(){
         val mediaItems = ArrayList<MediaItem>()
 
         for (item: AudioContent in musicList){
@@ -171,16 +159,26 @@ class MusicService : MediaBrowserServiceCompat(), OnAudioFocusChangeListener, Pl
             .setTrackSelector(trackSelector)
             .build()
             .also { exoPlayer ->
+                exoPlayer.setAudioAttributes(AudioAttributes.DEFAULT, true)
+                exoPlayer.setHandleAudioBecomingNoisy(true)
+                exoPlayer.setWakeMode(C.WAKE_MODE_LOCAL)
                 exoPlayer.addMediaItems(mediaItems)
+                exoPlayer.pauseAtEndOfMediaItems = true
                 exoPlayer.seekTo(trackPosition, playbackPosition)
                 exoPlayer.addListener(this)
                 exoPlayer.prepare()
             }
-        buildPlayerNotification()
+
+        mediaSession = MediaSession.Builder(this, player)
+            .build()
+        sessionToken = mediaSession.sessionCompatToken
+
+        //buildPlayerNotification()
     }
 
-    @androidx.annotation.OptIn(androidx.media3.common.util.UnstableApi::class)
-    private fun setupMediaSession(){
+    //@androidx.annotation.OptIn(androidx.media3.common.util.UnstableApi::class)
+   /* private fun setupMediaSession(){
+
         val mediaButtonReceiverName = ComponentName(applicationContext, MediaButtonReceiver::class.java)
         mMediaSessionCompat = MediaSessionCompat(applicationContext, LOG_TAG, mediaButtonReceiverName, null)
         mMediaSessionCompat.setFlags(MediaSessionCompat.FLAG_HANDLES_QUEUE_COMMANDS)
@@ -200,10 +198,12 @@ class MusicService : MediaBrowserServiceCompat(), OnAudioFocusChangeListener, Pl
         mMediaSessionCompat.setCallback(object : MediaSessionCompat.Callback() {
             override fun onPlay() {
                 super.onPlay()
+                mMediaSessionCompat.setPlaybackState(buildState(PlaybackStateCompat.STATE_PLAYING.toLong()))
             }
 
             override fun onPause() {
                 super.onPause()
+                mMediaSessionCompat.setPlaybackState(buildState(PlaybackStateCompat.STATE_PAUSED.toLong()))
             }
 
             override fun onSkipToNext() {
@@ -213,7 +213,7 @@ class MusicService : MediaBrowserServiceCompat(), OnAudioFocusChangeListener, Pl
                 }else{
                     trackPosition  += 1
                 }
-
+                mMediaSessionCompat.setPlaybackState(buildState(PlaybackStateCompat.STATE_SKIPPING_TO_NEXT.toLong()))
                 currentTrack = musicMetaDataList[trackPosition]
                 mMediaSessionCompat.setMetadata(currentTrack)
                 player.seekToNextMediaItem()
@@ -229,21 +229,13 @@ class MusicService : MediaBrowserServiceCompat(), OnAudioFocusChangeListener, Pl
                 }else{
                     trackPosition  -= 1
                 }
-
+                mMediaSessionCompat.setPlaybackState(buildState(PlaybackStateCompat.STATE_SKIPPING_TO_PREVIOUS.toLong()))
                 currentTrack = musicMetaDataList[trackPosition]
                 mMediaSessionCompat.setMetadata(currentTrack)
                 player.seekToPreviousMediaItem()
                 PlaybackProtocol.setCurrentMusic(musicList[trackPosition])
                 //playerNotification.setPlayer(player)
                 buildPlayerNotification()
-            }
-
-            override fun onFastForward() {
-                super.onFastForward()
-            }
-
-            override fun onRewind() {
-                super.onRewind()
             }
 
             override fun onStop() {
@@ -260,10 +252,10 @@ class MusicService : MediaBrowserServiceCompat(), OnAudioFocusChangeListener, Pl
         mMediaSessionCompat.setMetadata(currentTrack)
         mMediaSessionCompat.isActive = true
         sessionToken = mMediaSessionCompat.sessionToken
-    }
+    }*/
 
-    @androidx.annotation.OptIn(androidx.media3.common.util.UnstableApi::class)
-    private fun buildPlayerNotification(){
+    //@androidx.annotation.OptIn(androidx.media3.common.util.UnstableApi::class)
+   /* private fun buildPlayerNotification(){
         val playerNotificationBuilder = PlayerNotificationManager.Builder(
             this,NOTIFICATION_ID, MediaFacerApp.NotificationSource.channelID
         ).setChannelNameResourceId(R.string.channel_name)
@@ -321,7 +313,7 @@ class MusicService : MediaBrowserServiceCompat(), OnAudioFocusChangeListener, Pl
         playerNotification = playerNotificationBuilder.build()
 
         playerNotification.setUseStopAction(true)
-        playerNotification.setUseFastForwardAction(false)
+        playerNotification.setUseFastForwardAction(true)
         playerNotification.setUseRewindAction(false)
         playerNotification.setUseNextActionInCompactView(true)
         playerNotification.setUsePreviousActionInCompactView(true)
@@ -330,7 +322,7 @@ class MusicService : MediaBrowserServiceCompat(), OnAudioFocusChangeListener, Pl
         playerNotification.setPlayer(player)
         playerNotification.setMediaSessionToken(mMediaSessionCompat.sessionToken)
 
-    }
+    }*/
 
     private fun buildState(state: Long): PlaybackStateCompat? {
         return PlaybackStateCompat.Builder().setActions(
@@ -403,12 +395,12 @@ class MusicService : MediaBrowserServiceCompat(), OnAudioFocusChangeListener, Pl
             }
             ExoPlayer.STATE_ENDED -> {
                 //playWhenReady = false
-                trackPosition  += 1
+               /* trackPosition  += 1
                 currentTrack = musicMetaDataList[trackPosition]
-                mMediaSessionCompat.setMetadata(currentTrack)
+                mediaSession.setMetadata(currentTrack)*/
                 //player.seekToNextMediaItem()
-                mMediaSessionCompat.controller.transportControls.skipToNext()
-                PlaybackProtocol.setCurrentMusic(musicList[trackPosition])
+                //mediaSession.controller.transportControls.skipToNext()
+                //PlaybackProtocol.setCurrentMusic(musicList[trackPosition])
                 //playerNotification.setPlayer(player)
             }
             ExoPlayer.STATE_IDLE -> {
