@@ -1,4 +1,4 @@
-<resources>
+<resources xmlns:tools="http://schemas.android.com/tools">
     <string name="app_name">MediaFacer Kotlin</string>
     <!-- TODO: Remove or change this placeholder text -->
 
@@ -44,5 +44,10 @@
     is still present, otherwise please open the app to start the playback and re-connect the session
     to the controller</string>
     <string name="notification_channel_name">Playback cannot be resumed</string>
+
+    <string name="exo_controls_shuffle_on_description" tools:ignore="PrivateResource">start pick and play random tracks automatically</string>
+
+    <string name="exo_controls_shuffle_off_description" tools:ignore="PrivateResource">stop pick and play random tracks automatically</string>
+
 
 </resources>
