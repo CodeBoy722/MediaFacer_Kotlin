@@ -14,6 +14,7 @@ import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationManagerCompat
 import androidx.core.app.TaskStackBuilder
 import androidx.media3.common.AudioAttributes
+import androidx.media3.common.C
 import androidx.media3.common.MediaItem
 import androidx.media3.common.util.UnstableApi
 import androidx.media3.common.util.Util
@@ -74,6 +75,8 @@ class MediaLibrary : MediaLibraryService() {
         }
     }
 
+
+
     @androidx.annotation.OptIn(androidx.media3.common.util.UnstableApi::class)
     override fun onDestroy() {
         player.release()
@@ -82,6 +85,7 @@ class MediaLibrary : MediaLibraryService() {
         super.onDestroy()
     }
 
+    //not used to init librarySessionCallback
     private inner class CustomMediaLibrarySessionCallback : MediaLibrarySession.Callback {
 
         override fun onConnect(session: MediaSession, controller: MediaSession.ControllerInfo): MediaSession.ConnectionResult {

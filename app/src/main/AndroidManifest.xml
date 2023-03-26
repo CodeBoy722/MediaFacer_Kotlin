@@ -59,7 +59,7 @@
         <meta-data
             android:name="androidx.car.app.TintableAttributionIcon"
             android:resource="@drawable/ic_audio" />
-
+<!--
         <service
             android:name=".musicSession.MusicService"
             android:enabled="true"
@@ -70,6 +70,18 @@
                 <action android:name="android.intent.action.MEDIA_BUTTON" />
                 <action android:name="android.media.AUDIO_BECOMING_NOISY" />
                 <action android:name="android.media.browse.MediaBrowserService" />
+            </intent-filter>
+        </service>-->
+
+        <service
+            android:name=".musicSession.MediaLibrary"
+            android:foregroundServiceType="mediaPlayback"
+            android:enabled="true"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="androidx.media2.session.MediaLibraryService" />
+                <action android:name="androidx.media3.session.MediaSessionService"/>
+                <action android:name="android.media.browse.MediaBrowserService"/>
             </intent-filter>
         </service>
 

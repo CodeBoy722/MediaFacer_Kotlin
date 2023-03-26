@@ -2,9 +2,12 @@ package com.codeboy.mediafacerkotlin.musicSession
 
 import android.content.res.AssetManager
 import android.net.Uri
+import androidx.lifecycle.Observer
 import androidx.media3.common.MediaItem
 import androidx.media3.common.MediaMetadata
 import androidx.media3.common.util.Util
+import com.codeboy.mediafacer.models.AudioContent
+import com.codeboy.mediafacerkotlin.musicSession.PlaybackProtocol.musicList
 import com.google.common.collect.ImmutableList
 import org.json.JSONObject
 
@@ -22,6 +25,7 @@ object MediaItemTree {
     private const val ARTIST_PREFIX = "[artist]"
     private const val ITEM_PREFIX = "[item]"
 
+
     private class MediaItemNode(val item: MediaItem) {
         private val children: MutableList<MediaItem> = ArrayList()
 
@@ -31,6 +35,14 @@ object MediaItemTree {
 
         fun getChildren(): List<MediaItem> {
             return ImmutableList.copyOf(children)
+        }
+    }
+
+    private val observer = Observer<ArrayList<AudioContent>> { it ->
+        //Live data value has changed
+        PlaybackProtocol.setCurrentMusic(it[0])
+        for(audio: AudioContent in it){
+            addNodeToTreeMediaFacer(audio)
         }
     }
 
@@ -125,13 +137,15 @@ object MediaItemTree {
 
         // Here, parse the json file in asset for media list.
         // We use a file in asset for demo purpose
-        val jsonObject = JSONObject(loadJSONFromAsset(assets))
-        val mediaList = jsonObject.getJSONArray("media")
+        /*val jsonObject = JSONObject(loadJSONFromAsset(assets))
+        val mediaList = jsonObject.getJSONArray("media")*/
 
         // create subfolder with same artist, album, etc.
-        for (i in 0 until mediaList.length()) {
+       /* for (i in 0 until mediaList.length()) {
             addNodeToTree(mediaList.getJSONObject(i))
-        }
+        }*/
+
+        PlaybackProtocol.musicList.observeForever(observer)
     }
 
     @androidx.annotation.OptIn(androidx.media3.common.util.UnstableApi::class)
@@ -231,6 +245,96 @@ object MediaItemTree {
             treeNodes[GENRE_ID]!!.addChild(genreFolderIdInTree)
         }
         treeNodes[genreFolderIdInTree]!!.addChild(idInTree)
+    }
+
+    // adapted this class to take real media from mediafacer to be used in the library
+    @androidx.annotation.OptIn(androidx.media3.common.util.UnstableApi::class)
+    private fun addNodeToTreeMediaFacer(audio: AudioContent){
+
+        val id = audio.musicId
+        val album = audio.album
+        val title = audio.title
+        val artist = audio.artist
+        val genre = audio.genre
+        val subtitleConfigurations: MutableList<MediaItem.SubtitleConfiguration> = mutableListOf()
+        //no subtitles here
+        val sourceUri = Uri.parse(audio.musicUri)
+        val imageUri = Uri.parse(audio.musicUri)
+        // key of such items in tree
+        val idInTree = ITEM_PREFIX + id
+        val albumFolderIdInTree = ALBUM_PREFIX + album
+        val artistFolderIdInTree = ARTIST_PREFIX + artist
+        val genreFolderIdInTree = GENRE_PREFIX + genre
+
+        treeNodes[idInTree] =
+            MediaItemNode(
+                buildMediaItem(
+                    title = title,
+                    mediaId = idInTree,
+                    isPlayable = true,
+                    isBrowsable = false,
+                    mediaType = MediaMetadata.MEDIA_TYPE_MUSIC,
+                    subtitleConfigurations,
+                    album = album,
+                    artist = artist,
+                    genre = genre,
+                    sourceUri = sourceUri,
+                    imageUri = imageUri
+                )
+            )
+
+        titleMap[title.lowercase()] = treeNodes[idInTree]!!
+
+        if (!treeNodes.containsKey(albumFolderIdInTree)) {
+            treeNodes[albumFolderIdInTree] =
+                MediaItemNode(
+                    buildMediaItem(
+                        title = album,
+                        mediaId = albumFolderIdInTree,
+                        isPlayable = true,
+                        isBrowsable = true,
+                        mediaType = MediaMetadata.MEDIA_TYPE_ALBUM,
+                        subtitleConfigurations
+                    )
+                )
+            treeNodes[ALBUM_ID]!!.addChild(albumFolderIdInTree)
+        }
+        treeNodes[albumFolderIdInTree]!!.addChild(idInTree)
+
+        // add into artist folder
+        if (!treeNodes.containsKey(artistFolderIdInTree)) {
+            treeNodes[artistFolderIdInTree] =
+                MediaItemNode(
+                    buildMediaItem(
+                        title = artist,
+                        mediaId = artistFolderIdInTree,
+                        isPlayable = true,
+                        isBrowsable = true,
+                        mediaType = MediaMetadata.MEDIA_TYPE_ARTIST,
+                        subtitleConfigurations
+                    )
+                )
+            treeNodes[ARTIST_ID]!!.addChild(artistFolderIdInTree)
+        }
+        treeNodes[artistFolderIdInTree]!!.addChild(idInTree)
+
+        // add into genre folder
+        if (!treeNodes.containsKey(genreFolderIdInTree)) {
+            treeNodes[genreFolderIdInTree] =
+                MediaItemNode(
+                    buildMediaItem(
+                        title = genre,
+                        mediaId = genreFolderIdInTree,
+                        isPlayable = true,
+                        isBrowsable = true,
+                        mediaType = MediaMetadata.MEDIA_TYPE_GENRE,
+                        subtitleConfigurations
+                    )
+                )
+            treeNodes[GENRE_ID]!!.addChild(genreFolderIdInTree)
+        }
+        treeNodes[genreFolderIdInTree]!!.addChild(idInTree)
+
     }
 
     fun getItem(id: String): MediaItem? {
