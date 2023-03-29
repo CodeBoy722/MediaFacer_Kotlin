@@ -9,25 +9,28 @@ import android.content.Intent
 import android.content.pm.PackageManager
 import android.os.Build
 import android.os.Bundle
+import android.support.v4.media.MediaMetadataCompat
 import androidx.core.app.ActivityCompat
 import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationManagerCompat
 import androidx.core.app.TaskStackBuilder
-import androidx.media3.common.AudioAttributes
-import androidx.media3.common.C
-import androidx.media3.common.MediaItem
+import androidx.lifecycle.Observer
+import androidx.media3.common.*
 import androidx.media3.common.util.UnstableApi
 import androidx.media3.common.util.Util
 import androidx.media3.exoplayer.ExoPlayer
+import androidx.media3.exoplayer.trackselection.DefaultTrackSelector
 import androidx.media3.session.*
+import com.codeboy.mediafacer.models.AudioContent
 import com.codeboy.mediafacerkotlin.MainActivity
 import com.codeboy.mediafacerkotlin.PlayerActivity
 import com.google.common.collect.ImmutableList
 import com.google.common.util.concurrent.Futures
 import com.google.common.util.concurrent.ListenableFuture
 import com.codeboy.mediafacerkotlin.R
+import com.codeboy.mediafacerkotlin.musicSession.PlaybackProtocol.musicList
 
-class MediaLibrary : MediaLibraryService() {
+class MediaLibrary : MediaLibraryService(), Player.Listener {
 
     private val librarySessionCallback = CustomMediaLibrarySessionCallback()
 
@@ -36,6 +39,20 @@ class MediaLibrary : MediaLibraryService() {
     private lateinit var customCommands: List<CommandButton>
 
     private var customLayout = ImmutableList.of<CommandButton>()
+
+    private var trackPosition = 0
+    private var playbackPosition = 0L
+    private var musicList: ArrayList<AudioContent> = ArrayList()
+    //private var musicMetaDataList: ArrayList<MediaMetadataCompat> = ArrayList()
+    private var mediaItems = ArrayList<MediaItem>()
+    private lateinit var currentTrack: MediaMetadata
+
+    private val observer = Observer<ArrayList<AudioContent>> { it ->
+        //Live data value has changed
+        musicList = it
+        //PlaybackProtocol.setCurrentMusic(musicList[0])
+        setupUpMusicList(musicList)
+    }
 
     companion object {
         private const val SEARCH_QUERY_PREFIX_COMPAT = "androidx://media3-session/playFromSearch"
@@ -61,8 +78,9 @@ class MediaLibrary : MediaLibraryService() {
                 ),
             )
         customLayout = ImmutableList.of(customCommands[0])
-        initializeSessionAndPlayer()
-        setListener(MediaSessionServiceListener())
+
+        //load the last playlist or new playlist if there is none
+        PlaybackProtocol.musicList.observeForever(observer)
     }
 
     override fun onGetSession(controllerInfo: MediaSession.ControllerInfo): MediaLibrarySession {
@@ -74,7 +92,6 @@ class MediaLibrary : MediaLibraryService() {
             stopSelf()
         }
     }
-
 
 
     @androidx.annotation.OptIn(androidx.media3.common.util.UnstableApi::class)
@@ -109,6 +126,7 @@ class MediaLibrary : MediaLibraryService() {
             }
         }
 
+        // handle my custom playback actions here
         override fun onCustomCommand(session: MediaSession, controller: MediaSession.ControllerInfo, customCommand: SessionCommand, args: Bundle): ListenableFuture<SessionResult> {
             if (CUSTOM_COMMAND_TOGGLE_SHUFFLE_MODE_ON == customCommand.customAction) {
                 // Enable shuffling.
@@ -186,11 +204,39 @@ class MediaLibrary : MediaLibraryService() {
         }
     }
 
+    @androidx.annotation.OptIn(androidx.media3.common.util.UnstableApi::class)
+    private fun setupUpMusicList(musicList: ArrayList<AudioContent>){
+        for (musicItem in musicList){
+            mediaItems.add(MediaItem.fromUri(musicItem.musicUri))
+        }
+        currentTrack = mediaItems[trackPosition].mediaMetadata
+
+        initializeSessionAndPlayer()
+        setListener(MediaSessionServiceListener())
+    }
+
+    @androidx.annotation.OptIn(androidx.media3.common.util.UnstableApi::class)
     private fun initializeSessionAndPlayer() {
+        val trackSelector = DefaultTrackSelector(this).apply {
+            setParameters(buildUponParameters())
+        }
+
         player =
             ExoPlayer.Builder(this)
                 .setAudioAttributes(AudioAttributes.DEFAULT, /* handleAudioFocus= */ true)
+                .setTrackSelector(trackSelector)
                 .build()
+                .also {
+                    it.setAudioAttributes(AudioAttributes.DEFAULT, true)
+                    it.setHandleAudioBecomingNoisy(true)
+                    it.setWakeMode(C.WAKE_MODE_LOCAL)
+                    it.addMediaItems(mediaItems)
+                    it.pauseAtEndOfMediaItems = false
+                    it.seekTo(trackPosition, playbackPosition)
+                    it.addListener(this@MediaLibrary)
+                    it.prepare()
+                }
+
         MediaItemTree.initialize(assets)
 
         val sessionActivityPendingIntent =
@@ -224,6 +270,10 @@ class MediaLibrary : MediaLibraryService() {
             .setSessionCommand(sessionCommand)
             .setIconResId(if (isOn) R.drawable.exo_icon_shuffle_off else R.drawable.exo_icon_shuffle_on)
             .build()
+    }
+
+    private fun getCancelCommandButton(){
+
     }
 
     private fun ignoreFuture(customLayout: ListenableFuture<SessionResult>) {
@@ -273,6 +323,7 @@ class MediaLibrary : MediaLibraryService() {
             }
             notificationManagerCompat.notify(NOTIFICATION_ID, builder.build())
         }
+
     }
 
     @androidx.annotation.OptIn(androidx.media3.common.util.UnstableApi::class)
@@ -288,6 +339,31 @@ class MediaLibrary : MediaLibraryService() {
                 NotificationManager.IMPORTANCE_DEFAULT
             )
         notificationManagerCompat.createNotificationChannel(channel)
+    }
+
+    @androidx.annotation.OptIn(androidx.media3.common.util.UnstableApi::class)
+    override fun onPlaybackStateChanged(playbackState: Int) {
+        when(playbackState){
+            ExoPlayer.STATE_READY -> {
+                player.playWhenReady = true
+            }
+            ExoPlayer.STATE_BUFFERING -> {
+                //show a toast to tell user it buffering or unstable internet
+            }
+            ExoPlayer.STATE_ENDED -> {
+                //playWhenReady = false
+                /* trackPosition  += 1
+                 currentTrack = musicMetaDataList[trackPosition]
+                 mediaSession.setMetadata(currentTrack)*/
+                //player.seekToNextMediaItem()
+                //mediaSession.controller.transportControls.skipToNext()
+                //PlaybackProtocol.setCurrentMusic(musicList[trackPosition])
+                //playerNotification.setPlayer(player)
+            }
+            ExoPlayer.STATE_IDLE -> {
+                //here you can set items and prepare
+            }
+        }
     }
 
 
