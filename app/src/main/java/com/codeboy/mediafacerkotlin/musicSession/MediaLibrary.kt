@@ -54,21 +54,27 @@ class MediaLibrary : MediaLibraryService(), Player.Listener {
         setupUpMusicList(musicList)
     }
 
+
+    //playback custom commands
     companion object {
         private const val SEARCH_QUERY_PREFIX_COMPAT = "androidx://media3-session/playFromSearch"
         private const val SEARCH_QUERY_PREFIX = "androidx://media3-session/setMediaUri"
-        private const val CUSTOM_COMMAND_TOGGLE_SHUFFLE_MODE_ON =
-            "android.media3.session.demo.SHUFFLE_ON"
-        private const val CUSTOM_COMMAND_TOGGLE_SHUFFLE_MODE_OFF =
-            "android.media3.session.demo.SHUFFLE_OFF"
-        private const val NOTIFICATION_ID = 123
-        private const val CHANNEL_ID = "demo_session_notification_channel_id"
+        private const val CUSTOM_COMMAND_TOGGLE_SHUFFLE_MODE_ON = "android.media3.session.demo.SHUFFLE_ON"
+        private const val CUSTOM_COMMAND_TOGGLE_SHUFFLE_MODE_OFF = "android.media3.session.demo.SHUFFLE_OFF"
+
+        private const val CUSTOM_COMMAND_PLAY = "mediafacer.action.play"
+        private const val CUSTOM_COMMAND_PAUSE = "mediafacer.action.pause"
+        private const val CUSTOM_COMMAND_NEXT = "mediafacer.action.next"
+        private const val CUSTOM_COMMAND_PREVIOUS = "mediafacer.action.previous"
+        private const val CUSTOM_COMMAND_STOP = "mediafacer.action.stop"
+        private const val NOTIFICATION_ID = 1010
+        private const val CHANNEL_ID = "media_facer_channel"
     }
 
     @androidx.annotation.OptIn(androidx.media3.common.util.UnstableApi::class)
     override fun onCreate() {
         super.onCreate()
-        customCommands =
+       /* customCommands =
             listOf(
                 getShuffleCommandButton(
                     SessionCommand(CUSTOM_COMMAND_TOGGLE_SHUFFLE_MODE_ON, Bundle.EMPTY)
@@ -76,8 +82,10 @@ class MediaLibrary : MediaLibraryService(), Player.Listener {
                 getShuffleCommandButton(
                     SessionCommand(CUSTOM_COMMAND_TOGGLE_SHUFFLE_MODE_OFF, Bundle.EMPTY)
                 ),
-            )
-        customLayout = ImmutableList.of(customCommands[0])
+            )*/
+        customCommands = modifyPlayerCommandButtons()
+        //customLayout = ImmutableList.of(customCommands[0])
+        customLayout = ImmutableList.copyOf(customCommands)
 
         //load the last playlist or new playlist if there is none
         PlaybackProtocol.musicList.observeForever(observer)
@@ -142,6 +150,8 @@ class MediaLibrary : MediaLibraryService(), Player.Listener {
                 customLayout = ImmutableList.of(customCommands[0])
                 // Send the updated custom layout to controllers.
                 session.setCustomLayout(customLayout)
+            }else if(CUSTOM_COMMAND_STOP == customCommand.customAction){
+                stopSelf()
             }
             return Futures.immediateFuture(SessionResult(SessionResult.RESULT_SUCCESS))
         }
@@ -236,13 +246,12 @@ class MediaLibrary : MediaLibraryService(), Player.Listener {
                     it.addListener(this@MediaLibrary)
                     it.prepare()
                 }
-
         MediaItemTree.initialize(assets)
 
         val sessionActivityPendingIntent =
             TaskStackBuilder.create(this).run {
                 addNextIntent(Intent(this@MediaLibrary, MainActivity::class.java))
-                addNextIntent(Intent(this@MediaLibrary, PlayerActivity::class.java))
+                //addNextIntent(Intent(this@MediaLibrary, PlayerActivity::class.java))
 
                 val immutableFlag = if (Build.VERSION.SDK_INT >= 23) FLAG_IMMUTABLE else 0
                 getPendingIntent(0, immutableFlag or FLAG_UPDATE_CURRENT)
@@ -272,9 +281,39 @@ class MediaLibrary : MediaLibraryService(), Player.Listener {
             .build()
     }
 
-    private fun getCancelCommandButton(){
+    private fun modifyPlayerCommandButtons(): List<CommandButton>{
+
+        val previous = CommandButton.Builder()
+            .setDisplayName("Play previous song")
+            .setIconResId(R.drawable.ic_skip_previous)
+            .setPlayerCommand(Player.COMMAND_SEEK_TO_PREVIOUS_MEDIA_ITEM)
+            .setEnabled(true)
+            .build()
+
+        val playPauseButton = CommandButton.Builder()
+            .setDisplayName(if(::player.isInitialized && player.isPlaying) "Pause" else "Play")
+            .setIconResId(if(::player.isInitialized && player.isPlaying) R.drawable.ic_pause else R.drawable.ic_play)
+            .setPlayerCommand(Player.COMMAND_PLAY_PAUSE)
+            .setEnabled(true)
+            .build()
+
+        val next = CommandButton.Builder()
+            .setDisplayName("Play next song")
+            .setIconResId(R.drawable.ic_skip_next)
+            .setPlayerCommand(Player.COMMAND_SEEK_TO_NEXT_MEDIA_ITEM)
+            .setEnabled(true)
+            .build()
+
+        val cancel = CommandButton.Builder()
+            .setDisplayName("stop playback")
+            .setSessionCommand(SessionCommand(CUSTOM_COMMAND_STOP, Bundle.EMPTY))
+            .setIconResId(R.drawable.ic_cancel)
+            .build()
+
+        return listOf(previous, playPauseButton, next, cancel)
 
     }
+
 
     private fun ignoreFuture(customLayout: ListenableFuture<SessionResult>) {
         /* Do nothing. */
@@ -324,6 +363,8 @@ class MediaLibrary : MediaLibraryService(), Player.Listener {
             notificationManagerCompat.notify(NOTIFICATION_ID, builder.build())
         }
 
+
+
     }
 
     @androidx.annotation.OptIn(androidx.media3.common.util.UnstableApi::class)
@@ -345,28 +386,18 @@ class MediaLibrary : MediaLibraryService(), Player.Listener {
     override fun onPlaybackStateChanged(playbackState: Int) {
         when(playbackState){
             ExoPlayer.STATE_READY -> {
-                player.playWhenReady = true
+                //player.playWhenReady = true
             }
             ExoPlayer.STATE_BUFFERING -> {
                 //show a toast to tell user it buffering or unstable internet
             }
             ExoPlayer.STATE_ENDED -> {
-                //playWhenReady = false
-                /* trackPosition  += 1
-                 currentTrack = musicMetaDataList[trackPosition]
-                 mediaSession.setMetadata(currentTrack)*/
-                //player.seekToNextMediaItem()
-                //mediaSession.controller.transportControls.skipToNext()
-                //PlaybackProtocol.setCurrentMusic(musicList[trackPosition])
-                //playerNotification.setPlayer(player)
+
             }
             ExoPlayer.STATE_IDLE -> {
                 //here you can set items and prepare
             }
         }
     }
-
-
-
 
 }

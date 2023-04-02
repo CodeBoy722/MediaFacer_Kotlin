@@ -3,6 +3,7 @@ package com.codeboy.mediafacerkotlin.fragments
 import android.content.ComponentName
 import android.content.Intent
 import android.graphics.drawable.AnimationDrawable
+import android.media.metrics.PlaybackStateEvent.STATE_PLAYING
 import android.media.session.PlaybackState
 import android.os.Bundle
 import android.support.v4.media.MediaBrowserCompat
@@ -17,6 +18,9 @@ import android.view.View
 import android.view.ViewGroup
 import android.view.animation.Animation
 import android.view.animation.AnimationUtils
+import android.view.animation.LinearInterpolator
+import android.view.animation.RotateAnimation
+import androidx.appcompat.content.res.AppCompatResources.getDrawable
 import androidx.appcompat.widget.PopupMenu
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
@@ -408,6 +412,8 @@ class AudiosFragment() : Fragment() {
 
     override fun onDestroyView() {
         viewModelStore.clear()
+        musicServiceController.unregisterCallback(mMediaControllerCallback)
+        musicServiceBrowserCompat.disconnect()
         super.onDestroyView()
     }
 
@@ -465,8 +471,14 @@ class AudiosFragment() : Fragment() {
             override fun onPlaybackStateChanged(state: PlaybackStateCompat) {
                 super.onPlaybackStateChanged(state)
                 when (state.state) {
-                    PlaybackStateCompat.STATE_PLAYING -> mCurrentState = PlaybackState.STATE_PLAYING
-                    PlaybackStateCompat.STATE_PAUSED -> mCurrentState = PlaybackState.STATE_PAUSED
+                    PlaybackStateCompat.STATE_PLAYING -> {
+                        mCurrentState = PlaybackState.STATE_PLAYING
+                        bindings.playPause.setImageDrawable(getDrawable(requireActivity(), R.drawable.ic_pause))
+                    }
+                    PlaybackStateCompat.STATE_PAUSED -> {
+                        mCurrentState = PlaybackState.STATE_PAUSED
+                        bindings.playPause.setImageDrawable(getDrawable(requireActivity(), R.drawable.ic_play))
+                    }
                     PlaybackStateCompat.STATE_STOPPED -> mCurrentState = PlaybackState.STATE_STOPPED
                     PlaybackStateCompat.STATE_SKIPPING_TO_NEXT -> mCurrentState = PlaybackState.STATE_SKIPPING_TO_NEXT
                     PlaybackStateCompat.STATE_SKIPPING_TO_PREVIOUS -> mCurrentState = PlaybackState.STATE_SKIPPING_TO_PREVIOUS
@@ -495,7 +507,33 @@ class AudiosFragment() : Fragment() {
                         musicServiceBrowserCompat.sessionToken
                     )
                     musicServiceController.registerCallback(mMediaControllerCallback)
-                    //musicServiceController.transportControls.play()
+
+                    bindings.previous.setOnClickListener(View.OnClickListener {
+                        musicServiceController.transportControls.skipToPrevious()
+                    })
+
+                    //setup playback views
+                    bindings.musicTitle.isSelected = true
+
+                    val rotateAnim : RotateAnimation = RotateAnimation(0f,360f,
+                        Animation.RELATIVE_TO_SELF,0.5f,Animation.RELATIVE_TO_SELF,0.5f)
+                    rotateAnim.interpolator = LinearInterpolator()
+                    rotateAnim.duration = 1500
+                    rotateAnim.repeatCount = Animation.INFINITE
+                    bindings.musicAlbumArt.startAnimation(rotateAnim)
+
+                    bindings.next.setOnClickListener(View.OnClickListener {
+                        musicServiceController.transportControls.skipToNext()
+                    })
+
+                    bindings.playPause.setOnClickListener(View.OnClickListener {
+                        if(mCurrentState == STATE_PLAYING){
+                            musicServiceController.transportControls.pause()
+                        }else {
+                            musicServiceController.transportControls.play()
+                        }
+                    })
+
                 } catch (e: java.lang.Exception) {
                     e.printStackTrace()
                 }

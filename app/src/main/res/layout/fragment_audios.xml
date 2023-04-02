@@ -124,7 +124,7 @@
                 app:layout_constraintTop_toBottomOf="@+id/loader">
 
                 <androidx.appcompat.widget.AppCompatImageButton
-                    android:id="@+id/imageButton"
+                    android:id="@+id/next"
                     android:layout_width="45dp"
                     android:layout_height="45dp"
                     android:background="?attr/selectableItemBackground"
@@ -132,10 +132,10 @@
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintTop_toTopOf="parent"
-                    app:tint="@color/bright_navy_blue" />
+                    app:tint="@color/cartesian_orange" />
 
                 <androidx.appcompat.widget.AppCompatImageButton
-                    android:id="@+id/imageButton2"
+                    android:id="@+id/play_pause"
                     android:layout_width="45dp"
                     android:layout_height="45dp"
                     android:layout_marginEnd="8dp"
@@ -143,24 +143,24 @@
                     android:src="@drawable/ic_play"
                     app:PlayButton="@{playbackProtocol.isMusicPlaying}"
                     app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintEnd_toStartOf="@+id/imageButton"
+                    app:layout_constraintEnd_toStartOf="@+id/next"
                     app:layout_constraintTop_toTopOf="parent"
-                    app:tint="@color/bright_navy_blue" />
+                    app:tint="@color/cartesian_orange" />
 
                 <androidx.appcompat.widget.AppCompatImageButton
-                    android:id="@+id/imageButton3"
+                    android:id="@+id/previous"
                     android:layout_width="45dp"
                     android:layout_height="45dp"
                     android:layout_marginEnd="8dp"
                     android:background="?attr/selectableItemBackground"
                     android:src="@drawable/ic_previous"
                     app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintEnd_toStartOf="@+id/imageButton2"
+                    app:layout_constraintEnd_toStartOf="@+id/play_pause"
                     app:layout_constraintTop_toTopOf="parent"
-                    app:tint="@color/bright_navy_blue" />
+                    app:tint="@color/cartesian_orange" />
 
                 <androidx.appcompat.widget.AppCompatImageView
-                    android:id="@+id/imageView3"
+                    android:id="@+id/music_album_art"
                     android:layout_width="50dp"
                     android:layout_height="50dp"
                     android:layout_marginStart="8dp"
@@ -171,24 +171,29 @@
                     app:layout_constraintTop_toTopOf="parent" />
 
                 <androidx.appcompat.widget.AppCompatTextView
-                    android:id="@+id/textView2"
+                    android:id="@+id/music_title"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="8dp"
                     android:layout_marginTop="8dp"
                     android:layout_marginEnd="8dp"
-                    android:ellipsize="end"
+                    android:ellipsize="marquee"
+                    android:focusable="true"
+                    android:focusableInTouchMode="true"
                     android:fontFamily="@font/notosans_bold"
-                    android:maxLines="1"
+                    android:freezesText="true"
+                    android:marqueeRepeatLimit="marquee_forever"
+                    android:scrollHorizontally="true"
+                    android:singleLine="true"
                     android:text="@{playbackProtocol.currentMusic.title}"
                     android:textSize="14sp"
-                    app:layout_constraintBottom_toTopOf="@+id/textView3"
-                    app:layout_constraintEnd_toStartOf="@+id/imageButton3"
-                    app:layout_constraintStart_toEndOf="@+id/imageView3"
+                    app:layout_constraintBottom_toTopOf="@+id/music_artist"
+                    app:layout_constraintEnd_toStartOf="@+id/previous"
+                    app:layout_constraintStart_toEndOf="@+id/music_album_art"
                     app:layout_constraintTop_toTopOf="parent" />
 
                 <androidx.appcompat.widget.AppCompatTextView
-                    android:id="@+id/textView3"
+                    android:id="@+id/music_artist"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="8dp"
@@ -200,9 +205,9 @@
                     android:text="@{playbackProtocol.currentMusic.artist}"
                     android:textSize="12sp"
                     app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintEnd_toStartOf="@+id/imageButton3"
-                    app:layout_constraintStart_toEndOf="@+id/imageView3"
-                    app:layout_constraintTop_toBottomOf="@+id/textView2" />
+                    app:layout_constraintEnd_toStartOf="@+id/previous"
+                    app:layout_constraintStart_toEndOf="@+id/music_album_art"
+                    app:layout_constraintTop_toBottomOf="@+id/music_title" />
             </androidx.constraintlayout.widget.ConstraintLayout>
 
 
