@@ -217,13 +217,13 @@ class MediaLibrary : MediaLibraryService(), Player.Listener {
     @androidx.annotation.OptIn(androidx.media3.common.util.UnstableApi::class)
     private fun setupUpMusicList(musicList: ArrayList<AudioContent>){
         for (musicItem in musicList){
-            //MediaItem.fromUri(musicItem.musicUri)
-            mediaItems.add(MediaItem.Builder()
+            mediaItems.add(MediaItem.fromUri(musicItem.musicUri))
+            /*mediaItems.add(MediaItem.Builder()
                 .setMediaId(musicItem.musicUri)
                 .setMediaMetadata(musicItem.getMediaMetadata())
                 //.setUri(sourceUri)
                 .build()
-            )
+            )*/
         }
         currentTrack = mediaItems[trackPosition].mediaMetadata
 
@@ -271,6 +271,9 @@ class MediaLibrary : MediaLibraryService(), Player.Listener {
             // Send custom layout to legacy session.
             mediaLibrarySession.setCustomLayout(customLayout)
         }
+
+        //MediaNotification.Provider
+
     }
 
     private fun getShuffleCommandButton(sessionCommand: SessionCommand): CommandButton {
