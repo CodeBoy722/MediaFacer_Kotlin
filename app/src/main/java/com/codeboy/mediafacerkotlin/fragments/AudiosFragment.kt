@@ -81,6 +81,7 @@ class AudiosFragment() : Fragment() {
         bindings.audiosList.setHasFixedSize(true)
         bindings.audiosList.setItemViewCacheSize(20)
 
+        prepareMusicPlayback()
         setupAudioSearch()
         initAudios()
     }
@@ -88,7 +89,12 @@ class AudiosFragment() : Fragment() {
     override fun onStart() {
         super.onStart()
         //check connection to music service and proceed
-        prepareMusicPlayback()
+        if(::musicServiceBrowserCompat.isInitialized){
+            if (!musicServiceBrowserCompat.isConnected) {
+                musicServiceBrowserCompat.connect()
+            }
+        }
+
     }
 
     private fun initAudios(){
