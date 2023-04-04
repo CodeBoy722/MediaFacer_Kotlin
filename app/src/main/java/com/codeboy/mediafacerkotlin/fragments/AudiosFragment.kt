@@ -437,15 +437,15 @@ class AudiosFragment() : Fragment() {
                 musicList = it
                 PlaybackProtocol.setMusicList(musicList)
                 PlaybackProtocol.setCurrentMusic(musicList[0])
-                //startAndBindMusicService()
-                startAndBindMediaLibrary()
+                startAndBindMusicService()
+                //startAndBindMediaLibrary()
             })
             model.loadNewItems(requireActivity(),0,150,false)
         }else{
             PlaybackProtocol.setMusicList(musicList)
             PlaybackProtocol.setCurrentMusic(musicList[0])
-            //startAndBindMusicService()
-            startAndBindMediaLibrary()
+            startAndBindMusicService()
+            //startAndBindMediaLibrary()
             //setupUpMusicList(musicList)
         }
     }
