@@ -52,9 +52,9 @@ dependencies {
     implementation 'androidx.constraintlayout:constraintlayout:2.1.4'
     implementation project(path: ':MediaFacer')
     implementation 'androidx.legacy:legacy-support-v4:1.0.0'
-    implementation 'com.google.android.gms:play-services-ads:21.5.0'
-    implementation 'com.google.firebase:firebase-analytics-ktx:21.2.0'
-    implementation 'com.google.firebase:firebase-crashlytics-ktx:18.3.5'
+    implementation 'com.google.android.gms:play-services-ads:22.0.0'
+    implementation 'com.google.firebase:firebase-analytics-ktx:21.2.1'
+    implementation 'com.google.firebase:firebase-crashlytics-ktx:18.3.6'
     implementation 'com.google.firebase:firebase-perf-ktx:20.3.1'
     testImplementation 'junit:junit:4.13.2'
     androidTestImplementation 'androidx.test.ext:junit:1.1.5'
