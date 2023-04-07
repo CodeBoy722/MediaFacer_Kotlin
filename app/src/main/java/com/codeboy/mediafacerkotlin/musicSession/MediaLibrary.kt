@@ -21,6 +21,7 @@ import androidx.media3.common.util.Util
 import androidx.media3.exoplayer.ExoPlayer
 import androidx.media3.exoplayer.trackselection.DefaultTrackSelector
 import androidx.media3.session.*
+import androidx.media3.ui.PlayerNotificationManager
 import com.codeboy.mediafacer.models.AudioContent
 import com.codeboy.mediafacerkotlin.MainActivity
 import com.codeboy.mediafacerkotlin.PlayerActivity
@@ -272,7 +273,7 @@ class MediaLibrary : MediaLibraryService(), Player.Listener {
             mediaLibrarySession.setCustomLayout(customLayout)
         }
 
-        //MediaNotification.Provider
+        //PlayerNotificationManager media3 player notification
 
     }
 
