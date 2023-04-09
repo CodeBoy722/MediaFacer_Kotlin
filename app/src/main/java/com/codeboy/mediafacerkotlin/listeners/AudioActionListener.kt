@@ -4,6 +4,6 @@ import com.codeboy.mediafacer.models.AudioContent
 
 interface AudioActionListener {
 
-    fun onAudioItemClicked(audio: AudioContent)
-    fun onAudioItemLongClicked(audio: AudioContent)
+    fun onAudioItemClicked(audio: AudioContent, position: Int)
+    fun onAudioItemLongClicked(audio: AudioContent, position: Int)
 }

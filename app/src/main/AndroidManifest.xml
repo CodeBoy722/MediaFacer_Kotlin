@@ -60,7 +60,7 @@
             android:name="androidx.car.app.TintableAttributionIcon"
             android:resource="@drawable/ic_audio" />
 
-        <service
+      <!--  <service
             android:name=".musicSession.MusicService"
             android:enabled="true"
             android:exported="true"
@@ -71,9 +71,9 @@
                 <action android:name="android.media.AUDIO_BECOMING_NOISY" />
                 <action android:name="android.media.browse.MediaBrowserService" />
             </intent-filter>
-        </service>
+        </service>-->
 
-      <!--  <service
+        <service
             android:name=".musicSession.MediaLibrary"
             android:foregroundServiceType="mediaPlayback"
             android:enabled="true"
@@ -83,7 +83,7 @@
                 <action android:name="androidx.media3.session.MediaSessionService"/>
                 <action android:name="android.media.browse.MediaBrowserService"/>
             </intent-filter>
-        </service>-->
+        </service>
 
         <receiver android:name=".musicSession.MusicPlaybackButtonReceiver" />
 

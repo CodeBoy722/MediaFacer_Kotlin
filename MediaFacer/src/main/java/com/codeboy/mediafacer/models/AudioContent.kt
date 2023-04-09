@@ -23,14 +23,15 @@ class AudioContent(): Serializable {
     @androidx.annotation.OptIn(androidx.media3.common.util.UnstableApi::class)
     fun  getMediaMetadata(): androidx.media3.common.MediaMetadata {
         return androidx.media3.common.MediaMetadata.Builder()
-                .setAlbumTitle(album)
-                .setTitle(title.ifEmpty { name })
-                .setArtist(artist)
-                .setGenre(genre)
-                .setIsBrowsable(true)
-                .setIsPlayable(true)
-                .setArtworkUri(Uri.parse(artUri))
-                .build()
+            .setAlbumTitle(album)
+            .setTitle(title.ifEmpty { name })
+            .setArtist(artist)
+            .setGenre(genre)
+            .setIsBrowsable(true)
+            .setIsPlayable(true)
+            .setArtworkUri(Uri.parse(artUri))
+            .setMediaType(androidx.media3.common.MediaMetadata.MEDIA_TYPE_MUSIC)
+            .build()
     }
 
     @androidx.annotation.OptIn(androidx.media3.common.util.UnstableApi::class)

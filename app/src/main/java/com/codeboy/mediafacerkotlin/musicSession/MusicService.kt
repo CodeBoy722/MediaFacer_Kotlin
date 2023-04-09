@@ -264,54 +264,55 @@ class MusicService : MediaBrowserServiceCompat(), OnAudioFocusChangeListener, Pl
 
     @androidx.annotation.OptIn(androidx.media3.common.util.UnstableApi::class)
     private fun buildPlayerNotification(){
-        val playerNotificationBuilder = PlayerNotificationManager.Builder(
-            this,NOTIFICATION_ID, MediaFacerApp.NotificationSource.channelID
-        ).setChannelNameResourceId(R.string.channel_name)
+        val playerNotificationBuilder = PlayerNotificationManager.Builder(this,NOTIFICATION_ID, MediaFacerApp.NotificationSource.channelID)
+            .setChannelNameResourceId(R.string.channel_name)
 
             .setChannelDescriptionResourceId(R.string.description)
 
             .setMediaDescriptionAdapter(object: PlayerNotificationManager.MediaDescriptionAdapter {
-            override fun getCurrentContentTitle(player: Player): CharSequence {
-                return musicList[trackPosition].title
-            }
-
-            override fun createCurrentContentIntent(player: Player): PendingIntent? {
-                val playerIntent = Intent(this@MusicService, MainActivity::class.java)
-                return PendingIntent.getActivity(this@MusicService, 0,playerIntent, PendingIntent.FLAG_UPDATE_CURRENT)
-            }
-
-            override fun getCurrentContentText(player: Player): CharSequence? {
-                return mMediaSessionCompat.controller.metadata.description.description
-            }
-
-            override fun getCurrentLargeIcon(player: Player, callback: PlayerNotificationManager.BitmapCallback): Bitmap? {
-                val imageUri: Uri = Uri.parse(musicList[trackPosition].artUri)
-                var inputStream: InputStream? = null
-                try {
-                    inputStream = contentResolver.openInputStream(imageUri)
-                } catch (e: FileNotFoundException) {
-                    e.printStackTrace()
+                override fun getCurrentContentTitle(player: Player): CharSequence {
+                    return musicList[trackPosition].title
                 }
-                return BitmapFactory.decodeStream(inputStream)
-            }
 
-        }).setNotificationListener(object: PlayerNotificationManager.NotificationListener {
-            override fun onNotificationCancelled(notificationId: Int, dismissedByUser: Boolean) {
-                super.onNotificationCancelled(notificationId, dismissedByUser)
-                //notificationManager.cancel(notificationId)
-                stopSelf()
-            }
-
-            override fun onNotificationPosted(notificationId: Int, notification: Notification, ongoing: Boolean) {
-                super.onNotificationPosted(notificationId, notification, ongoing)
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
-                    startForeground(notificationId,notification, ServiceInfo.FOREGROUND_SERVICE_TYPE_MEDIA_PLAYBACK)
-                }else{
-                    startForeground(notificationId, notification)
+                override fun createCurrentContentIntent(player: Player): PendingIntent? {
+                    val playerIntent = Intent(this@MusicService, MainActivity::class.java)
+                    return PendingIntent.getActivity(this@MusicService, 0,playerIntent, PendingIntent.FLAG_UPDATE_CURRENT)
                 }
-                //notificationManager.notify(notificationId, notification)
-            }
-        }).setSmallIconResourceId(R.drawable.ic_logo_notiv)
+
+                override fun getCurrentContentText(player: Player): CharSequence? {
+                    return mMediaSessionCompat.controller.metadata.description.description
+                }
+
+                override fun getCurrentLargeIcon(player: Player, callback: PlayerNotificationManager.BitmapCallback): Bitmap? {
+                    val imageUri: Uri = Uri.parse(musicList[trackPosition].artUri)
+                    var inputStream: InputStream? = null
+                    try {
+                        inputStream = contentResolver.openInputStream(imageUri)
+                    } catch (e: FileNotFoundException) {
+                        e.printStackTrace()
+                    }
+                    return BitmapFactory.decodeStream(inputStream)
+                }
+
+            })
+            .setNotificationListener(object: PlayerNotificationManager.NotificationListener {
+                override fun onNotificationCancelled(notificationId: Int, dismissedByUser: Boolean) {
+                    super.onNotificationCancelled(notificationId, dismissedByUser)
+                    //notificationManager.cancel(notificationId)
+                    stopSelf()
+                }
+
+                override fun onNotificationPosted(notificationId: Int, notification: Notification, ongoing: Boolean) {
+                    super.onNotificationPosted(notificationId, notification, ongoing)
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+                        startForeground(notificationId,notification, ServiceInfo.FOREGROUND_SERVICE_TYPE_MEDIA_PLAYBACK)
+                    }else{
+                        startForeground(notificationId, notification)
+                    }
+                    //notificationManager.notify(notificationId, notification)
+                }
+            })
+            .setSmallIconResourceId(R.drawable.ic_logo_notiv)
             .setNextActionIconResourceId(R.drawable.ic_skip_next)
             .setPreviousActionIconResourceId(R.drawable.ic_skip_previous)
             .setPlayActionIconResourceId(R.drawable.ic_play)
@@ -358,25 +359,21 @@ class MusicService : MediaBrowserServiceCompat(), OnAudioFocusChangeListener, Pl
     override fun onAudioFocusChange(focusChange: Int) {
         when (focusChange) {
             AudioManager.AUDIOFOCUS_LOSS -> {
-             /*   if (mediaPlayer.isPlaying()) {
-                    mediaPlayer.stop()
-                }*/
+                if (player.isPlaying) {
+                    player.stop()
+                }
             }
             AudioManager.AUDIOFOCUS_LOSS_TRANSIENT -> {
-                //mediaPlayer.pause()
+                player.pause()
             }
             AudioManager.AUDIOFOCUS_LOSS_TRANSIENT_CAN_DUCK -> {
-                /*if (mediaPlayer != null) {
-                    mediaPlayer.setVolume(0.3f, 0.3f)
-                }*/
+                player.volume = 0.3f
             }
             AudioManager.AUDIOFOCUS_GAIN -> {
-                /*if (mediaPlayer != null) {
-                    if (!mediaPlayer.isPlaying()) {
-                        mediaPlayer.start()
-                    }
-                    mediaPlayer.setVolume(1.0f, 1.0f)
-                }*/
+                if (!player.isPlaying) {
+                    player.play()
+                }
+                player.volume = 1.0f
             }
         }
     }

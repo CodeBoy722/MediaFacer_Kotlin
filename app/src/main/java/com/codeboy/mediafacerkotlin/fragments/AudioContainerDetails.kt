@@ -1,6 +1,7 @@
 package com.codeboy.mediafacerkotlin.fragments
 
 import android.os.Bundle
+import android.support.v4.media.session.MediaControllerCompat
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
@@ -14,6 +15,7 @@ import com.codeboy.mediafacerkotlin.databinding.FragmentAudioMediaDetailsBinding
 import com.codeboy.mediafacerkotlin.dialogs.AudioDetails
 import com.codeboy.mediafacerkotlin.listeners.AudioActionListener
 import com.codeboy.mediafacerkotlin.viewAdapters.AudioViewAdapter
+import com.google.gson.Gson
 
 class AudioContainerDetails() : Fragment() {
 
@@ -21,15 +23,18 @@ class AudioContainerDetails() : Fragment() {
     private lateinit var audioMediaType: String
     private lateinit var title: String
     private lateinit var audios: ArrayList<AudioContent>
+    private lateinit var playbackController: MediaControllerCompat
 
     constructor(
         audioMediaType: String,
         title: String,
         audios: ArrayList<AudioContent>,
+        playbackController: MediaControllerCompat
     ): this(){
         this.audioMediaType = audioMediaType
         this.title  = title
         this.audios = audios
+        this.playbackController = playbackController
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?, ): View? {
@@ -55,9 +60,11 @@ class AudioContainerDetails() : Fragment() {
         bindings.mediaTitle.text = headTitle
 
         val audiosAdapter = AudioViewAdapter(object : AudioActionListener {
-            override fun onAudioItemClicked(audio: AudioContent) {}
+            override fun onAudioItemClicked(audio: AudioContent, position: Int) {
+                bundleNewPlaylist(audios, position)
+            }
 
-            override fun onAudioItemLongClicked(audio: AudioContent) {
+            override fun onAudioItemLongClicked(audio: AudioContent, position: Int) {
                 val audioDetails = AudioDetails(audio)
                 audioDetails.show(childFragmentManager,audioDetails.javaClass.canonicalName)
             }
@@ -65,6 +72,17 @@ class AudioContainerDetails() : Fragment() {
         audiosAdapter.submitList(audios)
         bindings.audioList.adapter = audiosAdapter
     }
+
+    private fun bundleNewPlaylist(mediaList: ArrayList<AudioContent>, position: Int){
+        val gson = Gson()
+        val playlistJson: String = gson.toJson(mediaList)
+
+        val bundlePlaylist = Bundle()
+        bundlePlaylist.putInt("track_position_to_play", position)
+        bundlePlaylist.putString("track_list", playlistJson)
+        playbackController.transportControls.sendCustomAction("mediafacer.action.newPlaylist",bundlePlaylist)
+    }
+
 
     override fun onDetach() {
         super.onDetach()

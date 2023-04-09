@@ -40,7 +40,6 @@ object MediaItemTree {
 
     private val observer = Observer<ArrayList<AudioContent>> { it ->
         //Live data value has changed
-        PlaybackProtocol.setCurrentMusic(it[0])
         for(audio: AudioContent in it){
             addNodeToTreeMediaFacer(audio)
         }

@@ -70,7 +70,7 @@ dependencies {
     implementation "androidx.media3:media3-ui:$mediaVersion"
     implementation "androidx.media3:media3-exoplayer-dash:$mediaVersion"
     //media3 media session
-    implementation "androidx.media3:media3-session:1.0.0-rc02"
+    implementation "androidx.media3:media3-session:1.0.0"
 
     implementation 'com.google.code.gson:gson:2.10.1'
 

@@ -34,6 +34,7 @@ class AudioViewAdapter(private val listener: AudioActionListener)
             lastPosition = holder.layoutPosition
         }
         holder.item = getItem(position)
+        holder.itemPosition = position
         holder.bind()
     }
 
@@ -51,8 +52,10 @@ class AudioViewAdapter(private val listener: AudioActionListener)
     inner class AudioViewHolder(private val bindings: AudioItemBinding)
         : RecyclerView.ViewHolder(bindings.root), View.OnClickListener, View.OnLongClickListener{
         lateinit var item: AudioContent
+        var itemPosition = 0
         fun bind(){
             bindings.root.setOnLongClickListener(this)
+            bindings.root.setOnClickListener(this)
             bindings.play.setOnClickListener(this)
             Glide.with(bindings.art)
                 .load(Uri.parse(item.artUri))
@@ -67,12 +70,12 @@ class AudioViewAdapter(private val listener: AudioActionListener)
 
         override fun onClick(v: View?) {
             // add to playlist
-            listener.onAudioItemClicked(item)
+            listener.onAudioItemClicked(item, itemPosition)
         }
 
         override fun onLongClick(v: View?): Boolean {
             // show details
-            listener.onAudioItemLongClicked(item)
+            listener.onAudioItemLongClicked(item, itemPosition)
             return true
         }
     }

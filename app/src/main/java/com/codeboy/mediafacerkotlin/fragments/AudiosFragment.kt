@@ -5,7 +5,9 @@ import android.content.Intent
 import android.graphics.drawable.AnimationDrawable
 import android.media.metrics.PlaybackStateEvent.STATE_PLAYING
 import android.media.session.PlaybackState
+import android.net.Uri
 import android.os.Bundle
+import android.os.Parcelable
 import android.support.v4.media.MediaBrowserCompat
 import android.support.v4.media.session.MediaControllerCompat
 import android.support.v4.media.session.PlaybackStateCompat
@@ -23,7 +25,7 @@ import android.view.animation.RotateAnimation
 import androidx.appcompat.content.res.AppCompatResources.getDrawable
 import androidx.appcompat.widget.PopupMenu
 import androidx.fragment.app.Fragment
-import androidx.lifecycle.Observer
+import androidx.media3.common.MediaItem
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.transition.Slide
@@ -39,11 +41,11 @@ import com.codeboy.mediafacerkotlin.musicSession.MediaLibrary
 import com.codeboy.mediafacerkotlin.musicSession.MusicService
 import com.codeboy.mediafacerkotlin.musicSession.PlaybackProtocol
 import com.codeboy.mediafacerkotlin.utils.EndlessScrollListener
-import com.codeboy.mediafacerkotlin.utils.MusicDataUtil
 import com.codeboy.mediafacerkotlin.utils.Utils
 import com.codeboy.mediafacerkotlin.viewAdapters.*
 import com.codeboy.mediafacerkotlin.viewModels.*
 import com.google.android.flexbox.*
+import com.google.gson.Gson
 
 class AudiosFragment() : Fragment() {
 
@@ -57,7 +59,10 @@ class AudiosFragment() : Fragment() {
     var mCurrentState = 0
     private lateinit var animationDrawable: AnimationDrawable
 
+
+
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+        startAndBindMediaLibrary()
         PlaybackProtocol.setIsMusicPlaying(false)
         return inflater.inflate(R.layout.fragment_audios, container, false)
     }
@@ -81,7 +86,6 @@ class AudiosFragment() : Fragment() {
         bindings.audiosList.setHasFixedSize(true)
         bindings.audiosList.setItemViewCacheSize(20)
 
-        prepareMusicPlayback()
         setupAudioSearch()
         initAudios()
     }
@@ -89,15 +93,16 @@ class AudiosFragment() : Fragment() {
     override fun onStart() {
         super.onStart()
         //check connection to music service and proceed
-        if(::musicServiceBrowserCompat.isInitialized){
-            if (!musicServiceBrowserCompat.isConnected) {
-                musicServiceBrowserCompat.connect()
-            }
-        }
+        //if(::musicServiceBrowserCompat.isInitialized){ }
+        /* if (!musicServiceBrowserCompat.isConnected ) {
+           musicServiceBrowserCompat.connect()
+       }*/
 
     }
 
     private fun initAudios(){
+        //mediaList for the service playback
+        var audioContentList = ArrayList<AudioContent>()
         // init and setup your recyclerview with a layout manager
         val layoutManager = LinearLayoutManager(requireActivity(), RecyclerView.VERTICAL, false)
         bindings.audiosList.layoutManager = layoutManager
@@ -109,9 +114,11 @@ class AudiosFragment() : Fragment() {
 
         //init your adapter and bind it to recyclerview
         val audiosAdapter = AudioViewAdapter(object : AudioActionListener{
-            override fun onAudioItemClicked(audio: AudioContent) {}
+            override fun onAudioItemClicked(audio: AudioContent, position: Int) {
+                bundleNewPlaylist(audioContentList, position)
+            }
 
-            override fun onAudioItemLongClicked(audio: AudioContent) {
+            override fun onAudioItemLongClicked(audio: AudioContent, position: Int) {
                val audioDetails = AudioDetails(audio)
                 audioDetails.show(childFragmentManager,audioDetails.javaClass.canonicalName)
             }
@@ -125,6 +132,7 @@ class AudiosFragment() : Fragment() {
             audiosAdapter.submitList(it)
             //notifyDataSetChanged on adapter after submitting list to avoid scroll lagging on recyclerview
             paginationStart = it.size //+ 1
+            audioContentList = it
             /*Toast.makeText(
                 requireActivity(),
                 "gotten new music data " + it.size.toString(),
@@ -147,6 +155,16 @@ class AudiosFragment() : Fragment() {
                 bindings.loader.visibility = View.VISIBLE
             }
         })
+    }
+
+    private fun bundleNewPlaylist(mediaList: ArrayList<AudioContent>, position: Int){
+        val gson = Gson()
+        val playlistJson: String = gson.toJson(mediaList)
+
+        val bundlePlaylist = Bundle()
+        bundlePlaylist.putInt("track_position_to_play", position)
+        bundlePlaylist.putString("track_list", playlistJson)
+        musicServiceController.transportControls.sendCustomAction("mediafacer.action.newPlaylist",bundlePlaylist)
     }
 
     private fun initAudioBuckets(){
@@ -303,9 +321,9 @@ class AudiosFragment() : Fragment() {
     private fun setupAudioSearch(){
         val layoutManager = LinearLayoutManager(requireActivity(), RecyclerView.VERTICAL, false)
         val audiosAdapter = AudioViewAdapter(object : AudioActionListener{
-            override fun onAudioItemClicked(audio: AudioContent) {}
+            override fun onAudioItemClicked(audio: AudioContent, position: Int) {}
 
-            override fun onAudioItemLongClicked(audio: AudioContent) {
+            override fun onAudioItemLongClicked(audio: AudioContent, position: Int) {
                 val audioDetails = AudioDetails(audio)
                 audioDetails.show(childFragmentManager,audioDetails.javaClass.canonicalName)
             }
@@ -356,7 +374,7 @@ class AudiosFragment() : Fragment() {
         //hide the bottom navigation in main activity
         (requireActivity() as MainActivity).hideBottomMenu()
 
-        val mediaDetail = AudioContainerDetails(mediaType,title,audios)
+        val mediaDetail = AudioContainerDetails(mediaType,title,audios,musicServiceController)
         val slideOutFromTop = Slide(Gravity.TOP)
         val slideInFromBottom = Slide(Gravity.BOTTOM)
         mediaDetail.enterTransition = slideInFromBottom
@@ -425,31 +443,6 @@ class AudiosFragment() : Fragment() {
 
     //MusicService Section, functions for music playback with media session and exoplayer -------------------------------------------------------------------------------------------------------------------------------------------------------------
 
-    private fun prepareMusicPlayback(){
-        //load the music list first
-        var musicList = ArrayList<AudioContent>()
-        musicList = MusicDataUtil(requireActivity()).getLastPlaylist()
-
-        if(musicList.isEmpty()){
-            //load new musicList from MediaFacer
-            val model = AudioViewModel()
-            model.audios.observe(viewLifecycleOwner, Observer {
-                musicList = it
-                PlaybackProtocol.setMusicList(musicList)
-                PlaybackProtocol.setCurrentMusic(musicList[0])
-                startAndBindMusicService()
-                //startAndBindMediaLibrary()
-            })
-            model.loadNewItems(requireActivity(),0,150,false)
-        }else{
-            PlaybackProtocol.setMusicList(musicList)
-            PlaybackProtocol.setCurrentMusic(musicList[0])
-            startAndBindMusicService()
-            //startAndBindMediaLibrary()
-            //setupUpMusicList(musicList)
-        }
-    }
-
     private fun startAndBindMusicService(){
         val intent = Intent(requireActivity(), MusicService::class.java)
         requireActivity().startService(intent)
@@ -516,6 +509,7 @@ class AudiosFragment() : Fragment() {
 
                     bindings.previous.setOnClickListener(View.OnClickListener {
                         musicServiceController.transportControls.skipToPrevious()
+                        //musicServiceController.transportControls.skipToQueueItem()
                     })
 
                     //setup playback views
@@ -547,3 +541,4 @@ class AudiosFragment() : Fragment() {
         }
 
 }
+

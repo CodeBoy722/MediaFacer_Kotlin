@@ -1,6 +1,9 @@
 package com.codeboy.mediafacerkotlin
 
+import android.content.ComponentName
+import android.content.Intent
 import android.os.Bundle
+import android.support.v4.media.MediaBrowserCompat
 import android.util.DisplayMetrics
 import android.view.Gravity
 import android.view.View
@@ -14,6 +17,7 @@ import androidx.viewpager2.widget.ViewPager2
 import com.codeboy.mediafacer.models.*
 import com.codeboy.mediafacerkotlin.databinding.ActivityMainBinding
 import com.codeboy.mediafacerkotlin.fragments.*
+import com.codeboy.mediafacerkotlin.musicSession.MediaLibrary
 import com.codeboy.mediafacerkotlin.viewAdapters.MainPagerFragmentAdapter
 import com.google.android.gms.ads.*
 import com.google.android.gms.ads.interstitial.InterstitialAd
