@@ -4,19 +4,14 @@ import android.Manifest
 import android.app.Notification
 import android.app.NotificationChannel
 import android.app.NotificationManager
-import android.app.PendingIntent
 import android.app.PendingIntent.FLAG_IMMUTABLE
 import android.app.PendingIntent.FLAG_UPDATE_CURRENT
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.content.pm.ServiceInfo
-import android.graphics.Bitmap
-import android.graphics.BitmapFactory
 import android.net.Uri
 import android.os.Build
 import android.os.Bundle
-import android.support.v4.media.MediaMetadataCompat
-import android.support.v4.media.session.MediaSessionCompat
 import androidx.annotation.OptIn
 import androidx.core.app.ActivityCompat
 import androidx.core.app.NotificationCompat
@@ -24,33 +19,24 @@ import androidx.core.app.NotificationManagerCompat
 import androidx.core.app.TaskStackBuilder
 import androidx.lifecycle.Observer
 import androidx.media3.common.*
-import androidx.media3.common.Player.RepeatMode
 import androidx.media3.common.util.UnstableApi
 import androidx.media3.common.util.Util
 import androidx.media3.exoplayer.ExoPlayer
-import androidx.media3.exoplayer.source.ShuffleOrder
 import androidx.media3.exoplayer.trackselection.DefaultTrackSelector
 import androidx.media3.session.*
 import androidx.media3.ui.PlayerNotificationManager
 import com.codeboy.mediafacer.models.AudioContent
 import com.codeboy.mediafacerkotlin.MainActivity
-import com.codeboy.mediafacerkotlin.MediaFacerApp
-import com.codeboy.mediafacerkotlin.PlayerActivity
 import com.google.common.collect.ImmutableList
 import com.google.common.util.concurrent.Futures
 import com.google.common.util.concurrent.ListenableFuture
 import com.codeboy.mediafacerkotlin.R
-import com.codeboy.mediafacerkotlin.musicSession.PlaybackProtocol.musicList
 import com.codeboy.mediafacerkotlin.utils.MusicDataUtil
 import com.codeboy.mediafacerkotlin.viewModels.AudioViewModel
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.async
-import java.io.FileNotFoundException
-import java.io.InputStream
- class MediaLibrary : MediaLibraryService(), Player.Listener {
+
+class MediaLibrary : MediaLibraryService(), Player.Listener {
 
     private val librarySessionCallback = CustomMediaLibrarySessionCallback()
     private lateinit var player: ExoPlayer
@@ -83,6 +69,7 @@ import java.io.InputStream
         private const val NOTIFICATION_ID = 1010
         private const val CHANNEL_ID = "media_facer_channel"
     }
+
 
     @OptIn(UnstableApi::class)
     override fun onCreate() {
@@ -118,8 +105,8 @@ import java.io.InputStream
 
     @OptIn(UnstableApi::class)
     private fun setupUpMusicList(musicList: ArrayList<AudioContent>, position: Int){
+        this.musicList = musicList
         for (musicItem in musicList){
-            //mediaItems.add(MediaItem.fromUri(musicItem.musicUri))
             mediaItems.add(MediaItem.Builder()
                 .setMediaId(musicItem.musicId.toString())
                 .setMediaMetadata(musicItem.getMediaMetadata())
@@ -128,14 +115,17 @@ import java.io.InputStream
             )
         }
 
+
         trackPosition = position
         PlaybackProtocol.updateMediaList(mediaItems)
         PlaybackProtocol.updateCurrentMedia(mediaItems[position])
+        MediaItemTree.mediaFacerInitializeMediaTree(musicList)
         currentTrack = mediaItems[position]
         player.addMediaItems(mediaItems)
         player.seekTo(position,0)
         player.prepare()
     }
+
 
      @OptIn(UnstableApi::class)
     override fun onUpdateNotification(session: MediaSession) {
@@ -207,7 +197,6 @@ import java.io.InputStream
                     it.addListener(this@MediaLibrary)
                     //it.prepare()
                 }
-        MediaItemTree.initialize(assets)
 
         val sessionActivityPendingIntent =
             TaskStackBuilder.create(this).run {
@@ -243,13 +232,13 @@ import java.io.InputStream
 
     @OptIn(UnstableApi::class)
     override fun onDestroy() {
+        MusicDataUtil(this).saveLastPlaylist(musicList)
         player.release()
         mediaLibrarySession.release()
         clearListener()
         super.onDestroy()
     }
 
-    //not used to init librarySessionCallback
     private inner class CustomMediaLibrarySessionCallback : MediaLibrarySession.Callback {
 
         override fun onConnect(session: MediaSession, controller: MediaSession.ControllerInfo): MediaSession.ConnectionResult {

@@ -226,7 +226,7 @@ class MusicService : MediaBrowserServiceCompat(), OnAudioFocusChangeListener, Pl
                 currentTrack = musicMetaDataList[trackPosition]
                 mMediaSessionCompat.setMetadata(currentTrack)
                 player.seekToNextMediaItem()
-                PlaybackProtocol.setCurrentMusic(musicList[trackPosition])
+                //PlaybackProtocol.setCurrentMusic(musicList[trackPosition])
                 //playerNotification.setPlayer(player)
                 buildPlayerNotification()
             }
@@ -242,7 +242,7 @@ class MusicService : MediaBrowserServiceCompat(), OnAudioFocusChangeListener, Pl
                 currentTrack = musicMetaDataList[trackPosition]
                 mMediaSessionCompat.setMetadata(currentTrack)
                 player.seekToPreviousMediaItem()
-                PlaybackProtocol.setCurrentMusic(musicList[trackPosition])
+                //PlaybackProtocol.setCurrentMusic(musicList[trackPosition])
                 //playerNotification.setPlayer(player)
                 buildPlayerNotification()
             }

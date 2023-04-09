@@ -7,7 +7,6 @@ import androidx.media3.common.MediaItem
 import androidx.media3.common.MediaMetadata
 import androidx.media3.common.util.Util
 import com.codeboy.mediafacer.models.AudioContent
-import com.codeboy.mediafacerkotlin.musicSession.PlaybackProtocol.musicList
 import com.google.common.collect.ImmutableList
 import org.json.JSONObject
 
@@ -25,7 +24,6 @@ object MediaItemTree {
     private const val ARTIST_PREFIX = "[artist]"
     private const val ITEM_PREFIX = "[item]"
 
-
     private class MediaItemNode(val item: MediaItem) {
         private val children: MutableList<MediaItem> = ArrayList()
 
@@ -35,13 +33,6 @@ object MediaItemTree {
 
         fun getChildren(): List<MediaItem> {
             return ImmutableList.copyOf(children)
-        }
-    }
-
-    private val observer = Observer<ArrayList<AudioContent>> { it ->
-        //Live data value has changed
-        for(audio: AudioContent in it){
-            addNodeToTreeMediaFacer(audio)
         }
     }
 
@@ -136,15 +127,70 @@ object MediaItemTree {
 
         // Here, parse the json file in asset for media list.
         // We use a file in asset for demo purpose
-        /*val jsonObject = JSONObject(loadJSONFromAsset(assets))
-        val mediaList = jsonObject.getJSONArray("media")*/
+        val jsonObject = JSONObject(loadJSONFromAsset(assets))
+        val mediaList = jsonObject.getJSONArray("media")
 
         // create subfolder with same artist, album, etc.
-       /* for (i in 0 until mediaList.length()) {
+        for (i in 0 until mediaList.length()) {
             addNodeToTree(mediaList.getJSONObject(i))
-        }*/
+        }
+    }
 
-        PlaybackProtocol.musicList.observeForever(observer)
+    @androidx.annotation.OptIn(androidx.media3.common.util.UnstableApi::class)
+    fun mediaFacerInitializeMediaTree(mediaList: ArrayList<AudioContent>){
+        if (isInitialized) return
+        isInitialized = true
+
+        treeNodes = mutableMapOf()
+        titleMap = mutableMapOf()
+
+        treeNodes[ROOT_ID] =
+            MediaItemNode(
+                buildMediaItem(
+                    title = "Root Folder",
+                    mediaId = ROOT_ID,
+                    isPlayable = false,
+                    isBrowsable = true,
+                    mediaType = MediaMetadata.MEDIA_TYPE_FOLDER_MIXED
+                )
+            )
+        treeNodes[ALBUM_ID] =
+            MediaItemNode(
+                buildMediaItem(
+                    title = "Album Folder",
+                    mediaId = ALBUM_ID,
+                    isPlayable = false,
+                    isBrowsable = true,
+                    mediaType = MediaMetadata.MEDIA_TYPE_FOLDER_ALBUMS
+                )
+            )
+        treeNodes[ARTIST_ID] =
+            MediaItemNode(
+                buildMediaItem(
+                    title = "Artist Folder",
+                    mediaId = ARTIST_ID,
+                    isPlayable = false,
+                    isBrowsable = true,
+                    mediaType = MediaMetadata.MEDIA_TYPE_FOLDER_ARTISTS
+                )
+            )
+        treeNodes[GENRE_ID] =
+            MediaItemNode(
+                buildMediaItem(
+                    title = "Genre Folder",
+                    mediaId = GENRE_ID,
+                    isPlayable = false,
+                    isBrowsable = true,
+                    mediaType = MediaMetadata.MEDIA_TYPE_FOLDER_GENRES
+                )
+            )
+        treeNodes[ROOT_ID]!!.addChild(ALBUM_ID)
+        treeNodes[ROOT_ID]!!.addChild(ARTIST_ID)
+        treeNodes[ROOT_ID]!!.addChild(GENRE_ID)
+
+        for(audio: AudioContent in mediaList){
+            addNodeToTreeMediaFacer(audio)
+        }
     }
 
     @androidx.annotation.OptIn(androidx.media3.common.util.UnstableApi::class)
