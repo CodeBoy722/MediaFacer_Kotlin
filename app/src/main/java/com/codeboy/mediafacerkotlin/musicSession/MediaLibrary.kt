@@ -4,8 +4,10 @@ import android.Manifest
 import android.app.Notification
 import android.app.NotificationChannel
 import android.app.NotificationManager
+import android.app.PendingIntent
 import android.app.PendingIntent.FLAG_IMMUTABLE
 import android.app.PendingIntent.FLAG_UPDATE_CURRENT
+import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.content.pm.ServiceInfo
@@ -27,12 +29,12 @@ import androidx.media3.session.*
 import androidx.media3.ui.PlayerNotificationManager
 import com.codeboy.mediafacer.models.AudioContent
 import com.codeboy.mediafacerkotlin.MainActivity
-import com.google.common.collect.ImmutableList
-import com.google.common.util.concurrent.Futures
-import com.google.common.util.concurrent.ListenableFuture
 import com.codeboy.mediafacerkotlin.R
 import com.codeboy.mediafacerkotlin.utils.MusicDataUtil
 import com.codeboy.mediafacerkotlin.viewModels.AudioViewModel
+import com.google.common.collect.ImmutableList
+import com.google.common.util.concurrent.Futures
+import com.google.common.util.concurrent.ListenableFuture
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
 
@@ -59,6 +61,8 @@ class MediaLibrary : MediaLibraryService(), Player.Listener {
         setupUpMusicList(musicList, 0)
     }
 
+    private lateinit var notificationManager: NotificationManager
+
     companion object {
         private const val SEARCH_QUERY_PREFIX_COMPAT = "androidx://media3-session/playFromSearch"
         private const val SEARCH_QUERY_PREFIX = "androidx://media3-session/setMediaUri"
@@ -66,6 +70,7 @@ class MediaLibrary : MediaLibraryService(), Player.Listener {
         private const val CUSTOM_COMMAND_TOGGLE_SHUFFLE_MODE_OFF = "android.media3.session.demo.SHUFFLE_OFF"
 
         private const val CUSTOM_COMMAND_NEW_PLAYLIST = "mediafacer.action.newPlaylist"
+        private const val CUSTOM_COMMAND_STOP_PLAYER = "mediafacer.action.stop"
         private const val NOTIFICATION_ID = 1010
         private const val CHANNEL_ID = "media_facer_channel"
     }
@@ -82,10 +87,11 @@ class MediaLibrary : MediaLibraryService(), Player.Listener {
                 getShuffleCommandButton(
                     SessionCommand(CUSTOM_COMMAND_TOGGLE_SHUFFLE_MODE_OFF, Bundle.EMPTY)
                 ),
-                getNewPlaylistCommandButtons()
+                getNewPlaylistCommandButtons(),
+                getStopCommandButton()
             )
         customLayout = ImmutableList.of(customCommands[0])
-
+        notificationManager = this.getSystemService(NOTIFICATION_SERVICE) as NotificationManager
         initializeSessionAndPlayer()
         setListener(MediaSessionServiceListener())
 
@@ -136,8 +142,7 @@ class MediaLibrary : MediaLibraryService(), Player.Listener {
             .setNotificationListener(object: PlayerNotificationManager.NotificationListener {
                 override fun onNotificationCancelled(notificationId: Int, dismissedByUser: Boolean) {
                     super.onNotificationCancelled(notificationId, dismissedByUser)
-                    //notificationManager.cancel(notificationId)
-                    stopSelf()
+                    //stopSelf()
                 }
 
                 override fun onNotificationPosted(notificationId: Int, notification: Notification, ongoing: Boolean) {
@@ -150,16 +155,38 @@ class MediaLibrary : MediaLibraryService(), Player.Listener {
                     //notificationManager.notify(notificationId, notification)
                 }
             })
-
             .setSmallIconResourceId(R.drawable.ic_logo_notiv)
             .setNextActionIconResourceId(R.drawable.ic_skip_next)
             .setPreviousActionIconResourceId(R.drawable.ic_skip_previous)
             .setPlayActionIconResourceId(R.drawable.ic_play)
             .setPauseActionIconResourceId(R.drawable.ic_pause)
-            .setStopActionIconResourceId(R.drawable.ic_cancel)
-        playerNotification = playerNotificationBuilder.build()
+            //.setStopActionIconResourceId(R.drawable.ic_cancel)
+            .setCustomActionReceiver(object: PlayerNotificationManager.CustomActionReceiver{
+                override fun createCustomActions(context: Context, instanceId: Int): MutableMap<String, NotificationCompat.Action> {
+                    return mutableMapOf(Pair(
+                        CUSTOM_COMMAND_STOP_PLAYER,
+                        NotificationCompat.Action(R.drawable.ic_cancel, "Stop Player",
+                            PendingIntent.getBroadcast(context, 300, Intent(
+                                CUSTOM_COMMAND_STOP_PLAYER).setPackage(context.packageName), PendingIntent.FLAG_CANCEL_CURRENT.and(PendingIntent.FLAG_IMMUTABLE))
+                        )
+                    ))
+                }
 
-        playerNotification.setUseStopAction(true)
+                override fun getCustomActions(player: Player): MutableList<String> {
+                    return mutableListOf(CUSTOM_COMMAND_STOP_PLAYER)
+                }
+
+                override fun onCustomAction(player: Player, action: String, intent: Intent) {
+                    when (action) {
+                        CUSTOM_COMMAND_STOP_PLAYER -> {
+                            stopSelf()
+                        }
+                    }
+                }
+            })
+
+        playerNotification = playerNotificationBuilder.build()
+        //playerNotification.setUseStopAction(true)
         playerNotification.setUseFastForwardAction(false)
         playerNotification.setUseRewindAction(false)
         playerNotification.setUseNextActionInCompactView(true)
@@ -168,7 +195,6 @@ class MediaLibrary : MediaLibraryService(), Player.Listener {
         playerNotification.setPlayer(player)
         playerNotification.setMediaSessionToken(session.sessionCompatToken)
 
-        //super.onUpdateNotification(session)
     }
 
 
@@ -232,7 +258,9 @@ class MediaLibrary : MediaLibraryService(), Player.Listener {
     @OptIn(UnstableApi::class)
     override fun onDestroy() {
         MusicDataUtil(this).saveLastPlaylist(musicList)
+        player.stop()
         player.release()
+        notificationManager.cancel(NOTIFICATION_ID)
         mediaLibrarySession.release()
         clearListener()
         super.onDestroy()
@@ -381,7 +409,15 @@ class MediaLibrary : MediaLibraryService(), Player.Listener {
         return CommandButton.Builder()
             .setDisplayName("new playlist")
             .setSessionCommand(SessionCommand(CUSTOM_COMMAND_NEW_PLAYLIST, Bundle.EMPTY))
-            //.setIconResId(R.drawable.ic_logo_notiv)
+            .setIconResId(R.drawable.ic_logo_notiv)
+            .build()
+    }
+
+    private fun getStopCommandButton(): CommandButton{
+        return CommandButton.Builder()
+            .setDisplayName("Stop Player")
+            .setSessionCommand(SessionCommand(CUSTOM_COMMAND_STOP_PLAYER, Bundle.EMPTY))
+            .setIconResId(R.drawable.ic_cancel)
             .build()
     }
 
