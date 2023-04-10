@@ -59,11 +59,8 @@ class AudiosFragment() : Fragment() {
     var mCurrentState = 0
     private lateinit var animationDrawable: AnimationDrawable
 
-
-
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         startAndBindMediaLibrary()
-        PlaybackProtocol.setIsMusicPlaying(false)
         return inflater.inflate(R.layout.fragment_audios, container, false)
     }
 
@@ -93,10 +90,10 @@ class AudiosFragment() : Fragment() {
     override fun onStart() {
         super.onStart()
         //check connection to music service and proceed
-        //if(::musicServiceBrowserCompat.isInitialized){ }
-        /* if (!musicServiceBrowserCompat.isConnected ) {
-           musicServiceBrowserCompat.connect()
-       }*/
+        if (!musicServiceBrowserCompat.isConnected ) {
+            musicServiceBrowserCompat.connect()
+            PlaybackProtocol.setIsMusicPlaying(true)
+        }
 
     }
 
@@ -438,6 +435,7 @@ class AudiosFragment() : Fragment() {
         viewModelStore.clear()
         musicServiceController.unregisterCallback(mMediaControllerCallback)
         musicServiceBrowserCompat.disconnect()
+        PlaybackProtocol.setIsMusicPlaying(false)
         super.onDestroyView()
     }
 
@@ -460,7 +458,7 @@ class AudiosFragment() : Fragment() {
 
         MediaBrowserCompat(requireActivity(),
             ComponentName(requireActivity(), MediaLibrary::class.java), mMediaBrowserConnectionCallback, requireActivity().intent.extras).apply {
-            connect()
+            //connect()
             musicServiceBrowserCompat = this
         }
     }

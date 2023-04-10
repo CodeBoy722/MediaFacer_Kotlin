@@ -1,6 +1,7 @@
 package com.codeboy.mediafacer.models
 
 import android.media.MediaMetadata
+import android.net.Uri
 import android.os.Parcel
 import android.os.Parcelable
 import android.support.v4.media.MediaMetadataCompat
@@ -28,15 +29,17 @@ class VideoContent(): Parcelable, Serializable {
         filePath = parcel.readString()!!
     }
 
-
-    fun getMediaMetadata(): MediaMetadata {
-        return MediaMetadata.Builder()
-            .putString(MediaMetadata.METADATA_KEY_MEDIA_ID, videoUri)
-            .putString(MediaMetadata.METADATA_KEY_ARTIST, artist)
-            .putString(MediaMetadata.METADATA_KEY_TITLE, name)
-            .putString(MediaMetadata.METADATA_KEY_ALBUM_ART_URI, videoUri)
-            .putString(MediaMetadata.METADATA_KEY_ART_URI, videoUri)
-            .putLong(MediaMetadata.METADATA_KEY_DURATION, duration)
+    @androidx.annotation.OptIn(androidx.media3.common.util.UnstableApi::class)
+    fun getMediaMetadata(): androidx.media3.common.MediaMetadata {
+        return androidx.media3.common.MediaMetadata.Builder()
+            //.setAlbumTitle(album)
+            .setTitle(name)
+            .setArtist(artist)
+            //.setGenre(genre)
+            .setIsBrowsable(true)
+            .setIsPlayable(true)
+            //.setArtworkUri(Uri.parse(artUri))
+            .setMediaType(androidx.media3.common.MediaMetadata.MEDIA_TYPE_VIDEO)
             .build()
     }
 
