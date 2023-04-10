@@ -115,7 +115,6 @@ class MediaLibrary : MediaLibraryService(), Player.Listener {
             )
         }
 
-
         trackPosition = position
         PlaybackProtocol.updateMediaList(mediaItems)
         PlaybackProtocol.updateCurrentMedia(mediaItems[position])
