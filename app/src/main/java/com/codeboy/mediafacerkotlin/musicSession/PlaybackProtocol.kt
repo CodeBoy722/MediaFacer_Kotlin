@@ -1,6 +1,7 @@
 package com.codeboy.mediafacerkotlin.musicSession
 
 import android.net.Uri
+import android.view.View
 import android.widget.ImageView
 import androidx.appcompat.widget.AppCompatImageButton
 import androidx.databinding.BindingAdapter
@@ -71,6 +72,35 @@ object PlaybackProtocol: ViewModel() {
             }else{
                 val drawable = ResourcesCompat.getDrawable(view.context.resources, R.drawable.ic_play, null)
                 view.setImageDrawable(drawable)
+            }
+        }
+    }
+
+
+    object PlayingIndicatorAdapter{
+        @BindingAdapter("PlayIndicator")
+        @JvmStatic
+        fun updatePlayerIndicator(equalizer: AppCompatImageView, mediaId: String){
+            if (equalizer.tag == mediaId){
+                Glide.with(equalizer)
+                    .load(R.drawable.equalizer)
+                    .into(equalizer)
+                equalizer.visibility = View.VISIBLE
+            }else{
+                equalizer.visibility = View.GONE
+            }
+        }
+
+    }
+
+    object PlayButtonAdapter{
+        @BindingAdapter("ItemPlayButton")
+        @JvmStatic
+        fun updateItemPlayButton(playButton: AppCompatImageButton, mediaId: String){
+            if (playButton.tag == mediaId){
+                playButton.visibility = View.GONE
+            }else{
+                playButton.visibility = View.VISIBLE
             }
         }
     }

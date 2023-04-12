@@ -15,6 +15,7 @@ import com.codeboy.mediafacer.models.AudioContent
 import com.codeboy.mediafacerkotlin.R
 import com.codeboy.mediafacerkotlin.databinding.AudioItemBinding
 import com.codeboy.mediafacerkotlin.listeners.AudioActionListener
+import com.codeboy.mediafacerkotlin.musicSession.PlaybackProtocol
 
 class AudioViewAdapter(private val listener: AudioActionListener)
     : ListAdapter<AudioContent, AudioViewAdapter.AudioViewHolder>(AudioDiffUtil()) {
@@ -62,6 +63,10 @@ class AudioViewAdapter(private val listener: AudioActionListener)
                 .apply(RequestOptions().centerCrop().circleCrop())
                 .placeholder(R.drawable.music_placeholder)
                 .into(bindings.art)
+
+            bindings.playbackProtocol = PlaybackProtocol
+            bindings.playIndicator.tag = item.musicId.toString()
+            bindings.play.tag = item.musicId
 
             bindings.artist.text = item.artist
             bindings.title.text = item.title

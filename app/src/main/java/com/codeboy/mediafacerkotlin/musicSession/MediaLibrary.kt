@@ -198,7 +198,6 @@ class MediaLibrary : MediaLibraryService(), Player.Listener {
     }
 
 
-
     @OptIn(UnstableApi::class)
     private fun initializeSessionAndPlayer() {
         val trackSelector = DefaultTrackSelector(this).apply {
@@ -249,9 +248,9 @@ class MediaLibrary : MediaLibraryService(), Player.Listener {
 
 
     override fun onTaskRemoved(rootIntent: Intent?) {
-        if (!player.playWhenReady) {
+     /*   if (!player.playWhenReady) {
             stopSelf()
-        }
+        }*/
     }
 
 

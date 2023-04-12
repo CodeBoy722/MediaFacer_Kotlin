@@ -3,6 +3,12 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools">
 
+    <data>
+        <variable
+            name="playbackProtocol"
+            type="com.codeboy.mediafacerkotlin.musicSession.PlaybackProtocol"/>
+    </data>
+
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -29,12 +35,12 @@
             android:layout_marginStart="8dp"
             android:layout_marginEnd="8dp"
             android:ellipsize="end"
+            android:fontFamily="@font/notosans_bold"
             android:maxLines="2"
             android:text="@string/title"
             android:textSize="14sp"
-            android:fontFamily="@font/notosans_bold"
             app:layout_constraintBottom_toTopOf="@+id/artist"
-            app:layout_constraintEnd_toStartOf="@+id/play"
+            app:layout_constraintEnd_toStartOf="@+id/play_indicator"
             app:layout_constraintStart_toEndOf="@+id/art"
             app:layout_constraintTop_toTopOf="@+id/art" />
 
@@ -45,12 +51,12 @@
             android:layout_marginStart="8dp"
             android:layout_marginEnd="8dp"
             android:ellipsize="end"
+            android:fontFamily="@font/notosans_regular"
             android:maxLines="1"
             android:text="@string/artist"
             android:textSize="12sp"
-            android:fontFamily="@font/notosans_regular"
             app:layout_constraintBottom_toBottomOf="@+id/art"
-            app:layout_constraintEnd_toStartOf="@+id/play"
+            app:layout_constraintEnd_toStartOf="@+id/play_indicator"
             app:layout_constraintStart_toEndOf="@+id/art"
             app:layout_constraintTop_toBottomOf="@+id/title" />
 
@@ -64,13 +70,26 @@
             android:minWidth="48dp"
             android:minHeight="48dp"
             android:scaleType="fitXY"
+            app:ItemPlayButton="@{playbackProtocol.currentMedia.mediaId}"
             app:layout_constraintBottom_toBottomOf="@+id/artist"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toEndOf="@+id/title"
             app:layout_constraintTop_toTopOf="@+id/title"
             app:srcCompat="@drawable/ic_player"
             app:tint="@color/bright_navy_blue"
             tools:visibility="visible" />
+
+        <androidx.appcompat.widget.AppCompatImageView
+            android:id="@+id/play_indicator"
+            android:layout_width="35dp"
+            android:layout_height="35dp"
+            app:PlayIndicator="@{playbackProtocol.currentMedia.mediaId}"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toStartOf="@+id/play"
+            app:layout_constraintStart_toEndOf="@+id/title"
+            app:layout_constraintTop_toTopOf="parent"
+            app:srcCompat="@drawable/equalizer"
+            android:tint="@color/cartesian_orange"
+            app:tint="@color/cartesian_orange" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 
