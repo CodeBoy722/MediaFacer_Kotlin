@@ -16,6 +16,7 @@ import com.codeboy.mediafacerkotlin.R
 import com.codeboy.mediafacerkotlin.databinding.AudioItemBinding
 import com.codeboy.mediafacerkotlin.listeners.AudioActionListener
 import com.codeboy.mediafacerkotlin.musicSession.PlaybackProtocol
+import kotlinx.coroutines.*
 
 class AudioViewAdapter(private val listener: AudioActionListener)
     : ListAdapter<AudioContent, AudioViewAdapter.AudioViewHolder>(AudioDiffUtil()) {
@@ -71,11 +72,17 @@ class AudioViewAdapter(private val listener: AudioActionListener)
             bindings.artist.text = item.artist
             bindings.title.text = item.title
             bindings.play.setOnClickListener(this)
+            bindings.play.visibility = View.GONE
         }
+
 
         override fun onClick(v: View?) {
             // add to playlist
             listener.onAudioItemClicked(item, itemPosition)
+            CoroutineScope(Dispatchers.Default).launch() {
+                delay(1000)
+                notifyItemChanged(itemPosition)
+            }
         }
 
         override fun onLongClick(v: View?): Boolean {
