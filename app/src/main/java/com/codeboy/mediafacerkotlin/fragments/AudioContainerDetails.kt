@@ -68,7 +68,7 @@ class AudioContainerDetails() : Fragment() {
                 val audioDetails = AudioDetails(audio)
                 audioDetails.show(childFragmentManager,audioDetails.javaClass.canonicalName)
             }
-        })
+        }, viewLifecycleOwner)
         audiosAdapter.submitList(audios)
         bindings.audioList.adapter = audiosAdapter
     }

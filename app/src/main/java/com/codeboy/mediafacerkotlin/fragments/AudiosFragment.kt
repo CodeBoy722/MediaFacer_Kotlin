@@ -58,6 +58,7 @@ class AudiosFragment() : Fragment() {
     private lateinit var musicServiceController: MediaControllerCompat
     var mCurrentState = 0
     private lateinit var animationDrawable: AnimationDrawable
+    private lateinit var audiosAdapter: AudioViewAdapter
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         startAndBindMediaLibrary()
@@ -92,7 +93,6 @@ class AudiosFragment() : Fragment() {
         //check connection to music service and proceed
         if (!musicServiceBrowserCompat.isConnected ) {
             musicServiceBrowserCompat.connect()
-            PlaybackProtocol.setIsMusicPlaying(true)
         }
 
     }
@@ -110,7 +110,7 @@ class AudiosFragment() : Fragment() {
         shouldPaginate = true
 
         //init your adapter and bind it to recyclerview
-        val audiosAdapter = AudioViewAdapter(object : AudioActionListener{
+        audiosAdapter = AudioViewAdapter(object : AudioActionListener{
             override fun onAudioItemClicked(audio: AudioContent, position: Int) {
                 bundleNewPlaylist(audioContentList, position)
             }
@@ -119,7 +119,7 @@ class AudiosFragment() : Fragment() {
                val audioDetails = AudioDetails(audio)
                 audioDetails.show(childFragmentManager,audioDetails.javaClass.canonicalName)
             }
-        })
+        }, viewLifecycleOwner)
         bindings.audiosList.adapter = audiosAdapter
 
         //init viewModel
@@ -324,7 +324,7 @@ class AudiosFragment() : Fragment() {
                 val audioDetails = AudioDetails(audio)
                 audioDetails.show(childFragmentManager,audioDetails.javaClass.canonicalName)
             }
-        })
+        },viewLifecycleOwner)
         var searchHolder = ""
 
         val audioSearch = AudioSearchViewModel()
@@ -435,7 +435,6 @@ class AudiosFragment() : Fragment() {
         viewModelStore.clear()
         musicServiceController.unregisterCallback(mMediaControllerCallback)
         musicServiceBrowserCompat.disconnect()
-        PlaybackProtocol.setIsMusicPlaying(false)
         super.onDestroyView()
     }
 
@@ -453,9 +452,10 @@ class AudiosFragment() : Fragment() {
     }
 
     private fun startAndBindMediaLibrary(){
-        val intent = Intent(requireActivity(), MediaLibrary::class.java)
-        requireActivity().startService(intent)
-
+        if (!MediaLibrary.isStarted()){
+            val intent = Intent(requireActivity(), MediaLibrary::class.java)
+            requireActivity().startService(intent)
+        }
         MediaBrowserCompat(requireActivity(),
             ComponentName(requireActivity(), MediaLibrary::class.java), mMediaBrowserConnectionCallback, requireActivity().intent.extras).apply {
             //connect()
@@ -469,10 +469,16 @@ class AudiosFragment() : Fragment() {
                 super.onPlaybackStateChanged(state)
                 when (state.state) {
                     PlaybackStateCompat.STATE_PLAYING -> {
+                        audiosAdapter.playingState = true
+                        audiosAdapter.notifyDataSetChanged()
+                        PlaybackProtocol.setIsMusicPlaying(true)
                         mCurrentState = PlaybackState.STATE_PLAYING
                         bindings.playPause.setImageDrawable(getDrawable(requireActivity(), R.drawable.ic_pause))
                     }
                     PlaybackStateCompat.STATE_PAUSED -> {
+                        audiosAdapter.playingState = false
+                        audiosAdapter.notifyDataSetChanged()
+                        PlaybackProtocol.setIsMusicPlaying(false)
                         mCurrentState = PlaybackState.STATE_PAUSED
                         bindings.playPause.setImageDrawable(getDrawable(requireActivity(), R.drawable.ic_play))
                     }

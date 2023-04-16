@@ -15,6 +15,7 @@ import androidx.appcompat.content.res.AppCompatResources
 import androidx.appcompat.widget.AppCompatImageView
 import androidx.core.content.res.ResourcesCompat
 import androidx.media3.common.MediaItem
+import kotlinx.coroutines.*
 
 object PlaybackProtocol: ViewModel() {
 
@@ -54,11 +55,15 @@ object PlaybackProtocol: ViewModel() {
         @BindingAdapter("MusicArt")
         @JvmStatic
         fun setMusicArt(view: AppCompatImageView, link: Uri?) {
-            Glide.with(view)
-                .load(link ?: R.drawable.music_placeholder)
-                .centerCrop().circleCrop()
-                .placeholder(R.drawable.music_placeholder)
-                .into(view)
+            CoroutineScope(Dispatchers.Main).launch {
+                withContext(Dispatchers.Main){
+                    Glide.with(view)
+                        .load(link ?: R.drawable.music_placeholder)
+                        .centerCrop().circleCrop()
+                        .placeholder(R.drawable.music_placeholder)
+                        .into(view)
+                }.waitForLayout()
+            }
         }
     }
 
@@ -66,34 +71,39 @@ object PlaybackProtocol: ViewModel() {
         @BindingAdapter("PlayButton")
         @JvmStatic
         fun setPlayButton(view: AppCompatImageButton, status: Boolean) {
-            if (status){
-                val drawable = ResourcesCompat.getDrawable(view.context.resources, R.drawable.ic_pause, null)
-                view.setImageDrawable(drawable)
-            }else{
-                val drawable = ResourcesCompat.getDrawable(view.context.resources, R.drawable.ic_play, null)
-                view.setImageDrawable(drawable)
+            CoroutineScope(Dispatchers.Main).launch {
+                withContext(Dispatchers.Main){
+                    if (status){
+                        val drawable = ResourcesCompat.getDrawable(view.context.resources, R.drawable.ic_pause, null)
+                        view.setImageDrawable(drawable)
+                    }else{
+                        val drawable = ResourcesCompat.getDrawable(view.context.resources, R.drawable.ic_play, null)
+                        view.setImageDrawable(drawable)
+                    }
+                }
             }
         }
     }
 
 
-    object PlayingIndicatorAdapter{
+  /*  object PlayingIndicatorAdapter{
         @BindingAdapter("PlayIndicator")
         @JvmStatic
-        fun updatePlayerIndicator(equalizer: AppCompatImageView, mediaId: String){
-            if (equalizer.tag == mediaId){
-                Glide.with(equalizer)
-                    .load(R.drawable.equalizer)
-                    .into(equalizer)
-                equalizer.visibility = View.VISIBLE
-            }else{
-                equalizer.visibility = View.GONE
+        fun updatePlayerIndicator(equalizer: AppCompatImageView, mediaId: String?){
+            if(mediaId != null){
+                if (equalizer.tag == mediaId && isMusicPlaying.value == true){
+                    Glide.with(equalizer)
+                        .load(R.drawable.equalizer)
+                        .into(equalizer)
+                    equalizer.visibility = View.VISIBLE
+                }else{
+                    equalizer.visibility = View.GONE
+                }
             }
         }
+    }*/
 
-    }
-
-    object PlayButtonAdapter{
+   /* object PlayButtonAdapter{
         @BindingAdapter("ItemPlayButton")
         @JvmStatic
         fun updateItemPlayButton(playButton: AppCompatImageButton, mediaId: String){
@@ -103,7 +113,7 @@ object PlaybackProtocol: ViewModel() {
                 playButton.visibility = View.VISIBLE
             }
         }
-    }
+    }*/
 
 
 }

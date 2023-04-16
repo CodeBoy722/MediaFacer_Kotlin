@@ -6,6 +6,8 @@ import android.view.View
 import android.view.ViewGroup
 import android.view.animation.Animation
 import android.view.animation.AnimationUtils
+import androidx.lifecycle.LifecycleOwner
+import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
@@ -16,16 +18,23 @@ import com.codeboy.mediafacerkotlin.R
 import com.codeboy.mediafacerkotlin.databinding.AudioItemBinding
 import com.codeboy.mediafacerkotlin.listeners.AudioActionListener
 import com.codeboy.mediafacerkotlin.musicSession.PlaybackProtocol
+import com.codeboy.mediafacerkotlin.utils.MusicDataUtil
 import kotlinx.coroutines.*
 
-class AudioViewAdapter(private val listener: AudioActionListener)
+class AudioViewAdapter(private val listener: AudioActionListener, private val parentLiveCycle: LifecycleOwner)
     : ListAdapter<AudioContent, AudioViewAdapter.AudioViewHolder>(AudioDiffUtil()) {
 
     var lastPosition = -1
+    var playingState = false
+    var playingPosition = 0
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): AudioViewHolder {
         val inflater = LayoutInflater.from(parent.context)
         val bindingView: AudioItemBinding = AudioItemBinding.inflate(inflater, parent, false)
+      /*  PlaybackProtocol.isMusicPlaying.observe(parentLiveCycle, Observer {
+            playingState = it
+            //notifyItemChanged(playingPosition)
+        })*/
         return AudioViewHolder(bindingView)
     }
 
@@ -58,31 +67,33 @@ class AudioViewAdapter(private val listener: AudioActionListener)
         fun bind(){
             bindings.root.setOnLongClickListener(this)
             bindings.root.setOnClickListener(this)
-            bindings.play.setOnClickListener(this)
             Glide.with(bindings.art)
                 .load(Uri.parse(item.artUri))
                 .apply(RequestOptions().centerCrop().circleCrop())
                 .placeholder(R.drawable.music_placeholder)
                 .into(bindings.art)
 
-            bindings.playbackProtocol = PlaybackProtocol
-            bindings.playIndicator.tag = item.musicId.toString()
-            bindings.play.tag = item.musicId
+            if ((PlaybackProtocol.currentMedia.value!!.mediaId == item.musicId.toString()) && playingState){
+                playingPosition = itemPosition
+                Glide.with(bindings.playIndicator)
+                    .load(R.drawable.equalizer)
+                    .into(bindings.playIndicator)
+                bindings.playIndicator.visibility = View.VISIBLE
+            }else{
+                bindings.playIndicator.visibility = View.GONE
+            }
 
             bindings.artist.text = item.artist
             bindings.title.text = item.title
-            bindings.play.setOnClickListener(this)
-            bindings.play.visibility = View.GONE
         }
 
 
         override fun onClick(v: View?) {
             // add to playlist
             listener.onAudioItemClicked(item, itemPosition)
-            CoroutineScope(Dispatchers.Default).launch() {
-                delay(1000)
-                notifyItemChanged(itemPosition)
-            }
+           /* notifyItemChanged(playingPosition)
+            playingPosition = itemPosition
+            notifyItemChanged(itemPosition)*/
         }
 
         override fun onLongClick(v: View?): Boolean {

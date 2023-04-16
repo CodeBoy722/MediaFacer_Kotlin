@@ -37,6 +37,10 @@ import com.google.common.util.concurrent.Futures
 import com.google.common.util.concurrent.ListenableFuture
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
 class MediaLibrary : MediaLibraryService(), Player.Listener {
 
@@ -73,12 +77,18 @@ class MediaLibrary : MediaLibraryService(), Player.Listener {
         private const val CUSTOM_COMMAND_STOP_PLAYER = "mediafacer.action.stop"
         private const val NOTIFICATION_ID = 1010
         private const val CHANNEL_ID = "media_facer_channel"
+        private var isRunning = false
+        fun isStarted(): Boolean {
+            return isRunning
+        }
     }
+
 
 
     @OptIn(UnstableApi::class)
     override fun onCreate() {
         super.onCreate()
+        isRunning = true
         customCommands =
             listOf(
                 getShuffleCommandButton(
@@ -110,25 +120,32 @@ class MediaLibrary : MediaLibraryService(), Player.Listener {
     }
 
     @OptIn(UnstableApi::class)
-    private fun setupUpMusicList(musicList: ArrayList<AudioContent>, position: Int){
-        this.musicList = musicList
-        for (musicItem in musicList){
-            mediaItems.add(MediaItem.Builder()
-                .setMediaId(musicItem.musicId.toString())
-                .setMediaMetadata(musicItem.getMediaMetadata())
-                .setUri(Uri.parse(musicItem.musicUri))
-                .build()
-            )
-        }
+    private fun setupUpMusicList(musicListNew: ArrayList<AudioContent>, position: Int){
 
-        trackPosition = position
-        PlaybackProtocol.updateMediaList(mediaItems)
-        PlaybackProtocol.updateCurrentMedia(mediaItems[position])
-        MediaItemTree.mediaFacerInitializeMediaTree(musicList)
-        currentTrack = mediaItems[position]
-        player.addMediaItems(mediaItems)
-        player.seekTo(position,0)
-        player.prepare()
+        CoroutineScope(Dispatchers.Main).launch {
+            withContext(Dispatchers.Main){
+
+                musicList = musicListNew
+                for (musicItem in musicList){
+                    mediaItems.add(MediaItem.Builder()
+                        .setMediaId(musicItem.musicId.toString())
+                        .setMediaMetadata(musicItem.getMediaMetadata())
+                        .setUri(Uri.parse(musicItem.musicUri))
+                        .build()
+                    )
+                }
+
+                trackPosition = position
+                PlaybackProtocol.updateCurrentMedia(mediaItems[position])
+                PlaybackProtocol.updateMediaList(mediaItems)
+                MediaItemTree.mediaFacerInitializeMediaTree(musicList)
+                currentTrack = mediaItems[position]
+                player.addMediaItems(mediaItems)
+                player.seekTo(position,0)
+                player.prepare()
+
+            }
+        }
     }
 
 
@@ -262,6 +279,7 @@ class MediaLibrary : MediaLibraryService(), Player.Listener {
         notificationManager.cancel(NOTIFICATION_ID)
         mediaLibrarySession.release()
         clearListener()
+        isRunning = false
         super.onDestroy()
     }
 
@@ -311,19 +329,26 @@ class MediaLibrary : MediaLibraryService(), Player.Listener {
 
                 CUSTOM_COMMAND_NEW_PLAYLIST -> {
 
-                    val position =  args.getInt("track_position_to_play")
-                    var serializedPlaylist: ArrayList<AudioContent> = ArrayList()
-                    val gson = Gson()
-                    val json: String? = args.getString("track_list");
-                    gson.fromJson<ArrayList<AudioContent>>(json, object : TypeToken<ArrayList<AudioContent>>(){}.type)
-                        .also {
-                            serializedPlaylist = it?: ArrayList()
-                            player.stop()// stop the player and put in idle state
-                            player.removeMediaItems(0,mediaItems.size)// remove all mediaItems from player
-                            mediaItems = ArrayList()// empty the mediaItems list
-                            setupUpMusicList(serializedPlaylist, position)// set up the new playlist
-                            player.play()// tell the player to play when item is ready
+                    CoroutineScope(Dispatchers.Main).launch {
+                        withContext(Dispatchers.Main){
+
+                            val position =  args.getInt("track_position_to_play")
+                            var serializedPlaylist: ArrayList<AudioContent> = ArrayList()
+                            val gson = Gson()
+                            val json: String? = args.getString("track_list");
+                            gson.fromJson<ArrayList<AudioContent>>(json, object : TypeToken<ArrayList<AudioContent>>(){}.type)
+                                .also {
+                                    serializedPlaylist = it?: ArrayList()
+                                    player.stop()// stop the player and put in idle state
+                                    player.removeMediaItems(0,mediaItems.size)// remove all mediaItems from player
+                                    mediaItems = ArrayList()// empty the mediaItems list
+                                    setupUpMusicList(serializedPlaylist, position)// set up the new playlist
+                                    player.play()// tell the player to play when item is ready
+                                }
                         }
+                    }
+
+
                 }
             }
             return Futures.immediateFuture(SessionResult(SessionResult.RESULT_SUCCESS))
