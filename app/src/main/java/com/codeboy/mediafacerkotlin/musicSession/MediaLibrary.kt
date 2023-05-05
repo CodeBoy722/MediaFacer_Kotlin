@@ -348,7 +348,6 @@ class MediaLibrary : MediaLibraryService(), Player.Listener {
                         }
                     }
 
-
                 }
             }
             return Futures.immediateFuture(SessionResult(SessionResult.RESULT_SUCCESS))
