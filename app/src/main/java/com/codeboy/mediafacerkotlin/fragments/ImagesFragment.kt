@@ -53,6 +53,7 @@ class ImagesFragment() : Fragment() {
         bindings.imagesList.hasFixedSize()
         bindings.imagesList.setHasFixedSize(true)
         bindings.imagesList.setItemViewCacheSize(20)
+        bindings.emptyView.visibility = View.GONE
 
         initImages()
     }
@@ -108,6 +109,7 @@ class ImagesFragment() : Fragment() {
         model.images.observe(viewLifecycleOwner) {
             adapter.submitList(it)
             //notifyDataSetChanged on adapter after submitting list to avoid scroll lagging on recyclerview
+            if(it.size == 0) bindings.emptyView.visibility = View.VISIBLE
             paginationStart = it.size //+ 1
             bindings.loader.visibility = View.GONE
         }

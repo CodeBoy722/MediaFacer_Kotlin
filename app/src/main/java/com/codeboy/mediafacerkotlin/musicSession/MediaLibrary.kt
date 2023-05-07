@@ -89,6 +89,7 @@ class MediaLibrary : MediaLibraryService(), Player.Listener {
     override fun onCreate() {
         super.onCreate()
         isRunning = true
+        MediaItemTree.mediaFacerInitializeMediaTree()
         customCommands =
             listOf(
                 getShuffleCommandButton(
@@ -121,33 +122,29 @@ class MediaLibrary : MediaLibraryService(), Player.Listener {
 
     @OptIn(UnstableApi::class)
     private fun setupUpMusicList(musicListNew: ArrayList<AudioContent>, position: Int){
-
-        CoroutineScope(Dispatchers.Main).launch {
-            withContext(Dispatchers.Main){
-
-                musicList = musicListNew
-                for (musicItem in musicList){
-                    mediaItems.add(MediaItem.Builder()
-                        .setMediaId(musicItem.musicId.toString())
-                        .setMediaMetadata(musicItem.getMediaMetadata())
-                        .setUri(Uri.parse(musicItem.musicUri))
-                        .build()
-                    )
-                }
-
-                trackPosition = position
-                PlaybackProtocol.updateCurrentMedia(mediaItems[position])
-                PlaybackProtocol.updateMediaList(mediaItems)
-                MediaItemTree.mediaFacerInitializeMediaTree(musicList)
-                currentTrack = mediaItems[position]
-                player.addMediaItems(mediaItems)
-                player.seekTo(position,0)
-                player.prepare()
-
+        // todo fix empty media error here
+        // todo and make empty media views in activity
+        if(musicListNew.isNotEmpty()){
+            musicList = musicListNew
+            for (musicItem in musicList){
+                mediaItems.add(MediaItem.Builder()
+                    .setMediaId(musicItem.musicId.toString())
+                    .setMediaMetadata(musicItem.getMediaMetadata())
+                    .setUri(Uri.parse(musicItem.musicUri))
+                    .build()
+                )
             }
-        }
-    }
 
+            trackPosition = position
+            PlaybackProtocol.updateCurrentMedia(mediaItems[position])
+            PlaybackProtocol.updateMediaList(mediaItems)
+            //MediaItemTree.mediaFacerInitializeWithContent(musicList)
+            currentTrack = mediaItems[position]
+            player.addMediaItems(mediaItems)
+            player.seekTo(position,0)
+            player.prepare()
+        }//else the is no music on device so nothing will be set
+    }
 
      @OptIn(UnstableApi::class)
     override fun onUpdateNotification(session: MediaSession) {
@@ -213,7 +210,6 @@ class MediaLibrary : MediaLibraryService(), Player.Listener {
         playerNotification.setMediaSessionToken(session.sessionCompatToken)
 
     }
-
 
     @OptIn(UnstableApi::class)
     private fun initializeSessionAndPlayer() {

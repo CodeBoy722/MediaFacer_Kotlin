@@ -137,7 +137,7 @@ object MediaItemTree {
     }
 
     @androidx.annotation.OptIn(androidx.media3.common.util.UnstableApi::class)
-    fun mediaFacerInitializeMediaTree(mediaList: ArrayList<AudioContent>){
+    fun mediaFacerInitializeMediaTree(){
         if (isInitialized) return
         isInitialized = true
 
@@ -188,6 +188,10 @@ object MediaItemTree {
         treeNodes[ROOT_ID]!!.addChild(ARTIST_ID)
         treeNodes[ROOT_ID]!!.addChild(GENRE_ID)
 
+    }
+
+    //adding full content to media tree
+    fun mediaFacerInitializeWithContent(mediaList: ArrayList<AudioContent>){
         for(audio: AudioContent in mediaList){
             addNodeToTreeMediaFacer(audio)
         }

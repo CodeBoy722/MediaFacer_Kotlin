@@ -25,6 +25,7 @@ import android.view.animation.RotateAnimation
 import androidx.appcompat.content.res.AppCompatResources.getDrawable
 import androidx.appcompat.widget.PopupMenu
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.lifecycleScope
 import androidx.media3.common.MediaItem
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -46,6 +47,9 @@ import com.codeboy.mediafacerkotlin.viewAdapters.*
 import com.codeboy.mediafacerkotlin.viewModels.*
 import com.google.android.flexbox.*
 import com.google.gson.Gson
+import kotlinx.coroutines.Delay
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 
 class AudiosFragment() : Fragment() {
 
@@ -59,9 +63,9 @@ class AudiosFragment() : Fragment() {
     var mCurrentState = 0
     private lateinit var animationDrawable: AnimationDrawable
     private lateinit var audiosAdapter: AudioViewAdapter
+    private var firstLoad = 0
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        startAndBindMediaLibrary()
         return inflater.inflate(R.layout.fragment_audios, container, false)
     }
 
@@ -83,18 +87,18 @@ class AudiosFragment() : Fragment() {
         bindings.audiosList.hasFixedSize()
         bindings.audiosList.setHasFixedSize(true)
         bindings.audiosList.setItemViewCacheSize(20)
+        bindings.emptyView.visibility = View.GONE
 
-        setupAudioSearch()
-        initAudios()
     }
 
     override fun onStart() {
         super.onStart()
         //check connection to music service and proceed
-        if (!musicServiceBrowserCompat.isConnected ) {
+        /*if (!musicServiceBrowserCompat.isConnected ) {
             musicServiceBrowserCompat.connect()
-        }
-
+        }*/
+        setupAudioSearch()
+        initAudios()
     }
 
     private fun initAudios(){
@@ -126,15 +130,19 @@ class AudiosFragment() : Fragment() {
         val model = AudioViewModel()
         //observe the LifeData list of items and feed them to recyclerview each time there is an update
         model.audios.observe(viewLifecycleOwner) {
+            if(it.size == 0) bindings.emptyView.visibility = View.VISIBLE
+            //check that items are not empty before starting or connecting service
+            if(firstLoad == 0 && it.size > 0){
+                lifecycleScope.launch{
+                    startAndBindMediaLibrary()
+                    // delay to give time to musicServiceController to get initialized
+                    delay(1500L)
+                }
+                firstLoad = 1
+            }
             audiosAdapter.submitList(it)
-            //notifyDataSetChanged on adapter after submitting list to avoid scroll lagging on recyclerview
             paginationStart = it.size //+ 1
             audioContentList = it
-            /*Toast.makeText(
-                requireActivity(),
-                "gotten new music data " + it.size.toString(),
-                Toast.LENGTH_LONG
-            ).show()*/
             bindings.loader.visibility = View.GONE
         }
 
@@ -458,7 +466,7 @@ class AudiosFragment() : Fragment() {
         }
         MediaBrowserCompat(requireActivity(),
             ComponentName(requireActivity(), MediaLibrary::class.java), mMediaBrowserConnectionCallback, requireActivity().intent.extras).apply {
-            //connect()
+            connect()
             musicServiceBrowserCompat = this
         }
     }

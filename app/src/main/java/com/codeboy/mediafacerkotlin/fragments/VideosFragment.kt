@@ -59,6 +59,7 @@ class VideosFragment() : Fragment() {
         bindings.videosList.hasFixedSize()
         bindings.videosList.setHasFixedSize(true)
         bindings.videosList.setItemViewCacheSize(20)
+        bindings.emptyView.visibility = View.GONE
 
         setupVideoSearch()
         initVideos()
@@ -104,6 +105,7 @@ class VideosFragment() : Fragment() {
         model.videos.observe(viewLifecycleOwner) {
             adapter.submitList(it)
             //notifyDataSetChanged on adapter after submitting list to avoid scroll lagging on recyclerview
+            if(it.size == 0) bindings.emptyView.visibility = View.VISIBLE
             paginationStart = it.size //+ 1
             bindings.loader.visibility = View.GONE
         }

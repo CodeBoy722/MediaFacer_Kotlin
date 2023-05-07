@@ -43,8 +43,8 @@ object PlaybackProtocol: ViewModel() {
     }
 
 
-    private val _currentMedia: MutableLiveData<MediaItem> = MutableLiveData()
-    val currentMedia: LiveData<MediaItem> = _currentMedia
+    private val _currentMedia: MutableLiveData<MediaItem?> = MutableLiveData()
+    val currentMedia : LiveData<MediaItem?> = _currentMedia
 
     fun updateCurrentMedia(music: MediaItem){
         _currentMedia.value = music

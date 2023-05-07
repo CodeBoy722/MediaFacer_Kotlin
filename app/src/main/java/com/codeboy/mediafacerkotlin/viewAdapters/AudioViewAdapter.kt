@@ -1,11 +1,15 @@
 package com.codeboy.mediafacerkotlin.viewAdapters
 
+import android.graphics.Color
+import android.graphics.PorterDuff
+import android.graphics.PorterDuffColorFilter
 import android.net.Uri
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.animation.Animation
 import android.view.animation.AnimationUtils
+import androidx.core.content.ContextCompat
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.DiffUtil
@@ -73,15 +77,23 @@ class AudioViewAdapter(private val listener: AudioActionListener, private val pa
                 .placeholder(R.drawable.music_placeholder)
                 .into(bindings.art)
 
-            if ((PlaybackProtocol.currentMedia.value!!.mediaId == item.musicId.toString()) && playingState){
-                playingPosition = itemPosition
-                Glide.with(bindings.playIndicator)
-                    .load(R.drawable.equalizer)
-                    .into(bindings.playIndicator)
-                bindings.playIndicator.visibility = View.VISIBLE
+            if(PlaybackProtocol.currentMedia.value != null){
+                if ((PlaybackProtocol.currentMedia.value!!.mediaId == item.musicId.toString()) && playingState){
+                    playingPosition = itemPosition
+                    Glide.with(bindings.playIndicator)
+                        .load(R.drawable.equalizer)
+                        .into(bindings.playIndicator)
+                    bindings.playIndicator.colorFilter =
+                        PorterDuffColorFilter(
+                            ContextCompat.getColor(bindings.root.context, R.color.bright_navy_blue),
+                            PorterDuff.Mode.SRC_ATOP
+                        )
+                    bindings.playIndicator.visibility = View.VISIBLE
+                }else{ bindings.playIndicator.visibility = View.GONE }
             }else{
                 bindings.playIndicator.visibility = View.GONE
             }
+
 
             bindings.artist.text = item.artist
             bindings.title.text = item.title
