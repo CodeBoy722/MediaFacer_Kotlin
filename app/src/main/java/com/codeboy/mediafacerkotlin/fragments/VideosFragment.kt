@@ -103,9 +103,9 @@ class VideosFragment() : Fragment() {
         val model = VideoViewModel()
         //observe the LifeData list of items and feed them to recyclerview each time there is an update
         model.videos.observe(viewLifecycleOwner) {
-            adapter.submitList(it)
             //notifyDataSetChanged on adapter after submitting list to avoid scroll lagging on recyclerview
             if(it.size == 0) bindings.emptyView.visibility = View.VISIBLE
+            adapter.submitList(it)
             paginationStart = it.size //+ 1
             bindings.loader.visibility = View.GONE
         }

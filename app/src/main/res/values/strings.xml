@@ -24,9 +24,7 @@
     <string name="video_folders">Folders</string>
 
     <string name="media_picker">MediaFacer Picker is a dynamic and customisable media picker for audio, video, and image files, test the demos below and see how it can fit in your apps</string>
-    <string name="about">MediaFacer is an android library built on the android MediaStore Api to simplify the task of retrieving media
-        content easily and seamlessly with support for both internal and external content mediums.
-        This application is an example/illustration of what you can do with MediaFacer.</string>
+    <string name="about">Mediafacer is an Android library that leverages the Android MediaStore Apis primarily for quick retrieval of media content (Video, Audio, Images) from the Mediastore with support for both internal and external storage Medium and built-in pagination.</string>
 
     <string name="description">Playing Music in background, Don\'t stop</string>
     <string name="channel_name">media_facer_audio_playback</string>
