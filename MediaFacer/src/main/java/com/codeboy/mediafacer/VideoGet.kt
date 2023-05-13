@@ -67,13 +67,18 @@ internal interface VideoGet {
                     )
 
                     val id: Int = cursor.getInt(cursor.getColumnIndexOrThrow(Video.Media._ID))
-
                     video.id = id
+
                     val contentUri = Uri.withAppendedPath(contentMedium, id.toString())
                     video.videoUri = contentUri.toString()
 
-                    video.artist =
-                        cursor.getString(cursor.getColumnIndexOrThrow(Video.Media.ARTIST))
+                    try{
+                        video.artist =
+                            cursor.getString(cursor.getColumnIndexOrThrow(Video.Media.ARTIST))
+                    }catch (ex : Exception){
+                        ex.printStackTrace()
+                    }
+
                     allVideo.add(video)
                 } while (cursor.moveToNext())
             }
@@ -168,8 +173,13 @@ internal interface VideoGet {
                     val contentUri = Uri.withAppendedPath(contentMedium, id.toString())
                     video.videoUri = contentUri.toString()
 
-                    video.artist =
-                        cursor.getString(cursor.getColumnIndexOrThrow(Video.Media.ARTIST))
+                    try{
+                        video.artist =
+                            cursor.getString(cursor.getColumnIndexOrThrow(Video.Media.ARTIST))
+                    }catch (ex : Exception){
+                        ex.printStackTrace()
+                    }
+
                     videos.add(video)
                 } while (cursor.moveToNext())
             }
@@ -293,8 +303,13 @@ internal interface VideoGet {
                     val contentUri = Uri.withAppendedPath(contentMedium, id.toString())
                     video.videoUri = contentUri.toString()
 
-                    video.artist =
-                        cursor.getString(cursor.getColumnIndexOrThrow(Video.Media.ARTIST))
+                    try{
+                        video.artist =
+                            cursor.getString(cursor.getColumnIndexOrThrow(Video.Media.ARTIST))
+                    }catch (ex : Exception){
+                        ex.printStackTrace()
+                    }
+
                     videos.add(video)
                 } while (cursor.moveToNext())
             }

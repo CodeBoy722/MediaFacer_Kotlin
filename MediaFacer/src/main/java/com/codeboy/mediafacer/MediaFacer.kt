@@ -2,6 +2,7 @@
 
 package com.codeboy.mediafacer
 
+import android.annotation.SuppressLint
 import android.content.Context
 import android.database.Cursor
 import android.net.Uri
@@ -137,6 +138,7 @@ object MediaFacer : VideoGet, AudioGet, ImageGet {
         return allAudio
     }
 
+    @SuppressLint("Range")
     override fun getVideos(
         context: Context,
         contentMedium: Uri
@@ -176,13 +178,17 @@ object MediaFacer : VideoGet, AudioGet, ImageGet {
 
                             val id: Int =
                                 cursor.getInt(cursor.getColumnIndexOrThrow(Video.Media._ID))
-
                             video.id = id
+
                             val contentUri = Uri.withAppendedPath(contentMedium, id.toString())
                             video.videoUri = contentUri.toString()
 
-                            video.artist =
-                                cursor.getString(cursor.getColumnIndexOrThrow(Video.Media.ARTIST))
+                            try{
+                                video.artist =
+                                    cursor.getString(cursor.getColumnIndexOrThrow(Video.Media.ARTIST))
+                            }catch (ex : Exception){
+                                ex.printStackTrace()
+                            }
 
                             videos.add(video)
                             index++

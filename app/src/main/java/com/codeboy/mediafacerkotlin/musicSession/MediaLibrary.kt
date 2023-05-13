@@ -177,13 +177,23 @@ class MediaLibrary : MediaLibraryService(), Player.Listener {
             //.setStopActionIconResourceId(R.drawable.ic_cancel)
             .setCustomActionReceiver(object: PlayerNotificationManager.CustomActionReceiver{
                 override fun createCustomActions(context: Context, instanceId: Int): MutableMap<String, NotificationCompat.Action> {
-                    return mutableMapOf(Pair(
-                        CUSTOM_COMMAND_STOP_PLAYER,
-                        NotificationCompat.Action(R.drawable.ic_cancel, "Stop Player",
-                            PendingIntent.getBroadcast(context, 300, Intent(
-                                CUSTOM_COMMAND_STOP_PLAYER).setPackage(context.packageName), PendingIntent.FLAG_CANCEL_CURRENT.and(PendingIntent.FLAG_IMMUTABLE))
-                        )
-                    ))
+                    return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                        mutableMapOf(Pair(
+                            CUSTOM_COMMAND_STOP_PLAYER,
+                            NotificationCompat.Action(R.drawable.ic_cancel, "Stop Player",
+                                PendingIntent.getBroadcast(context, 300, Intent(
+                                    CUSTOM_COMMAND_STOP_PLAYER).setPackage(context.packageName), PendingIntent.FLAG_IMMUTABLE)//.and(PendingIntent.FLAG_UPDATE_CURRENT)
+                            )
+                        ))
+                    } else {
+                        mutableMapOf(Pair(
+                            CUSTOM_COMMAND_STOP_PLAYER,
+                            NotificationCompat.Action(R.drawable.ic_cancel, "Stop Player",
+                                PendingIntent.getBroadcast(context, 300, Intent(
+                                    CUSTOM_COMMAND_STOP_PLAYER).setPackage(context.packageName),PendingIntent.FLAG_IMMUTABLE )//PendingIntent.FLAG_UPDATE_CURRENT.and(PendingIntent.FLAG_IMMUTABLE)
+                            )
+                        ))
+                    }
                 }
 
                 override fun getCustomActions(player: Player): MutableList<String> {

@@ -15,7 +15,7 @@ class VideoContent(): Parcelable, Serializable {
     var duration: Long = 0
     var size: Long = 0
     var videoUri: String = ""
-    var artist: String = ""
+    var artist: String = "<unknown>"
     var filePath: String = ""
     var dateModified: Date = Date()
 
