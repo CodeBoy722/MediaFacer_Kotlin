@@ -10,6 +10,7 @@
         android:layout_height="match_parent"
         android:clickable="true"
         android:focusable="true"
+        android:elevation="2dp"
         android:background="@color/black">
 
         <androidx.viewpager2.widget.ViewPager2
