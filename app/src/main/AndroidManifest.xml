@@ -59,7 +59,7 @@
         You can specify an icon that is used to represent your app using the following manifest declaration:-->
         <meta-data
             android:name="androidx.car.app.TintableAttributionIcon"
-            android:resource="@drawable/ic_audio" />
+            android:resource="@drawable/ic_logo_notiv" />
 
       <!--  <service
             android:name=".musicSession.MusicService"

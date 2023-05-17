@@ -14,13 +14,11 @@ import com.codeboy.mediafacer.models.ImageContent
 import com.codeboy.mediafacerkotlin.MainActivity
 import com.codeboy.mediafacerkotlin.R
 import com.codeboy.mediafacerkotlin.databinding.FragmentImageDisplayBinding
-import com.codeboy.mediafacerkotlin.dialogs.ImageDetails
 import com.codeboy.mediafacerkotlin.listeners.ImageActionListener
 import com.codeboy.mediafacerkotlin.listeners.ImageDisplayItemListener
 import com.codeboy.mediafacerkotlin.utils.EndlessScrollListener
 import com.codeboy.mediafacerkotlin.viewAdapters.ImageDisplayAdapter
 import com.codeboy.mediafacerkotlin.viewAdapters.ImageIndicatorAdapter
-import com.codeboy.mediafacerkotlin.viewAdapters.ImageViewAdapter
 import com.codeboy.mediafacerkotlin.viewModels.ImageViewModel
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -74,7 +72,7 @@ class ImageDisplayFragment(
 
         bindings.imagesIndicator.layoutManager = layoutManager
         bindings.imagesIndicator.adapter = indicatorAdapter
-        val smoothScroller: RecyclerView.SmoothScroller = CenterSmoothScroller(bindings.imagesIndicator.context)
+        val smoothScroller: RecyclerView.SmoothScroller = CenterSmoothScroller(requireActivity())//bindings.imagesIndicator.context
 
         bindings.imagesPager.orientation = ViewPager2.ORIENTATION_HORIZONTAL
         bindings.imagesPager.adapter = pagerAdapter
@@ -83,6 +81,7 @@ class ImageDisplayFragment(
                 super.onPageSelected(position)
                 smoothScroller.targetPosition = position;
                 layoutManager.startSmoothScroll(smoothScroller) // scroll to position and center
+                //layoutManager.scrollToPosition(imagePosition)
                 indicatorAdapter.setSelected(position)
                 //load more when it last position
                 if(position == (pagerAdapter.itemCount - 1)){
@@ -95,19 +94,24 @@ class ImageDisplayFragment(
 
         pagerAdapter.submitList(imageList)
         indicatorAdapter.submitList(imageList)
+        bindings.imagesPager.offscreenPageLimit = pagerAdapter.itemCount
         bindings.imagesPager.setCurrentItem(imagePosition,true)
 
-        CoroutineScope(Dispatchers.Main).launch {
+
+        smoothScroller.targetPosition = imagePosition;
+        layoutManager.startSmoothScroll(smoothScroller)
+        //layoutManager.scrollToPosition(imagePosition)
+        indicatorAdapter.setSelected(imagePosition)
+      /*  CoroutineScope(Dispatchers.Main).launch {
             delay(100).apply {
-                smoothScroller.targetPosition = imagePosition;
-                layoutManager.startSmoothScroll(smoothScroller)
-                indicatorAdapter.setSelected(imagePosition)
+
             }
-        }
+        }*/
 
         model.images.observe(viewLifecycleOwner) {
             pagerAdapter.submitList(it)
             indicatorAdapter.submitList(it)
+            bindings.imagesPager.offscreenPageLimit = pagerAdapter.itemCount
             paginationStart = it.size //+ 1
         }
 

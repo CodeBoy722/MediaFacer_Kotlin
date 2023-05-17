@@ -107,8 +107,8 @@ class ImagesFragment() : Fragment() {
         val model = ImageViewModel()
         //observe the LifeData list of items and feed them to recyclerview each time there is an update
         model.images.observe(viewLifecycleOwner) {
-            adapter.submitList(it)
             //notifyDataSetChanged on adapter after submitting list to avoid scroll lagging on recyclerview
+            adapter.submitList(it)
             if(it.size == 0) bindings.emptyView.visibility = View.VISIBLE
             paginationStart = it.size //+ 1
             bindings.loader.visibility = View.GONE
