@@ -60,7 +60,7 @@ class ImagesFragment() : Fragment() {
 
     private fun initImages(){
         // init and setup your recyclerview with a layout manager
-        val numOfColumns = calculateNoOfColumns(requireActivity(), 85f)
+        //val numOfColumns = calculateNoOfColumns(requireActivity(), 85f)
         //val layoutManager = GridLayoutManager(requireActivity(),numOfColumns)
         val layoutManager = FlexboxLayoutManager(context).apply {
             justifyContent = JustifyContent.SPACE_EVENLY
@@ -69,11 +69,6 @@ class ImagesFragment() : Fragment() {
             flexWrap = FlexWrap.WRAP
         }
         bindings.imagesList.layoutManager = layoutManager
-      /*  bindings.imagesList.addItemDecoration(
-            Utils.MarginItemDecoration(8)
-        )*/
-        //bindings.imagesList.itemAnimator = null
-
         paginationStart = 0
         paginationLimit = 300
         shouldPaginate = true
@@ -150,11 +145,6 @@ class ImagesFragment() : Fragment() {
         model.imageFolders.observe(viewLifecycleOwner) {
             adapter.submitList(it)
             paginationStart = it.size //+ 1
-           /* Toast.makeText(
-                requireActivity(),
-                "Image Folders " + it.size.toString(),
-                Toast.LENGTH_LONG
-            ).show()*/
             bindings.loader.visibility = View.GONE
         }
 

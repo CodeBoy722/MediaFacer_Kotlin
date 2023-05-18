@@ -77,7 +77,7 @@ class ImageIndicatorAdapter(private val listener: ImageActionListener)
         override fun onClick(p0: View?) {
             val imageList = ArrayList<ImageContent>()
             imageList.addAll(currentList)
-            listener.onImageItemClicked(layoutPosition, imageList)
+            listener.onImageItemClicked(itemPosition, imageList)
         }
 
     }

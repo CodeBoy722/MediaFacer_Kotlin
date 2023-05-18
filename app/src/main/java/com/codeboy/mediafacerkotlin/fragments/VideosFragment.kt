@@ -67,7 +67,7 @@ class VideosFragment() : Fragment() {
 
     private fun initVideos(){
         // init and setup your recyclerview with a layout manager
-        val numOfColumns = calculateNoOfColumns(requireActivity(), 115f)
+        //val numOfColumns = calculateNoOfColumns(requireActivity(), 115f)
         //val layoutManager = GridLayoutManager(requireActivity(),numOfColumns)
         val layoutManager = FlexboxLayoutManager(context).apply {
             justifyContent = JustifyContent.SPACE_EVENLY
@@ -76,10 +76,6 @@ class VideosFragment() : Fragment() {
             flexWrap = FlexWrap.WRAP
         }
         bindings.videosList.layoutManager = layoutManager
-        /*bindings.videosList.addItemDecoration(
-            Utils.MarginItemDecoration(8)
-        )*/
-        //bindings.videosList.itemAnimator = null
 
         paginationStart = 0
         paginationLimit = 50
@@ -145,11 +141,6 @@ class VideosFragment() : Fragment() {
         model.videoFolders.observe(viewLifecycleOwner) {
             adapter.submitList(it)
             paginationStart = it.size //+ 1
-            /*Toast.makeText(
-                requireActivity(),
-                "video folders " + it.size.toString(),
-                Toast.LENGTH_LONG
-            ).show()*/
             bindings.loader.visibility = View.GONE
         }
 
