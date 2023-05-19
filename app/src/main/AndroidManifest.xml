@@ -50,16 +50,16 @@
             android:screenOrientation="sensorPortrait"
             android:windowSoftInputMode="adjustPan" />
 
-        <meta-data
+      <!--  <meta-data
             android:name="com.google.android.gms.car.application"
-            android:resource="@xml/automotive_app_desc" />
+            android:resource="@xml/automotive_app_desc" />-->
 
        <!-- The Attribution Icon is used in places where media content takes precedence, such as on media cards.
         Consider reusing the small icon used for notifications. This icon must be monochrome.
         You can specify an icon that is used to represent your app using the following manifest declaration:-->
-        <meta-data
+        <!--<meta-data
             android:name="androidx.car.app.TintableAttributionIcon"
-            android:resource="@drawable/ic_logo_notiv" />
+            android:resource="@drawable/ic_audio" />-->
 
       <!--  <service
             android:name=".musicSession.MusicService"
