@@ -57,7 +57,7 @@ internal class AudioContentAdapter(private val defaultArt: Int,private val liste
                 .placeholder(R.drawable.music_placeholder)
                 .into(bindings.art)
 
-            bindings.selector.visibility = View.GONE
+            //bindings.selector.visibility = View.GONE
             bindings.artist.text = item.artist
             bindings.title.text = item.title
         }
@@ -65,10 +65,10 @@ internal class AudioContentAdapter(private val defaultArt: Int,private val liste
         override fun onClick(v: View?) {
             bindings.selector.isChecked = !bindings.selector.isChecked
             if(bindings.selector.isChecked){
-                bindings.selector.visibility = View.VISIBLE
+                //bindings.selector.visibility = View.VISIBLE
                 //todo add to view model select list
             }else{
-                bindings.selector.visibility = View.GONE
+                //bindings.selector.visibility = View.GONE
                 //todo remove from view model select list
             }
         }

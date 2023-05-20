@@ -32,7 +32,7 @@ class MediaTools() : Fragment() {
                 .addAllMediaSelection()
                 //.addAudioSelection()
                 //.addVideoSelection()
-                .setSelectionCompleteDrawable(com.codeboy.mediafacer.R.drawable.ic_media_check)
+                .setSelectionCompleteDrawable(R.drawable.ic_play)
                 .setAudioDefaultAlbumArtDrawable(R.drawable.music_placeholder)
                 .setSelectionMenuTitles("Music","Videos","Images")
                 .setBottomItemSelectionColors(R.color.Red_500,R.color.black)

@@ -56,16 +56,16 @@ internal class ImageContentAdapter(private val listener: MediaSelectionListener)
                 .apply(RequestOptions().centerCrop())
                 .into(bindings.image)
 
-            bindings.selector.visibility = View.GONE
+            //bindings.selector.visibility = View.GONE
         }
 
         override fun onClick(p0: View?) {
             bindings.selector.isChecked = !bindings.selector.isChecked
             if(bindings.selector.isChecked){
-                bindings.selector.visibility = View.VISIBLE
+                //bindings.selector.visibility = View.VISIBLE
                 //todo add to view model select list
             }else{
-                bindings.selector.visibility = View.GONE
+                //bindings.selector.visibility = View.GONE
                 //todo remove from view model select list
             }
         }

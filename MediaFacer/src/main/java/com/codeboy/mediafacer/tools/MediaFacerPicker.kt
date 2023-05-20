@@ -226,6 +226,16 @@ class MediaFacerPicker : BottomSheetDialogFragment(), View.OnClickListener {
         return this
     }
 
+    fun setMediaBottomMenuIcons(audioIcon: Int, videoIcon:Int, imagesIcon: Int): MediaFacerPicker{
+
+
+        return this
+    }
+
+    fun setPickerColor(pickerColor: Int): MediaFacerPicker{
+        return this
+    }
+
     //set fragment selection colors
     fun setBottomItemSelectionColors(selectedColor: Int, unselectedColor: Int): MediaFacerPicker{
         selectedFragMenuColor = selectedColor
@@ -284,6 +294,9 @@ class MediaFacerPicker : BottomSheetDialogFragment(), View.OnClickListener {
                         indicateSelectedFragment(imageFragPosition!!)
                     }
                 }
+            }
+            R.id.complete_selection -> {
+
             }
         }
     }
