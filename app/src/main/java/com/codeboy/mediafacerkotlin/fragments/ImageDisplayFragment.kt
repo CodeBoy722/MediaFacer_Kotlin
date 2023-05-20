@@ -133,13 +133,13 @@ class ImageDisplayFragment(
             paginationStart = it.size //+ 1
         }
 
-        bindings.imagesIndicator.addOnScrollListener(object: EndlessScrollListener(layoutManager){
+       /* bindings.imagesIndicator.addOnScrollListener(object: EndlessScrollListener(layoutManager){
             override fun onLoadMore(page: Int, totalItemsCount: Int, view: RecyclerView?) {
                 if (shouldPaginate){
                     model.loadNewItems(requireActivity(),paginationStart,paginationLimit,true)
                 }
             }
-        })
+        })*/
 
     }
 

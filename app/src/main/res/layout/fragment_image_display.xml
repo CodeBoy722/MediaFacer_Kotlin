@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     tools:context=".fragments.ImageDisplayFragment">
 
-    <androidx.constraintlayout.widget.ConstraintLayout
+    <FrameLayout
         android:id="@+id/displayParent"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
@@ -15,24 +15,18 @@
 
         <androidx.viewpager2.widget.ViewPager2
             android:id="@+id/imagesPager"
-            android:layout_width="0dp"
-            android:layout_height="0dp"
-            app:layout_constraintBottom_toTopOf="@+id/imagesIndicator"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+           />
 
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/imagesIndicator"
             android:layout_width="match_parent"
             android:layout_height="100dp"
             android:layout_gravity="bottom|center"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/imagesPager" />
+           />
 
-    </androidx.constraintlayout.widget.ConstraintLayout>
+    </FrameLayout>
 
 
 </layout>

@@ -71,12 +71,12 @@ class ImagesFragment() : Fragment() {
         bindings.imagesList.layoutManager = layoutManager
         paginationStart = 0
         paginationLimit = 300
-        shouldPaginate = true
+        shouldPaginate = false
 
         //init your adapter and bind it to recyclerview
         val adapter = ImageViewAdapter(object: ImageActionListener{
             override fun onImageItemClicked(imagePosition: Int, imageList: ArrayList<ImageContent>) {
-                val imageBrowser = ImageDisplayFragment(paginationStart, paginationLimit,imageList,imagePosition, true)
+                val imageBrowser = ImageDisplayFragment(paginationStart, paginationLimit,imageList,imagePosition, false)
                 val fade = Fade()
                 imageBrowser.enterTransition = fade
                 imageBrowser.exitTransition = fade
@@ -116,12 +116,12 @@ class ImagesFragment() : Fragment() {
 
         //adding EndlessScrollListener to our recyclerview to auto paginate items when user is
         //scrolling towards end of list
-        bindings.imagesList.addOnScrollListener(object: EndlessScrollListener(layoutManager){
+        /*bindings.imagesList.addOnScrollListener(object: EndlessScrollListener(layoutManager){
             override fun onLoadMore(page: Int, totalItemsCount: Int, view: RecyclerView?) {
                 model.loadNewItems(requireActivity(),paginationStart,paginationLimit,shouldPaginate)
                 bindings.loader.visibility = View.VISIBLE
             }
-        })
+        })*/
     }
 
     private fun initImageFolders(){
