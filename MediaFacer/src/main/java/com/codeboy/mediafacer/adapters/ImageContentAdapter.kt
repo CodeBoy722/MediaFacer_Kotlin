@@ -10,12 +10,13 @@ import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.bumptech.glide.request.RequestOptions
+import com.codeboy.mediafacer.MediaSelectionViewModel
 import com.codeboy.mediafacer.R
 import com.codeboy.mediafacer.databinding.ImageSelectItemBinding
 import com.codeboy.mediafacer.models.ImageContent
 import com.codeboy.mediafacer.tools.MediaSelectionListener
 
-internal class ImageContentAdapter(private val listener: MediaSelectionListener)
+internal class ImageContentAdapter(private val listener: MediaSelectionViewModel)
     : ListAdapter<ImageContent, ImageContentAdapter.ImageSelectViewHolder>(ImageDiffUtil()){
 
     var lastPosition = -1
@@ -61,13 +62,7 @@ internal class ImageContentAdapter(private val listener: MediaSelectionListener)
 
         override fun onClick(p0: View?) {
             bindings.selector.isChecked = !bindings.selector.isChecked
-            if(bindings.selector.isChecked){
-                //bindings.selector.visibility = View.VISIBLE
-                //todo add to view model select list
-            }else{
-                //bindings.selector.visibility = View.GONE
-                //todo remove from view model select list
-            }
+            listener.addOrRemoveImageItem(item)
         }
 
     }

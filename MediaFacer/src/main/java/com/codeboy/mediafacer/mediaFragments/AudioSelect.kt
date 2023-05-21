@@ -13,6 +13,7 @@ import android.widget.ArrayAdapter
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.codeboy.mediafacer.MediaFacer
+import com.codeboy.mediafacer.MediaSelectionViewModel
 import com.codeboy.mediafacer.R
 import com.codeboy.mediafacer.adapters.AudioContentAdapter
 import com.codeboy.mediafacer.databinding.FragmentAudioSelectBinding
@@ -27,7 +28,7 @@ internal class AudioSelect() : Fragment() {
     private var defaultAlbumArt = 0
     private lateinit var bindings: FragmentAudioSelectBinding
     private lateinit var viewModel: AudiosViewModel
-    private lateinit var listener: MediaSelectionListener
+    private lateinit var listener: MediaSelectionViewModel
 
     private var paginationStart = 0
     private var paginationLimit = 100
@@ -38,7 +39,7 @@ internal class AudioSelect() : Fragment() {
     private lateinit var scrollListener: EndlessScrollListener
     private lateinit var searchScrollListener: EndlessScrollListener
 
-    constructor(defaultAlbumArt: Int, listener: MediaSelectionListener): this(){
+    constructor(defaultAlbumArt: Int, listener: MediaSelectionViewModel): this(){
         this.defaultAlbumArt = defaultAlbumArt
         this.listener = listener
     }

@@ -13,6 +13,7 @@ import android.widget.ArrayAdapter
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.codeboy.mediafacer.MediaFacer
+import com.codeboy.mediafacer.MediaSelectionViewModel
 import com.codeboy.mediafacer.R
 import com.codeboy.mediafacer.adapters.VideoContentAdapter
 import com.codeboy.mediafacer.databinding.FragmentVideoSelectBinding
@@ -33,7 +34,7 @@ internal class VideoSelect() : Fragment() {
 
     private lateinit var bindings: FragmentVideoSelectBinding
     private lateinit var viewModel: VideosViewModel
-    private lateinit var listener: MediaSelectionListener
+    private lateinit var listener: MediaSelectionViewModel
 
     private var paginationStart = 0
     private var paginationLimit = 100
@@ -44,7 +45,7 @@ internal class VideoSelect() : Fragment() {
     private lateinit var scrollListener: EndlessScrollListener
     private lateinit var searchScrollListener: EndlessScrollListener
 
-    constructor(listener: MediaSelectionListener): this(){
+    constructor(listener: MediaSelectionViewModel): this(){
         this.listener = listener
     }
 

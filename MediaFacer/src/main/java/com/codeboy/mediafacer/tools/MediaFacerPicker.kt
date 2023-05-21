@@ -6,8 +6,10 @@ import android.view.*
 import androidx.core.content.ContextCompat
 import androidx.core.content.res.ResourcesCompat
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.Observer
 import androidx.viewpager2.widget.ViewPager2
 import com.codeboy.mediafacer.MediaFacerException
+import com.codeboy.mediafacer.MediaSelectionViewModel
 import com.codeboy.mediafacer.R
 import com.codeboy.mediafacer.adapters.PagerFragmentAdapter
 import com.codeboy.mediafacer.databinding.FragmentMediaFacerPickerBinding
@@ -37,6 +39,7 @@ class MediaFacerPicker : BottomSheetDialogFragment(), View.OnClickListener {
     private lateinit var videoSelect: VideoSelect
     private lateinit var audioSelect: AudioSelect
     private lateinit var imageSelect: ImageSelect
+    private val selectionViewModel = MediaSelectionViewModel()
 
     private var imageFragPosition: Int? = null
     private var videoFragPosition: Int? = null
@@ -150,6 +153,10 @@ class MediaFacerPicker : BottomSheetDialogFragment(), View.OnClickListener {
                 .getDrawable(requireActivity().resources, completeDrawableId!!,null))
         }
 
+        selectionViewModel.numItemsSelected.observe(viewLifecycleOwner, Observer {
+            bindings.selectedNum.text = it.toString()
+        })
+
         setUpSelectedMediaFragment()
     }
 
@@ -157,7 +164,7 @@ class MediaFacerPicker : BottomSheetDialogFragment(), View.OnClickListener {
         val medias = ArrayList<Fragment>()
         when {
             addImages -> {
-                imageSelect = ImageSelect(listener)
+                imageSelect = ImageSelect(selectionViewModel)
                 medias.add(imageSelect)
                 imageFragPosition = medias.size - 1
             }else -> {
@@ -167,7 +174,7 @@ class MediaFacerPicker : BottomSheetDialogFragment(), View.OnClickListener {
 
         when {
             addVideos -> {
-                videoSelect = VideoSelect(listener)
+                videoSelect = VideoSelect(selectionViewModel)
                 medias.add(videoSelect)
                 videoFragPosition = medias.size - 1
             }else -> {
@@ -177,7 +184,7 @@ class MediaFacerPicker : BottomSheetDialogFragment(), View.OnClickListener {
 
         when {
             addAudios -> {
-                audioSelect = AudioSelect(customAlbumDrawable,listener)
+                audioSelect = AudioSelect(customAlbumDrawable,selectionViewModel)
                 medias.add(audioSelect)
                 audioFragPosition = medias.size - 1
             }else -> {
@@ -296,7 +303,12 @@ class MediaFacerPicker : BottomSheetDialogFragment(), View.OnClickListener {
                 }
             }
             R.id.complete_selection -> {
-
+                listener.onMediaItemsSelected(
+                    selectionViewModel.selectedAudios.value!!,
+                    selectionViewModel.selectedVideos.value!!,
+                    selectionViewModel.selectedPhotos.value!!
+                )
+                dismiss()
             }
         }
     }

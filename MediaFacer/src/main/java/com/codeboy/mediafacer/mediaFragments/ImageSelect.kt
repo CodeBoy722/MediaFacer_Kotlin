@@ -9,6 +9,7 @@ import android.widget.AdapterView
 import android.widget.ArrayAdapter
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.codeboy.mediafacer.MediaSelectionViewModel
 import com.codeboy.mediafacer.R
 import com.codeboy.mediafacer.adapters.ImageContentAdapter
 import com.codeboy.mediafacer.databinding.FragmentImageSelectBinding
@@ -33,13 +34,13 @@ internal class ImageSelect() : Fragment() {
 
     private lateinit var bindings: FragmentImageSelectBinding
     private lateinit var viewModel: ImagesViewModel
-    private lateinit var listener: MediaSelectionListener
+    private lateinit var listener: MediaSelectionViewModel
 
     private lateinit var layoutManager: FlexboxLayoutManager
     private lateinit var scrollListener: EndlessScrollListener
     private lateinit var adapter: ImageContentAdapter
 
-    constructor(listener: MediaSelectionListener):this(){
+    constructor(listener: MediaSelectionViewModel):this(){
         this.listener = listener
     }
 
