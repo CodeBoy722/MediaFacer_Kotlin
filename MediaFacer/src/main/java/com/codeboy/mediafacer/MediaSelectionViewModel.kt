@@ -27,10 +27,10 @@ internal class MediaSelectionViewModel: ViewModel() {
     private fun updateNumberSelected(action: String){
         when(action){
             actionAdd ->{
-                _numItemsSelected.value = _numItemsSelected.value?.minus(1)
+                _numItemsSelected.value = _numItemsSelected.value?.plus(1)
             }
             actionRemove ->{
-             _numItemsSelected.value = _numItemsSelected.value?.plus(1)
+             _numItemsSelected.value = _numItemsSelected.value?.minus(1)
             }
         }
     }
@@ -44,33 +44,33 @@ internal class MediaSelectionViewModel: ViewModel() {
 
     fun addOrRemoveAudioItem(audio: AudioContent){
         val rm = _selectedAudios.value?.remove(audio)
-        if(!rm!!){
+        if(rm!!){
+            updateNumberSelected(actionRemove)
+        }else{
             _selectedAudios.value?.add(audio)
             updateNumberSelected(actionAdd)
-        }else{
-            updateNumberSelected(actionRemove)
         }
     }
 
 
     fun addOrRemoveVideoItem(video: VideoContent){
         val rm = _selectedVideos.value?.remove(video)
-        if(!rm!!){
+        if(rm!!){
+            updateNumberSelected(actionRemove)
+        }else{
             _selectedVideos.value?.add(video)
             updateNumberSelected(actionAdd)
-        }else{
-            updateNumberSelected(actionRemove)
         }
     }
 
 
     fun addOrRemoveImageItem(image: ImageContent){
         val rm = _selectedPhotos.value?.remove(image)
-        if(!rm!!){
+        if(rm!!){
+            updateNumberSelected(actionRemove)
+        }else{
             _selectedPhotos.value?.add(image)
             updateNumberSelected(actionAdd)
-        }else{
-            updateNumberSelected(actionRemove)
         }
     }
 

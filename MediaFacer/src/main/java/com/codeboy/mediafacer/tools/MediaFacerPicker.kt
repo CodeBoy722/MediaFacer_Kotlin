@@ -153,6 +153,7 @@ class MediaFacerPicker : BottomSheetDialogFragment(), View.OnClickListener {
                 .getDrawable(requireActivity().resources, completeDrawableId!!,null))
         }
 
+        selectionViewModel.emptySelections()
         selectionViewModel.numItemsSelected.observe(viewLifecycleOwner, Observer {
             bindings.selectedNum.text = it.toString()
         })
