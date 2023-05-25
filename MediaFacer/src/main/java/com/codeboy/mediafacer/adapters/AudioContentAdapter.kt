@@ -15,11 +15,13 @@ import com.codeboy.mediafacer.R
 import com.codeboy.mediafacer.databinding.AudioSelectItemBinding
 import com.codeboy.mediafacer.models.AudioContent
 import com.codeboy.mediafacer.tools.MediaSelectionListener
+import kotlin.properties.Delegates
 
 internal class AudioContentAdapter(private val defaultArt: Int,private val listener: MediaSelectionViewModel)
     : ListAdapter<AudioContent, AudioContentAdapter.AudioSelectViewHolder>(AudioDiffUtil()) {
 
     var lastPosition = -1
+    var selectionIndicators = ArrayList<Boolean>()
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): AudioSelectViewHolder {
         val inflater = LayoutInflater.from(parent.context)
@@ -33,6 +35,8 @@ internal class AudioContentAdapter(private val defaultArt: Int,private val liste
             holder.itemView.startAnimation(anim)
             lastPosition = holder.adapterPosition
         }
+
+        holder.itemPosition = position
         holder.item = getItem(position)
         holder.bind()
     }
@@ -50,6 +54,7 @@ internal class AudioContentAdapter(private val defaultArt: Int,private val liste
     inner class AudioSelectViewHolder(private val bindings: AudioSelectItemBinding)
         : RecyclerView.ViewHolder(bindings.root), View.OnClickListener{
         lateinit var item: AudioContent
+        var itemPosition = 0
         fun bind(){
             bindings.root.setOnClickListener(this)
             Glide.with(bindings.art)
@@ -59,12 +64,14 @@ internal class AudioContentAdapter(private val defaultArt: Int,private val liste
                 .into(bindings.art)
 
             //bindings.selector.visibility = View.GONE
+            bindings.selector.isChecked = selectionIndicators[itemPosition]
             bindings.artist.text = item.artist
             bindings.title.text = item.title
         }
 
         override fun onClick(v: View?) {
             bindings.selector.isChecked = !bindings.selector.isChecked
+            selectionIndicators[itemPosition] = bindings.selector.isChecked
             listener.addOrRemoveAudioItem(item)
         }
     }
