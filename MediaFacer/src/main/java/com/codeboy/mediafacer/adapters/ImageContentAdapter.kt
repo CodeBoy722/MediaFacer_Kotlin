@@ -42,11 +42,17 @@ internal class ImageContentAdapter(private val listener: MediaSelectionViewModel
 
     override fun submitList(list: MutableList<ImageContent>?) {
         super.submitList(list)
-        list?.forEachIndexed { index, imageContent ->
-            if(selectionIndicators.size-1 <= index){
+
+        if(selectionIndicators.size == 0){
+            list?.forEach{ it ->
                 selectionIndicators.add(false)
-            }else if(selectionIndicators.size-1 >= index && !selectionIndicators[index]){
-                selectionIndicators[index] = false
+            }
+        }else{
+            val diff = list?.size?.minus(selectionIndicators.size)
+            if(diff != null && diff > 0){
+                for (i in 1..diff){
+                    selectionIndicators.add(false)
+                }
             }
         }
     }
