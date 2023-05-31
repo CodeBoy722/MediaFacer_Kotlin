@@ -14,6 +14,7 @@ import com.codeboy.mediafacer.MediaSelectionViewModel
 import com.codeboy.mediafacer.R
 import com.codeboy.mediafacer.databinding.AudioSelectItemBinding
 import com.codeboy.mediafacer.models.AudioContent
+import com.codeboy.mediafacer.models.ImageContent
 import com.codeboy.mediafacer.tools.MediaSelectionListener
 import kotlin.properties.Delegates
 
@@ -21,7 +22,7 @@ internal class AudioContentAdapter(private val defaultArt: Int,private val liste
     : ListAdapter<AudioContent, AudioContentAdapter.AudioSelectViewHolder>(AudioDiffUtil()) {
 
     var lastPosition = -1
-    var selectionIndicators = ArrayList<Boolean>()
+    //var selectionIndicators = ArrayList<Boolean>()
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): AudioSelectViewHolder {
         val inflater = LayoutInflater.from(parent.context)
@@ -40,6 +41,24 @@ internal class AudioContentAdapter(private val defaultArt: Int,private val liste
         holder.item = getItem(position)
         holder.bind()
     }
+
+    /*override fun submitList(list: MutableList<AudioContent>?) {
+        super.submitList(list)
+        if(list != null){
+            if(selectionIndicators.size == 0){
+                list.forEach{ it ->
+                    selectionIndicators.add(false)
+                }
+            }else{
+                val diff = list.size.minus(selectionIndicators.size)
+                if(diff > 0){
+                    for (i in 1..diff){
+                        selectionIndicators.add(false)
+                    }
+                }
+            }
+        }
+    }*/
 
     private class AudioDiffUtil : DiffUtil.ItemCallback<AudioContent>() {
         override fun areItemsTheSame(oldItem: AudioContent, newItem: AudioContent): Boolean {
@@ -63,16 +82,20 @@ internal class AudioContentAdapter(private val defaultArt: Int,private val liste
                 .placeholder(R.drawable.music_placeholder)
                 .into(bindings.art)
 
-            //bindings.selector.visibility = View.GONE
-            bindings.selector.isChecked = selectionIndicators[itemPosition]
+            val itemSort = listener.selectedAudios.value!!.sortedBy { it.musicId == item.musicId }
+            bindings.selector.isChecked = (itemSort.isNotEmpty() && (itemSort[0].musicId == item.musicId))
+
             bindings.artist.text = item.artist
             bindings.title.text = item.title
         }
 
         override fun onClick(v: View?) {
             bindings.selector.isChecked = !bindings.selector.isChecked
-            selectionIndicators[itemPosition] = bindings.selector.isChecked
-            listener.addOrRemoveAudioItem(item)
+            if(bindings.selector.isChecked){
+                listener.addOrRemoveAudioItem(item, listener.actionAdd)
+            }else{
+                listener.addOrRemoveAudioItem(item, listener.actionRemove)
+            }
         }
     }
 

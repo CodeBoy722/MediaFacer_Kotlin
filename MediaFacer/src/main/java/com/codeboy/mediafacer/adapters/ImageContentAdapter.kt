@@ -20,7 +20,7 @@ internal class ImageContentAdapter(private val listener: MediaSelectionViewModel
     : ListAdapter<ImageContent, ImageContentAdapter.ImageSelectViewHolder>(ImageDiffUtil()){
 
     var lastPosition = -1
-    var selectionIndicators = ArrayList<Boolean>()
+    //var selectionIndicators = ArrayList<Boolean>()
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ImageSelectViewHolder {
         val inflater = LayoutInflater.from(parent.context)
@@ -40,22 +40,23 @@ internal class ImageContentAdapter(private val listener: MediaSelectionViewModel
         holder.bind()
     }
 
-    override fun submitList(list: MutableList<ImageContent>?) {
+   /* override fun submitList(list: MutableList<ImageContent>?) {
         super.submitList(list)
-
-        if(selectionIndicators.size == 0){
-            list?.forEach{ it ->
-                selectionIndicators.add(false)
-            }
-        }else{
-            val diff = list?.size?.minus(selectionIndicators.size)
-            if(diff != null && diff > 0){
-                for (i in 1..diff){
+        if(list != null){
+            if(selectionIndicators.size == 0){
+                list.forEach{ it ->
                     selectionIndicators.add(false)
+                }
+            }else{
+                val diff = list.size.minus(selectionIndicators.size)
+                if(diff > 0){
+                    for (i in 1..diff){
+                        selectionIndicators.add(false)
+                    }
                 }
             }
         }
-    }
+    }*/
 
     private class ImageDiffUtil : DiffUtil.ItemCallback<ImageContent>() {
         override fun areItemsTheSame(oldItem: ImageContent, newItem: ImageContent): Boolean {
@@ -78,13 +79,12 @@ internal class ImageContentAdapter(private val listener: MediaSelectionViewModel
                 .apply(RequestOptions().centerCrop())
                 .into(bindings.image)
 
-            //bindings.selector.visibility = View.GONE
-            bindings.selector.isChecked = selectionIndicators[itemPosition]
+            val itemSort = listener.selectedPhotos.value!!.sortedBy { it.imageId == item.imageId }
+            bindings.selector.isChecked = (itemSort.isNotEmpty() && (itemSort[0].imageId == item.imageId))
         }
 
         override fun onClick(p0: View?) {
             bindings.selector.isChecked = !bindings.selector.isChecked
-            selectionIndicators[itemPosition] = bindings.selector.isChecked
             listener.addOrRemoveImageItem(item)
         }
 
