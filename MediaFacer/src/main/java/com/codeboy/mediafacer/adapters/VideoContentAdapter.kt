@@ -16,6 +16,9 @@ import com.codeboy.mediafacer.databinding.VideoSelectItemBinding
 import com.codeboy.mediafacer.models.AudioContent
 import com.codeboy.mediafacer.models.VideoContent
 import com.codeboy.mediafacer.tools.MediaSelectionListener
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.async
 
 internal class VideoContentAdapter(private val listener: MediaSelectionViewModel)
     : ListAdapter<VideoContent, VideoContentAdapter.VideoSelectViewHolder>(VideoDiffUtil()){
@@ -78,8 +81,11 @@ internal class VideoContentAdapter(private val listener: MediaSelectionViewModel
                 .apply(RequestOptions().centerCrop())
                 .into(bindings.videoPreview)
 
-            val itemSort = listener.selectedVideos.value!!.sortedBy { it.id == item.id }
-            bindings.selector.isChecked = (itemSort.isNotEmpty() && (itemSort[0].id == item.id))
+
+            CoroutineScope(Dispatchers.Main).async {
+                val itemSort = listener.selectedVideos.value!!.sortedBy { it.id == item.id }
+                bindings.selector.isChecked = (itemSort.isNotEmpty() && (itemSort[0].id == item.id))
+            }
         }
 
         override fun onClick(v: View?) {

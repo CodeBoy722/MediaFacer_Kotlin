@@ -16,6 +16,10 @@ import com.codeboy.mediafacer.databinding.AudioSelectItemBinding
 import com.codeboy.mediafacer.models.AudioContent
 import com.codeboy.mediafacer.models.ImageContent
 import com.codeboy.mediafacer.tools.MediaSelectionListener
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.async
+import kotlinx.coroutines.launch
 import kotlin.properties.Delegates
 
 internal class AudioContentAdapter(private val defaultArt: Int,private val listener: MediaSelectionViewModel)
@@ -82,8 +86,10 @@ internal class AudioContentAdapter(private val defaultArt: Int,private val liste
                 .placeholder(R.drawable.music_placeholder)
                 .into(bindings.art)
 
-            val itemSort = listener.selectedAudios.value!!.sortedBy { it.musicId == item.musicId }
-            bindings.selector.isChecked = (itemSort.isNotEmpty() && (itemSort[0].musicId == item.musicId))
+            CoroutineScope(Dispatchers.Main).async {
+                val itemSort = listener.selectedAudios.value!!.sortedBy { it.musicId == item.musicId }
+                bindings.selector.isChecked = (itemSort.isNotEmpty() && (itemSort[0].musicId == item.musicId))
+            }
 
             bindings.artist.text = item.artist
             bindings.title.text = item.title

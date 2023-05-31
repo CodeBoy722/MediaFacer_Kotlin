@@ -15,6 +15,9 @@ import com.codeboy.mediafacer.R
 import com.codeboy.mediafacer.databinding.ImageSelectItemBinding
 import com.codeboy.mediafacer.models.ImageContent
 import com.codeboy.mediafacer.tools.MediaSelectionListener
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.async
 
 internal class ImageContentAdapter(private val listener: MediaSelectionViewModel)
     : ListAdapter<ImageContent, ImageContentAdapter.ImageSelectViewHolder>(ImageDiffUtil()){
@@ -79,8 +82,10 @@ internal class ImageContentAdapter(private val listener: MediaSelectionViewModel
                 .apply(RequestOptions().centerCrop())
                 .into(bindings.image)
 
-            val itemSort = listener.selectedPhotos.value!!.sortedBy { it.imageId == item.imageId }
-            bindings.selector.isChecked = (itemSort.isNotEmpty() && (itemSort[0].imageId == item.imageId))
+            CoroutineScope(Dispatchers.Main).async {
+                val itemSort = listener.selectedPhotos.value!!.sortedBy { it.imageId == item.imageId }
+                bindings.selector.isChecked = (itemSort.isNotEmpty() && (itemSort[0].imageId == item.imageId))
+            }
         }
 
         override fun onClick(p0: View?) {
