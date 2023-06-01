@@ -13,12 +13,7 @@ import com.bumptech.glide.request.RequestOptions
 import com.codeboy.mediafacer.MediaSelectionViewModel
 import com.codeboy.mediafacer.R
 import com.codeboy.mediafacer.databinding.VideoSelectItemBinding
-import com.codeboy.mediafacer.models.AudioContent
 import com.codeboy.mediafacer.models.VideoContent
-import com.codeboy.mediafacer.tools.MediaSelectionListener
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.async
 
 internal class VideoContentAdapter(private val listener: MediaSelectionViewModel)
     : ListAdapter<VideoContent, VideoContentAdapter.VideoSelectViewHolder>(VideoDiffUtil()){
@@ -42,24 +37,6 @@ internal class VideoContentAdapter(private val listener: MediaSelectionViewModel
         holder.bind()
     }
 
-    /*override fun submitList(list: MutableList<VideoContent>?) {
-        super.submitList(list)
-        if(list != null){
-            if(selectionIndicators.size == 0){
-                list.forEach{ it ->
-                    selectionIndicators.add(false)
-                }
-            }else{
-                val diff = list.size.minus(selectionIndicators.size)
-                if(diff > 0){
-                    for (i in 1..diff){
-                        selectionIndicators.add(false)
-                    }
-                }
-            }
-        }
-    }*/
-
     private class VideoDiffUtil : DiffUtil.ItemCallback<VideoContent>() {
         override fun areItemsTheSame(oldItem: VideoContent, newItem: VideoContent): Boolean {
             return oldItem.name == newItem.name
@@ -81,16 +58,17 @@ internal class VideoContentAdapter(private val listener: MediaSelectionViewModel
                 .apply(RequestOptions().centerCrop())
                 .into(bindings.videoPreview)
 
-
-            CoroutineScope(Dispatchers.Main).async {
-                val itemSort = listener.selectedVideos.value!!.sortedBy { it.id == item.id }
-                bindings.selector.isChecked = (itemSort.isNotEmpty() && (itemSort[0].id == item.id))
-            }
+            val found = listener.selectedVideos.value!!.filter { it.id == item.id }.size == 1
+            bindings.selector.isChecked = found
         }
 
         override fun onClick(v: View?) {
             bindings.selector.isChecked = !bindings.selector.isChecked
-            listener.addOrRemoveVideoItem(item)
+            if(bindings.selector.isChecked){
+                listener.addOrRemoveVideoItem(item, listener.actionAdd)
+            }else{
+                listener.addOrRemoveVideoItem(item, listener.actionRemove)
+            }
         }
 
     }

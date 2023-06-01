@@ -14,10 +14,6 @@ import com.codeboy.mediafacer.MediaSelectionViewModel
 import com.codeboy.mediafacer.R
 import com.codeboy.mediafacer.databinding.ImageSelectItemBinding
 import com.codeboy.mediafacer.models.ImageContent
-import com.codeboy.mediafacer.tools.MediaSelectionListener
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.async
 
 internal class ImageContentAdapter(private val listener: MediaSelectionViewModel)
     : ListAdapter<ImageContent, ImageContentAdapter.ImageSelectViewHolder>(ImageDiffUtil()){
@@ -43,24 +39,6 @@ internal class ImageContentAdapter(private val listener: MediaSelectionViewModel
         holder.bind()
     }
 
-   /* override fun submitList(list: MutableList<ImageContent>?) {
-        super.submitList(list)
-        if(list != null){
-            if(selectionIndicators.size == 0){
-                list.forEach{ it ->
-                    selectionIndicators.add(false)
-                }
-            }else{
-                val diff = list.size.minus(selectionIndicators.size)
-                if(diff > 0){
-                    for (i in 1..diff){
-                        selectionIndicators.add(false)
-                    }
-                }
-            }
-        }
-    }*/
-
     private class ImageDiffUtil : DiffUtil.ItemCallback<ImageContent>() {
         override fun areItemsTheSame(oldItem: ImageContent, newItem: ImageContent): Boolean {
             return oldItem.name == newItem.name
@@ -82,15 +60,17 @@ internal class ImageContentAdapter(private val listener: MediaSelectionViewModel
                 .apply(RequestOptions().centerCrop())
                 .into(bindings.image)
 
-            CoroutineScope(Dispatchers.Main).async {
-                val itemSort = listener.selectedPhotos.value!!.sortedBy { it.imageId == item.imageId }
-                bindings.selector.isChecked = (itemSort.isNotEmpty() && (itemSort[0].imageId == item.imageId))
-            }
+            val found = listener.selectedPhotos.value!!.filter { it.imageId == item.imageId }.size == 1
+            bindings.selector.isChecked = found
         }
 
         override fun onClick(p0: View?) {
             bindings.selector.isChecked = !bindings.selector.isChecked
-            listener.addOrRemoveImageItem(item)
+            if(bindings.selector.isChecked){
+                listener.addOrRemoveImageItem(item, listener.actionAdd)
+            }else{
+                listener.addOrRemoveImageItem(item, listener.actionRemove)
+            }
         }
 
     }

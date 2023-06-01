@@ -34,8 +34,6 @@ internal class MediaSelectionViewModel: ViewModel() {
              _numItemsSelected.value = _numItemsSelected.value?.minus(1)
             }
         }
-
-        //val itemSort = selectedAudios.value!!.sortedBy { it.musicId == 12456L }
     }
 
     private fun <T> remove(list: ArrayList<T>, predicate: Predicate<T>) {
@@ -61,28 +59,37 @@ internal class MediaSelectionViewModel: ViewModel() {
                 updateNumberSelected(actionRemove)
             }
         }
-
     }
 
 
-    fun addOrRemoveVideoItem(video: VideoContent){
-        val rm = _selectedVideos.value?.remove(video)
-        if(rm!!){
-            updateNumberSelected(actionRemove)
-        }else{
-            _selectedVideos.value?.add(video)
-            updateNumberSelected(actionAdd)
+    fun addOrRemoveVideoItem(video: VideoContent, action: String){
+
+        when(action){
+            actionAdd ->{
+                _selectedVideos.value?.add(video)
+                updateNumberSelected(actionAdd)
+            }
+            actionRemove ->{
+                val item = Predicate { videoX: VideoContent -> videoX.id == video.id}
+                remove(_selectedVideos.value!!, item)
+                updateNumberSelected(actionRemove)
+            }
         }
     }
 
 
-    fun addOrRemoveImageItem(image: ImageContent){
-        val rm = _selectedPhotos.value?.remove(image)
-        if(rm!!){
-            updateNumberSelected(actionRemove)
-        }else{
-            _selectedPhotos.value?.add(image)
-            updateNumberSelected(actionAdd)
+    fun addOrRemoveImageItem(image: ImageContent, action: String){
+
+        when(action){
+            actionAdd ->{
+                _selectedPhotos.value?.add(image)
+                updateNumberSelected(actionAdd)
+            }
+            actionRemove ->{
+                val item = Predicate { imageX: ImageContent -> imageX.imageId == image.imageId}
+                remove(_selectedPhotos.value!!, item)
+                updateNumberSelected(actionRemove)
+            }
         }
     }
 

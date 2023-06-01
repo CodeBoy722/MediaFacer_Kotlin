@@ -14,13 +14,6 @@ import com.codeboy.mediafacer.MediaSelectionViewModel
 import com.codeboy.mediafacer.R
 import com.codeboy.mediafacer.databinding.AudioSelectItemBinding
 import com.codeboy.mediafacer.models.AudioContent
-import com.codeboy.mediafacer.models.ImageContent
-import com.codeboy.mediafacer.tools.MediaSelectionListener
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.async
-import kotlinx.coroutines.launch
-import kotlin.properties.Delegates
 
 internal class AudioContentAdapter(private val defaultArt: Int,private val listener: MediaSelectionViewModel)
     : ListAdapter<AudioContent, AudioContentAdapter.AudioSelectViewHolder>(AudioDiffUtil()) {
@@ -46,24 +39,6 @@ internal class AudioContentAdapter(private val defaultArt: Int,private val liste
         holder.bind()
     }
 
-    /*override fun submitList(list: MutableList<AudioContent>?) {
-        super.submitList(list)
-        if(list != null){
-            if(selectionIndicators.size == 0){
-                list.forEach{ it ->
-                    selectionIndicators.add(false)
-                }
-            }else{
-                val diff = list.size.minus(selectionIndicators.size)
-                if(diff > 0){
-                    for (i in 1..diff){
-                        selectionIndicators.add(false)
-                    }
-                }
-            }
-        }
-    }*/
-
     private class AudioDiffUtil : DiffUtil.ItemCallback<AudioContent>() {
         override fun areItemsTheSame(oldItem: AudioContent, newItem: AudioContent): Boolean {
             return oldItem.name == newItem.name
@@ -86,10 +61,8 @@ internal class AudioContentAdapter(private val defaultArt: Int,private val liste
                 .placeholder(R.drawable.music_placeholder)
                 .into(bindings.art)
 
-            CoroutineScope(Dispatchers.Main).async {
-                val itemSort = listener.selectedAudios.value!!.sortedBy { it.musicId == item.musicId }
-                bindings.selector.isChecked = (itemSort.isNotEmpty() && (itemSort[0].musicId == item.musicId))
-            }
+            val found = listener.selectedAudios.value!!.filter { it.musicId == item.musicId }.size == 1
+            bindings.selector.isChecked = found
 
             bindings.artist.text = item.artist
             bindings.title.text = item.title

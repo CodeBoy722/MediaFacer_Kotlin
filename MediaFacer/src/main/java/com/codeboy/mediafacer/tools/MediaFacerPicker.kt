@@ -153,9 +153,18 @@ class MediaFacerPicker : BottomSheetDialogFragment(), View.OnClickListener {
                 .getDrawable(requireActivity().resources, completeDrawableId!!,null))
         }
 
+        bindings.completeSelection.visibility = View.GONE
+        bindings.selectedNum.visibility = View.GONE
         selectionViewModel.emptySelections()
         selectionViewModel.numItemsSelected.observe(viewLifecycleOwner, Observer {
             bindings.selectedNum.text = it.toString()
+            if(it > 0){
+                bindings.selectedNum.visibility = View.VISIBLE
+                bindings.completeSelection.visibility = View.VISIBLE
+            }else{
+                bindings.selectedNum.visibility = View.GONE
+                bindings.completeSelection.visibility = View.GONE
+            }
         })
 
         setUpSelectedMediaFragment()
