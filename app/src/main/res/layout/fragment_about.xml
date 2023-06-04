@@ -73,7 +73,7 @@
             app:layout_constraintTop_toBottomOf="@+id/textView11" />
 
         <TextView
-            android:id="@+id/textView25"
+            android:id="@+id/git_link"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginStart="16dp"
@@ -96,7 +96,7 @@
             android:textStyle="bold"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/textView25" />
+            app:layout_constraintTop_toBottomOf="@+id/git_link" />
 
 
     </androidx.constraintlayout.widget.ConstraintLayout>

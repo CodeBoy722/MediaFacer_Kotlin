@@ -1,6 +1,8 @@
 package com.codeboy.mediafacer.tools
 
+import android.content.res.ColorStateList
 import android.content.res.Resources
+import android.graphics.Color
 import android.os.Bundle
 import android.view.*
 import androidx.core.content.ContextCompat
@@ -45,6 +47,11 @@ class MediaFacerPicker : BottomSheetDialogFragment(), View.OnClickListener {
     private var videoFragPosition: Int? = null
     private var audioFragPosition: Int? = null
 
+    private var pickerColor: Int? = null
+    private var imageMenuIcon : Int? = null
+    private var videoMenuIcon : Int? = null
+    private var audioMenuIcon : Int? = null
+
     private var selectedFragMenuColor  = R.color.material_grey_500
     private var unSelectedFragMenuColor = R.color.white
 
@@ -88,6 +95,14 @@ class MediaFacerPicker : BottomSheetDialogFragment(), View.OnClickListener {
             }
             override fun onSlide(view: View, offset: Float) {}
         })
+
+        if(pickerColor != null){
+            bindings.menus.setBackgroundColor((ResourcesCompat.getColor(resources,pickerColor!!, null)))
+            bindings.completeSelection
+                .backgroundTintList = ColorStateList.valueOf(ResourcesCompat.getColor(resources,pickerColor!!, null));
+            bindings.selectedNum.setTextColor((ResourcesCompat.getColor(resources,pickerColor!!, null)))
+        }
+
     }
 
     override fun onStart() {
@@ -244,12 +259,14 @@ class MediaFacerPicker : BottomSheetDialogFragment(), View.OnClickListener {
     }
 
     fun setMediaBottomMenuIcons(audioIcon: Int, videoIcon:Int, imagesIcon: Int): MediaFacerPicker{
-
-
+        videoMenuIcon = videoIcon
+        imageMenuIcon = imagesIcon
+        audioMenuIcon = audioIcon
         return this
     }
 
     fun setPickerColor(pickerColor: Int): MediaFacerPicker{
+        this.pickerColor = pickerColor
         return this
     }
 

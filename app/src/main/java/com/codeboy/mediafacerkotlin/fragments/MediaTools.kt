@@ -32,10 +32,11 @@ class MediaTools() : Fragment() {
                 .addAllMediaSelection()
                 //.addAudioSelection()
                 //.addVideoSelection()
+                .setPickerColor(R.color.purple_500)
                 .setSelectionCompleteDrawable(R.drawable.ic_send)
                 .setAudioDefaultAlbumArtDrawable(R.drawable.music_placeholder)
                 .setSelectionMenuTitles("Music","Videos","Images")
-                .setBottomItemSelectionColors(R.color.cartesian_orange, R.color.material_grey_500)
+                .setBottomItemSelectionColors(R.color.cartesian_orange, R.color.material_white_200)
                 .addMediaSelectionListener(object : MediaSelectionListener {
                     override fun onMediaItemsSelected(
                         audios: ArrayList<AudioContent>, videos: ArrayList<VideoContent>, Images: ArrayList<ImageContent>, ) {
