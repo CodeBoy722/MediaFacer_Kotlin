@@ -60,6 +60,7 @@ internal class AudioSelect() : Fragment() {
         bindings.audioList.hasFixedSize()
         bindings.audioList.setHasFixedSize(true)
         bindings.audioList.setItemViewCacheSize(20)
+        bindings.emptyView.visibility = View.GONE
 
         //config grid layout manager
         layoutManager = LinearLayoutManager(requireActivity(), RecyclerView.VERTICAL, false)
@@ -74,6 +75,7 @@ internal class AudioSelect() : Fragment() {
 
         //observe audio results from view model
         viewModel.audios.observe(viewLifecycleOwner) {
+            if(it.size == 0) bindings.emptyView.visibility = View.VISIBLE
             val results = ArrayList<AudioContent>()
             results.addAll(it)
             adapter.submitList(results)

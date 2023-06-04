@@ -60,6 +60,7 @@ internal class ImageSelect() : Fragment() {
         bindings.imageList.hasFixedSize()
         bindings.imageList.setHasFixedSize(true)
         bindings.imageList.setItemViewCacheSize(20)
+        bindings.emptyView.visibility = View.GONE
 
         //config grid layout manager
         val numOfColumns = calculateNoOfColumns(requireActivity(), 85f)
@@ -84,6 +85,7 @@ internal class ImageSelect() : Fragment() {
             //note to use "it" directly the variable  imagesList in the view model must be private
             //because of this, the adapter can't compute a change because it thinks is still has the same list
             //"it" must be a final and immutable list to be used directly and have desired effect
+            if(it.size == 0) bindings.emptyView.visibility = View.VISIBLE
             val results = ArrayList<ImageContent>()
             results.addAll(it)
             adapter.submitList(results)

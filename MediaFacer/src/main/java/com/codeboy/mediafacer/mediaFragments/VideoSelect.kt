@@ -65,6 +65,7 @@ internal class VideoSelect() : Fragment() {
         bindings.videoList.hasFixedSize()
         bindings.videoList.setHasFixedSize(true)
         bindings.videoList.setItemViewCacheSize(20)
+        bindings.emptyView.visibility = View.GONE
 
         //config grid layout manager
         val numOfColumns = calculateNoOfColumns(requireActivity(), 115f)
@@ -95,6 +96,7 @@ internal class VideoSelect() : Fragment() {
 
         // observe video search results from view Model
         viewModel.foundVideos.observe(viewLifecycleOwner){
+            if(it.size == 0) bindings.emptyView.visibility = View.VISIBLE
             val results = ArrayList<VideoContent>()
             results.addAll(it)
             adapter.submitList(results)

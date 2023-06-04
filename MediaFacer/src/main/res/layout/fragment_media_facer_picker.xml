@@ -91,17 +91,18 @@
             android:id="@+id/complete_selection"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_gravity="bottom|end"
             android:layout_marginEnd="8dp"
+            android:layout_marginBottom="32dp"
             android:elevation="3dp"
             android:scaleType="fitXY"
             android:src="@drawable/ic_send"
             app:backgroundTint="@color/bright_navy_blue"
-            app:fabSize="auto"
+            app:fabSize="normal"
+            app:maxImageSize="22dp"
             app:rippleColor="@color/material_grey_400"
             app:tint="@color/white"
-            tools:ignore="SpeakableTextPresentCheck"
-            android:layout_gravity="bottom|end"
-            android:layout_marginBottom="32dp"/>
+            tools:ignore="SpeakableTextPresentCheck" />
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:id="@+id/menus"
