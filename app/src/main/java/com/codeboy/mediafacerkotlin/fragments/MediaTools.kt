@@ -34,6 +34,7 @@ class MediaTools() : Fragment() {
                 //.addVideoSelection()
                 .setPickerColor(R.color.purple_500)
                 .setSelectionCompleteDrawable(R.drawable.ic_send)
+                .setMediaBottomMenuIcons(R.drawable.ic_audio, R.drawable.ic_video, R.drawable.ic_image)
                 .setAudioDefaultAlbumArtDrawable(R.drawable.music_placeholder)
                 .setSelectionMenuTitles("Music","Videos","Images")
                 .setBottomItemSelectionColors(R.color.cartesian_orange, R.color.material_white_200)

@@ -33,15 +33,17 @@ internal class AudioSelect() : Fragment() {
     private var paginationStart = 0
     private var paginationLimit = 100
     private var shouldPaginate = true
+    private var pickerColor: Int? = null
 
     private lateinit var layoutManager: LinearLayoutManager
     private lateinit var adapter: AudioContentAdapter
     private lateinit var scrollListener: EndlessScrollListener
     private lateinit var searchScrollListener: EndlessScrollListener
 
-    constructor(defaultAlbumArt: Int, listener: MediaSelectionViewModel): this(){
+    constructor(defaultAlbumArt: Int, listener: MediaSelectionViewModel, pickerColor: Int): this(){
         this.defaultAlbumArt = defaultAlbumArt
         this.listener = listener
+        this.pickerColor = pickerColor
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle? ): View? {
@@ -67,7 +69,7 @@ internal class AudioSelect() : Fragment() {
         bindings.audioList.layoutManager = layoutManager
 
         //add adapter
-        adapter = AudioContentAdapter(defaultAlbumArt, listener)
+        adapter = AudioContentAdapter(defaultAlbumArt, listener, pickerColor!!)
         bindings.audioList.adapter = adapter
 
         //init view model

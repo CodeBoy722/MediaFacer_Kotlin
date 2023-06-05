@@ -29,18 +29,42 @@
             android:layout_marginEnd="4dp"
             android:button="@drawable/check_selector" />
 
-        <TextView
-            android:id="@+id/length"
-            android:layout_width="wrap_content"
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_gravity="bottom|center"
-            android:fontFamily="@font/notosans_regular"
-            android:gravity="center"
-            android:text=": length"
-            android:textColor="@color/bright_navy_blue"
-            android:textSize="12sp"
-            app:drawableStartCompat="@drawable/ic_video_menu"
-            app:drawableTint="@color/bright_navy_blue" />
+            android:layout_gravity="bottom">
+
+            <androidx.appcompat.widget.AppCompatTextView
+                android:id="@+id/length"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="8dp"
+                android:layout_marginBottom="8dp"
+                android:fontFamily="@font/notosans_regular"
+                android:textColor="@color/bright_navy_blue"
+                android:textSize="12sp"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintStart_toEndOf="@+id/imageView"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <androidx.appcompat.widget.AppCompatImageView
+                android:id="@+id/imageView"
+                android:layout_width="20dp"
+                android:layout_height="20dp"
+                android:layout_marginStart="8dp"
+                android:layout_marginBottom="8dp"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toStartOf="@+id/length"
+                app:layout_constraintHorizontal_bias="1.0"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:srcCompat="@drawable/ic_fab_play"
+                app:tint="@color/bright_navy_blue" />
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+
 
     </androidx.cardview.widget.CardView>
 

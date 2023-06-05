@@ -39,14 +39,16 @@ internal class VideoSelect() : Fragment() {
     private var paginationStart = 0
     private var paginationLimit = 100
     private var shouldPaginate = true
+    private var pickerColor: Int? = null
 
     private lateinit var layoutManager: FlexboxLayoutManager
     private lateinit var adapter: VideoContentAdapter
     private lateinit var scrollListener: EndlessScrollListener
     private lateinit var searchScrollListener: EndlessScrollListener
 
-    constructor(listener: MediaSelectionViewModel): this(){
+    constructor(listener: MediaSelectionViewModel,  pickerColor: Int): this(){
         this.listener = listener
+        this.pickerColor = pickerColor
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
@@ -80,7 +82,7 @@ internal class VideoSelect() : Fragment() {
         bindings.videoList.layoutManager = layoutManager
 
         //add adapter
-        adapter = VideoContentAdapter(listener)
+        adapter = VideoContentAdapter(listener, pickerColor!!)
         bindings.videoList.adapter = adapter
 
         //init view model

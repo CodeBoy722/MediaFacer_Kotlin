@@ -47,7 +47,7 @@ class MediaFacerPicker : BottomSheetDialogFragment(), View.OnClickListener {
     private var videoFragPosition: Int? = null
     private var audioFragPosition: Int? = null
 
-    private var pickerColor: Int? = null
+    private var pickerColor: Int? = R.color.bright_navy_blue
     private var imageMenuIcon : Int? = null
     private var videoMenuIcon : Int? = null
     private var audioMenuIcon : Int? = null
@@ -96,11 +96,27 @@ class MediaFacerPicker : BottomSheetDialogFragment(), View.OnClickListener {
             override fun onSlide(view: View, offset: Float) {}
         })
 
+        bindings.completeSelection.setOnClickListener(this)
+
         if(pickerColor != null){
             bindings.menus.setBackgroundColor((ResourcesCompat.getColor(resources,pickerColor!!, null)))
             bindings.completeSelection
                 .backgroundTintList = ColorStateList.valueOf(ResourcesCompat.getColor(resources,pickerColor!!, null));
             bindings.selectedNum.setTextColor((ResourcesCompat.getColor(resources,pickerColor!!, null)))
+        }
+
+        when{
+            (audioMenuIcon != null) -> {
+                bindings.audioOption.setImageDrawable(ResourcesCompat.getDrawable(resources, audioMenuIcon!!, null))
+            }
+
+            (videoMenuIcon != null) -> {
+                bindings.videoOption.setImageDrawable(ResourcesCompat.getDrawable(resources, videoMenuIcon!!, null))
+            }
+
+            (imageMenuIcon != null) ->{
+                bindings.imageOption.setImageDrawable(ResourcesCompat.getDrawable(resources, imageMenuIcon!!, null))
+            }
         }
 
     }
@@ -189,7 +205,7 @@ class MediaFacerPicker : BottomSheetDialogFragment(), View.OnClickListener {
         val medias = ArrayList<Fragment>()
         when {
             addImages -> {
-                imageSelect = ImageSelect(selectionViewModel)
+                imageSelect = ImageSelect(selectionViewModel, pickerColor!!)
                 medias.add(imageSelect)
                 imageFragPosition = medias.size - 1
             }else -> {
@@ -199,7 +215,7 @@ class MediaFacerPicker : BottomSheetDialogFragment(), View.OnClickListener {
 
         when {
             addVideos -> {
-                videoSelect = VideoSelect(selectionViewModel)
+                videoSelect = VideoSelect(selectionViewModel, pickerColor!!)
                 medias.add(videoSelect)
                 videoFragPosition = medias.size - 1
             }else -> {
@@ -209,7 +225,7 @@ class MediaFacerPicker : BottomSheetDialogFragment(), View.OnClickListener {
 
         when {
             addAudios -> {
-                audioSelect = AudioSelect(customAlbumDrawable,selectionViewModel)
+                audioSelect = AudioSelect(customAlbumDrawable,selectionViewModel, pickerColor!!)
                 medias.add(audioSelect)
                 audioFragPosition = medias.size - 1
             }else -> {
@@ -258,7 +274,7 @@ class MediaFacerPicker : BottomSheetDialogFragment(), View.OnClickListener {
         return this
     }
 
-    fun setMediaBottomMenuIcons(audioIcon: Int, videoIcon:Int, imagesIcon: Int): MediaFacerPicker{
+    fun setMediaBottomMenuIcons(audioIcon: Int?, videoIcon:Int?, imagesIcon: Int?): MediaFacerPicker{
         videoMenuIcon = videoIcon
         imageMenuIcon = imagesIcon
         audioMenuIcon = audioIcon

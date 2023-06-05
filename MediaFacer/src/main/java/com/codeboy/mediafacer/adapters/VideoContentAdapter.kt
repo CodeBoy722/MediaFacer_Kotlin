@@ -10,12 +10,13 @@ import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.bumptech.glide.request.RequestOptions
+import com.codeboy.mediafacer.MediaDataUtils
 import com.codeboy.mediafacer.MediaSelectionViewModel
 import com.codeboy.mediafacer.R
 import com.codeboy.mediafacer.databinding.VideoSelectItemBinding
 import com.codeboy.mediafacer.models.VideoContent
 
-internal class VideoContentAdapter(private val listener: MediaSelectionViewModel)
+internal class VideoContentAdapter(private val listener: MediaSelectionViewModel, private val pickerColor: Int)
     : ListAdapter<VideoContent, VideoContentAdapter.VideoSelectViewHolder>(VideoDiffUtil()){
 
     var lastPosition = -1
@@ -58,6 +59,8 @@ internal class VideoContentAdapter(private val listener: MediaSelectionViewModel
                 .apply(RequestOptions().centerCrop())
                 .into(bindings.videoPreview)
 
+            val length = ": " + MediaDataUtils.milliSecondsToTimer(item.duration)
+            bindings.length.text = length
             val found = listener.selectedVideos.value!!.filter { it.id == item.id }.size == 1
             bindings.selector.isChecked = found
         }

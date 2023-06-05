@@ -15,7 +15,7 @@ import com.codeboy.mediafacer.R
 import com.codeboy.mediafacer.databinding.AudioSelectItemBinding
 import com.codeboy.mediafacer.models.AudioContent
 
-internal class AudioContentAdapter(private val defaultArt: Int,private val listener: MediaSelectionViewModel)
+internal class AudioContentAdapter(private val defaultArt: Int,private val listener: MediaSelectionViewModel, private val pickerColor: Int)
     : ListAdapter<AudioContent, AudioContentAdapter.AudioSelectViewHolder>(AudioDiffUtil()) {
 
     var lastPosition = -1

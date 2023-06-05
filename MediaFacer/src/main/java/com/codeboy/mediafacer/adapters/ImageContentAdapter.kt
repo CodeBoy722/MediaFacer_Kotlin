@@ -15,7 +15,7 @@ import com.codeboy.mediafacer.R
 import com.codeboy.mediafacer.databinding.ImageSelectItemBinding
 import com.codeboy.mediafacer.models.ImageContent
 
-internal class ImageContentAdapter(private val listener: MediaSelectionViewModel)
+internal class ImageContentAdapter(private val listener: MediaSelectionViewModel, private val pickerColor: Int)
     : ListAdapter<ImageContent, ImageContentAdapter.ImageSelectViewHolder>(ImageDiffUtil()){
 
     var lastPosition = -1

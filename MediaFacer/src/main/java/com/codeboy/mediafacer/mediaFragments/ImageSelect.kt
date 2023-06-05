@@ -35,13 +35,15 @@ internal class ImageSelect() : Fragment() {
     private lateinit var bindings: FragmentImageSelectBinding
     private lateinit var viewModel: ImagesViewModel
     private lateinit var listener: MediaSelectionViewModel
+    private var pickerColor: Int? = null
 
     private lateinit var layoutManager: FlexboxLayoutManager
     private lateinit var scrollListener: EndlessScrollListener
     private lateinit var adapter: ImageContentAdapter
 
-    constructor(listener: MediaSelectionViewModel):this(){
+    constructor(listener: MediaSelectionViewModel,  pickerColor: Int):this(){
         this.listener = listener
+        this.pickerColor = pickerColor
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle? ): View? {
@@ -74,7 +76,7 @@ internal class ImageSelect() : Fragment() {
         bindings.imageList.layoutManager = layoutManager
 
         //add adapter
-        adapter = ImageContentAdapter(listener)
+        adapter = ImageContentAdapter(listener, pickerColor!!)
         bindings.imageList.adapter = adapter
 
         //init images view model
