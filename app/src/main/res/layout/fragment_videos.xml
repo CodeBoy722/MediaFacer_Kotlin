@@ -44,7 +44,7 @@
                 android:layout_marginTop="8dp"
                 android:layout_marginEnd="8dp"
                 android:layout_marginBottom="8dp"
-                android:background="@drawable/search_background_m"
+                android:background="@drawable/search_background"
                 android:hint="search video"
                 android:paddingStart="16dp"
                 android:textCursorDrawable="@null"
