@@ -8,7 +8,7 @@
         android:background="?attr/selectableItemBackground">
 
         <ImageView
-            android:id="@+id/imageView"
+            android:id="@+id/play_indicator"
             android:layout_width="64dp"
             android:layout_height="64dp"
             android:layout_marginStart="5dp"
@@ -33,8 +33,8 @@
             app:layout_constraintBottom_toTopOf="@+id/num_of_songs"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.5"
-            app:layout_constraintStart_toEndOf="@+id/imageView"
-            app:layout_constraintTop_toTopOf="@+id/imageView" />
+            app:layout_constraintStart_toEndOf="@+id/play_indicator"
+            app:layout_constraintTop_toTopOf="@+id/play_indicator" />
 
         <TextView
             android:id="@+id/num_of_songs"
@@ -47,10 +47,10 @@
             android:text="folder size"
             android:textSize="12sp"
             android:fontFamily="@font/notosans_regular"
-            app:layout_constraintBottom_toBottomOf="@+id/imageView"
+            app:layout_constraintBottom_toBottomOf="@+id/play_indicator"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.5"
-            app:layout_constraintStart_toEndOf="@+id/imageView"
+            app:layout_constraintStart_toEndOf="@+id/play_indicator"
             app:layout_constraintTop_toBottomOf="@+id/folder_name" />
     </androidx.constraintlayout.widget.ConstraintLayout>
 

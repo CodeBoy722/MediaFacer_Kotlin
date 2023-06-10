@@ -10,7 +10,7 @@
 
 
         <ImageView
-            android:id="@+id/imageView"
+            android:id="@+id/play_indicator"
             android:layout_width="250dp"
             android:layout_height="250dp"
             app:layout_constraintBottom_toBottomOf="parent"

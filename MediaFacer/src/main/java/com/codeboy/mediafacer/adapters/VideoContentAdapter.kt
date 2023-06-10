@@ -1,10 +1,13 @@
 package com.codeboy.mediafacer.adapters
 
+import android.content.res.ColorStateList
+import android.graphics.drawable.StateListDrawable
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.animation.Animation
 import android.view.animation.AnimationUtils
+import androidx.core.content.res.ResourcesCompat
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
@@ -58,6 +61,29 @@ internal class VideoContentAdapter(private val listener: MediaSelectionViewModel
                 .load(item.videoUri)
                 .apply(RequestOptions().centerCrop())
                 .into(bindings.videoPreview)
+
+            val stateDrawable = StateListDrawable()
+            stateDrawable.addState( intArrayOf(-android.R.attr.state_checked),
+                ResourcesCompat.getDrawable(bindings.root.resources, R.drawable.ic_media_uncheck, null));
+            stateDrawable.addState(intArrayOf(android.R.attr.state_checked), ResourcesCompat.getDrawable(bindings.root.resources, R.drawable.ic_media_check, null))
+
+            val states = arrayOf(
+                intArrayOf(android.R.attr.state_checked), // checked
+                intArrayOf(-android.R.attr.state_checked), // unchecked
+            )
+
+            val colors = intArrayOf(
+                ResourcesCompat.getColor(bindings.root.resources, pickerColor,null),
+                ResourcesCompat.getColor(bindings.root.resources, R.color.material_grey_400,null),
+            )
+
+            val checkColorList = ColorStateList(states, colors)
+
+            bindings.selector.buttonDrawable = stateDrawable
+            bindings.selector.buttonTintList = checkColorList
+
+            bindings.playIndicator.setColorFilter(ResourcesCompat.getColor(bindings.root.resources, pickerColor,null))
+            bindings.length.setTextColor(ResourcesCompat.getColor(bindings.root.resources, pickerColor,null))
 
             val length = ": " + MediaDataUtils.milliSecondsToTimer(item.duration)
             bindings.length.text = length

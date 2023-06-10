@@ -21,15 +21,14 @@
 
         <androidx.appcompat.widget.AppCompatCheckBox
             android:id="@+id/selector"
-            android:layout_width="30dp"
-            android:layout_height="30dp"
-            android:scaleX="0.7"
-            android:scaleY="0.7"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
             android:layout_gravity="top|end"
             android:layout_marginTop="4dp"
             android:layout_marginEnd="4dp"
             android:button="@drawable/check_selector"
-            />
+            android:scaleX="0.5"
+            android:scaleY="0.5" />
 
     </androidx.cardview.widget.CardView>
 

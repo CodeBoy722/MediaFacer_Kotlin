@@ -1,10 +1,15 @@
 package com.codeboy.mediafacer.adapters
 
+import android.content.res.ColorStateList
+import android.graphics.Color
+import android.graphics.drawable.Drawable
+import android.graphics.drawable.StateListDrawable
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.animation.Animation
 import android.view.animation.AnimationUtils
+import androidx.core.content.res.ResourcesCompat
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
@@ -15,11 +20,11 @@ import com.codeboy.mediafacer.R
 import com.codeboy.mediafacer.databinding.AudioSelectItemBinding
 import com.codeboy.mediafacer.models.AudioContent
 
+
 internal class AudioContentAdapter(private val defaultArt: Int,private val listener: MediaSelectionViewModel, private val pickerColor: Int)
     : ListAdapter<AudioContent, AudioContentAdapter.AudioSelectViewHolder>(AudioDiffUtil()) {
 
     var lastPosition = -1
-    //var selectionIndicators = ArrayList<Boolean>()
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): AudioSelectViewHolder {
         val inflater = LayoutInflater.from(parent.context)
@@ -60,6 +65,25 @@ internal class AudioContentAdapter(private val defaultArt: Int,private val liste
                 .apply(RequestOptions().centerCrop().circleCrop())
                 .placeholder(R.drawable.music_placeholder)
                 .into(bindings.art)
+
+            val stateDrawable = StateListDrawable()
+            stateDrawable.addState( intArrayOf(-android.R.attr.state_checked),ResourcesCompat.getDrawable(bindings.root.resources, R.drawable.ic_media_uncheck, null));
+            stateDrawable.addState(intArrayOf(android.R.attr.state_checked), ResourcesCompat.getDrawable(bindings.root.resources, R.drawable.ic_media_check, null))
+
+            val states = arrayOf(
+                intArrayOf(android.R.attr.state_checked), // checked
+                intArrayOf(-android.R.attr.state_checked), // unchecked
+            )
+
+            val colors = intArrayOf(
+                ResourcesCompat.getColor(bindings.root.resources, pickerColor,null),
+                ResourcesCompat.getColor(bindings.root.resources, R.color.material_grey_400,null),
+            )
+
+            val checkColorList = ColorStateList(states, colors)
+
+            bindings.selector.buttonDrawable = stateDrawable
+            bindings.selector.buttonTintList = checkColorList
 
             val found = listener.selectedAudios.value!!.filter { it.musicId == item.musicId }.size == 1
             bindings.selector.isChecked = found
