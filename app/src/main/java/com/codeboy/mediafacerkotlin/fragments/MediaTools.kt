@@ -60,6 +60,7 @@ class MediaTools() : Fragment() {
                 .setBottomItemSelectionColors(R.color.white, R.color.material_grey_400)
                 .setPickerColor(R.color.crimson_red)
                 .addMediaSelectionListener(object : MediaSelectionListener{
+
                     override fun onMediaItemsSelected(audios: ArrayList<AudioContent>, videos: ArrayList<VideoContent>, images: ArrayList<ImageContent>) {
                         val numImages = images.size
                         val numVideos = videos.size
@@ -81,6 +82,7 @@ class MediaTools() : Fragment() {
                 .setBottomItemSelectionColors(R.color.white, R.color.material_grey_400)
                 .setPickerColor(R.color.cartesian_green)
                 .addMediaSelectionListener(object : MediaSelectionListener{
+
                     override fun onMediaItemsSelected(audios: ArrayList<AudioContent>, videos: ArrayList<VideoContent>, images: ArrayList<ImageContent>) {
                         val numImages = images.size
                         val numVideos = videos.size
@@ -100,6 +102,7 @@ class MediaTools() : Fragment() {
                 .setBottomItemSelectionColors(R.color.white, R.color.material_grey_600)
                 .setPickerColor(R.color.material_grey_900)
                 .addMediaSelectionListener(object : MediaSelectionListener{
+
                     override fun onMediaItemsSelected(audios: ArrayList<AudioContent>, videos: ArrayList<VideoContent>, images: ArrayList<ImageContent>) {
                         val numImages = images.size
                         val numVideos = videos.size
