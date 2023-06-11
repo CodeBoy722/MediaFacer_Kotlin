@@ -12,6 +12,7 @@ import com.codeboy.mediafacer.tools.MediaFacerPicker
 import com.codeboy.mediafacer.tools.MediaSelectionListener
 import com.codeboy.mediafacerkotlin.R
 import com.codeboy.mediafacerkotlin.databinding.FragmentMediaToolsBinding
+import com.google.android.material.snackbar.Snackbar
 
 class MediaTools() : Fragment() {
 
@@ -27,23 +28,88 @@ class MediaTools() : Fragment() {
         bindings.lifecycleOwner = viewLifecycleOwner
 
         bindings.openPicker.setOnClickListener {
-
             MediaFacerPicker()
                 .addAllMediaSelection()
-                //.addAudioSelection()
-                //.addVideoSelection()
-                .setPickerColor(R.color.purple_500)
+                .setPickerColor(R.color.cartesian_orange)
                 .setSelectionCompleteDrawable(R.drawable.ic_send)
                 .setMediaBottomMenuIcons(R.drawable.ic_audio, R.drawable.ic_video, R.drawable.ic_image)
                 .setAudioDefaultAlbumArtDrawable(R.drawable.music_placeholder)
                 .setSelectionMenuTitles("Music","Videos","Images")
-                .setBottomItemSelectionColors(R.color.cartesian_orange, R.color.material_white_200)
+                .setBottomItemSelectionColors(R.color.white, R.color.material_grey_600)
                 .addMediaSelectionListener(object : MediaSelectionListener {
+
                     override fun onMediaItemsSelected(
-                        audios: ArrayList<AudioContent>, videos: ArrayList<VideoContent>, Images: ArrayList<ImageContent>, ) {
-                        // todo handle your selected media items here
+                        audios: ArrayList<AudioContent>, videos: ArrayList<VideoContent>, images: ArrayList<ImageContent>, ) {
+                        val numImages = images.size
+                        val numVideos = videos.size
+                        val numAudios = audios.size
+                        Snackbar.make(requireView(),
+                            "$numImages images selected$numAudios audios selected$numVideos videos selected",
+                            Snackbar.LENGTH_LONG
+                        ).show()
                     }
                 }).show(childFragmentManager,MediaFacerPicker().javaClass.canonicalName)
+        }
+
+
+        bindings.customPickerOne.setOnClickListener {
+            MediaFacerPicker()
+                .addAudioSelection()
+                .addImageSelection()
+                .setSelectionCompleteDrawable(R.drawable.ic_send)
+                .setBottomItemSelectionColors(R.color.white, R.color.material_grey_400)
+                .setPickerColor(R.color.crimson_red)
+                .addMediaSelectionListener(object : MediaSelectionListener{
+                    override fun onMediaItemsSelected(audios: ArrayList<AudioContent>, videos: ArrayList<VideoContent>, images: ArrayList<ImageContent>) {
+                        val numImages = images.size
+                        val numVideos = videos.size
+                        val numAudios = audios.size
+                        Snackbar.make(requireView(),
+                            "$numImages images selected$numAudios audios selected$numVideos videos selected",
+                            Snackbar.LENGTH_LONG
+                        ).show()
+                    }
+                }).show(childFragmentManager, MediaFacerPicker().javaClass.canonicalName)
+
+        }
+
+        bindings.customPickerTwo.setOnClickListener {
+            MediaFacerPicker()
+                .addAudioSelection()
+                .addImageSelection()
+                .setSelectionCompleteDrawable(R.drawable.ic_send)
+                .setBottomItemSelectionColors(R.color.white, R.color.material_grey_400)
+                .setPickerColor(R.color.cartesian_green)
+                .addMediaSelectionListener(object : MediaSelectionListener{
+                    override fun onMediaItemsSelected(audios: ArrayList<AudioContent>, videos: ArrayList<VideoContent>, images: ArrayList<ImageContent>) {
+                        val numImages = images.size
+                        val numVideos = videos.size
+                        val numAudios = audios.size
+                        Snackbar.make(requireView(),
+                            "$numImages images selected$numAudios audios selected$numVideos videos selected",
+                            Snackbar.LENGTH_LONG
+                        ).show()
+                    }
+                }).show(childFragmentManager, MediaFacerPicker().javaClass.canonicalName)
+        }
+
+        bindings.customPickerThree.setOnClickListener {
+            MediaFacerPicker()
+                .addAudioSelection()
+                .setSelectionCompleteDrawable(R.drawable.ic_send)
+                .setBottomItemSelectionColors(R.color.white, R.color.material_grey_600)
+                .setPickerColor(R.color.material_grey_900)
+                .addMediaSelectionListener(object : MediaSelectionListener{
+                    override fun onMediaItemsSelected(audios: ArrayList<AudioContent>, videos: ArrayList<VideoContent>, images: ArrayList<ImageContent>) {
+                        val numImages = images.size
+                        val numVideos = videos.size
+                        val numAudios = audios.size
+                        Snackbar.make(requireView(),
+                            "$numImages images selected$numAudios audios selected$numVideos videos selected",
+                            Snackbar.LENGTH_LONG
+                        ).show()
+                    }
+                }).show(childFragmentManager, MediaFacerPicker().javaClass.canonicalName)
         }
 
     }

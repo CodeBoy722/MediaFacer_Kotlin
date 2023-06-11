@@ -186,8 +186,8 @@ class MusicService : MediaBrowserServiceCompat(), OnAudioFocusChangeListener, Pl
     //@androidx.annotation.OptIn(androidx.media3.common.util.UnstableApi::class)
     private fun setupMediaSession(){
 
-        val mediaButtonReceiverName = ComponentName(applicationContext, MediaButtonReceiver::class.java)
-        mMediaSessionCompat = MediaSessionCompat(applicationContext, LOG_TAG, mediaButtonReceiverName, null)
+        val mediaButtonReceiverName = ComponentName(this, MediaButtonReceiver::class.java)
+        mMediaSessionCompat = MediaSessionCompat(this, LOG_TAG, mediaButtonReceiverName, null)
         mMediaSessionCompat.setFlags(MediaSessionCompat.FLAG_HANDLES_QUEUE_COMMANDS)
 
         val mediaButtonIntent = Intent(Intent.ACTION_MEDIA_BUTTON)
