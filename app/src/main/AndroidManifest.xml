@@ -2,15 +2,25 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android">
 
     <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
-    <uses-permission
+
+    <!--<uses-permission
         android:name="android.permission.WRITE_EXTERNAL_STORAGE"
-        android:required="true" />
+        android:required="true"
+        android:maxSdkVersion="32" />-->
+
     <uses-permission
         android:name="android.permission.READ_EXTERNAL_STORAGE"
-        android:required="true" />
+        android:required="true"
+        android:maxSdkVersion="32" />
+
+    <uses-permission android:name = "android.permission.READ_MEDIA_AUDIO"/>
+    <uses-permission android:name = "android.permission.READ_MEDIA_VIDEO"/>
+    <uses-permission android:name = "android.permission.READ_MEDIA_IMAGES"/>
+
     <uses-permission
         android:name="android.permission.STORAGE"
         android:required="true" />
+
     <uses-permission
         android:name="android.permission.WAKE_LOCK"
         android:required="true" />

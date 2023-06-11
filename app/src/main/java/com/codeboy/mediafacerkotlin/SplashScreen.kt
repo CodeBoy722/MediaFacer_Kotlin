@@ -29,25 +29,44 @@ class SplashScreen : AppCompatActivity() {
         bindings = DataBindingUtil.setContentView(this,R.layout.activity_splash_screen)
         bindings.lifecycleOwner = this
 
-        when {
-            hasPermissions(
-                this,
-                Manifest.permission.WRITE_EXTERNAL_STORAGE,
-                Manifest.permission.READ_EXTERNAL_STORAGE,
-                Manifest.permission.WAKE_LOCK
-            ) || Build.VERSION.SDK_INT < Build.VERSION_CODES.M -> {
-                moveToMain()
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU){
+            when {
+                hasPermissions(
+                    this,
+                    Manifest.permission.READ_MEDIA_AUDIO,
+                    Manifest.permission.READ_MEDIA_IMAGES,
+                    Manifest.permission.READ_MEDIA_VIDEO,
+                    Manifest.permission.WAKE_LOCK
+                ) -> { moveToMain() }
+                else -> requestStoragePermission()
             }
-            else -> requestStoragePermission()
+        }else{
+            when {
+                hasPermissions(
+                    this,
+                    Manifest.permission.WRITE_EXTERNAL_STORAGE,
+                    Manifest.permission.READ_EXTERNAL_STORAGE,
+                    Manifest.permission.WAKE_LOCK
+                ) || Build.VERSION.SDK_INT < Build.VERSION_CODES.M -> { moveToMain() }
+                else -> requestStoragePermission()
+            }
         }
     }
 
     private fun requestStoragePermission() {
         Log.w("SplashScreen", "Storage permission is not granted. Requesting permission")
-        val permissions = arrayOf(
-            Manifest.permission.WRITE_EXTERNAL_STORAGE,
-            Manifest.permission.READ_EXTERNAL_STORAGE,
-            Manifest.permission.WAKE_LOCK)
+        val permissions = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            arrayOf(
+                Manifest.permission.READ_MEDIA_AUDIO,
+                Manifest.permission.READ_MEDIA_IMAGES,
+                Manifest.permission.READ_MEDIA_VIDEO,
+                Manifest.permission.WAKE_LOCK)
+        } else {
+            arrayOf(
+                Manifest.permission.WRITE_EXTERNAL_STORAGE,
+                Manifest.permission.READ_EXTERNAL_STORAGE,
+                Manifest.permission.WAKE_LOCK)
+        }
 
         ActivityCompat.requestPermissions(this, permissions, requestStorage)
     }

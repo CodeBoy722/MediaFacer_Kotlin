@@ -30,7 +30,7 @@ android {
 
     signingConfigs {
         release {
-            storeFile file('C:\\Users\\mofor\\StudioProjects\\MediaFacer_Kotlin\\glims_keystore.jks')
+            storeFile file('Downloads/glims_keystore.jks')
             storePassword 'Radian-fx-722'
             keyAlias = 'codeboy_glims_music'
             keyPassword 'Radian-fx-722'
