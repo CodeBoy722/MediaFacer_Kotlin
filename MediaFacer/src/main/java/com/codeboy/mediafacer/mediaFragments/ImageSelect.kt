@@ -1,5 +1,7 @@
 package com.codeboy.mediafacer.mediaFragments
 
+import android.graphics.PorterDuff
+import android.graphics.PorterDuffColorFilter
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
@@ -7,6 +9,9 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.AdapterView
 import android.widget.ArrayAdapter
+import android.widget.TextView
+import androidx.core.content.ContextCompat
+import androidx.core.content.res.ResourcesCompat
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.codeboy.mediafacer.MediaSelectionViewModel
@@ -119,11 +124,23 @@ internal class ImageSelect() : Fragment() {
                 folderNames.add(bucket.folderName)
             }
 
-            val spinnerAdapter = ArrayAdapter(
-                requireActivity(),
-                R.layout.image_spinner_text,
-                folderNames
-            )
+            val spinnerAdapter = object : ArrayAdapter<String>(requireActivity(),R.layout.audio_spinner_text, folderNames){
+                override fun getView(position: Int, convertView: View?, parent: ViewGroup): View {
+                    val text: TextView = super.getDropDownView(position, convertView, parent) as TextView
+                    text.setTextColor(ResourcesCompat.getColor(resources, pickerColor!!, null))
+                    for (drawable in text.compoundDrawables) {
+                        if (drawable != null) {
+                            drawable.colorFilter = PorterDuffColorFilter(ContextCompat.getColor(text.context, pickerColor!!), PorterDuff.Mode.SRC_IN)
+                        }
+                    }
+                    return super.getView(position, convertView, parent)
+                }
+
+                override fun getDropDownView(position: Int, convertView: View?, parent: ViewGroup): View {
+                    return super.getDropDownView(position, convertView, parent)
+                }
+            }
+
             bindings.imageFolderSpinner.adapter = spinnerAdapter
         }
 

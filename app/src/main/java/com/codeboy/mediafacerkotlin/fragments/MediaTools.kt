@@ -44,7 +44,7 @@ class MediaTools() : Fragment() {
                         val numVideos = videos.size
                         val numAudios = audios.size
                         Snackbar.make(requireView(),
-                            "$numImages images selected$numAudios audios selected$numVideos videos selected",
+                            "$numImages images selected $numAudios audios selected $numVideos videos selected",
                             Snackbar.LENGTH_LONG
                         ).show()
                     }
@@ -66,7 +66,7 @@ class MediaTools() : Fragment() {
                         val numVideos = videos.size
                         val numAudios = audios.size
                         Snackbar.make(requireView(),
-                            "$numImages images selected$numAudios audios selected$numVideos videos selected",
+                            "$numImages images selected $numAudios audios selected $numVideos videos selected",
                             Snackbar.LENGTH_LONG
                         ).show()
                     }
@@ -88,7 +88,7 @@ class MediaTools() : Fragment() {
                         val numVideos = videos.size
                         val numAudios = audios.size
                         Snackbar.make(requireView(),
-                            "$numImages images selected$numAudios audios selected$numVideos videos selected",
+                            "$numImages images selected $numAudios audios selected $numVideos videos selected",
                             Snackbar.LENGTH_LONG
                         ).show()
                     }
@@ -108,7 +108,7 @@ class MediaTools() : Fragment() {
                         val numVideos = videos.size
                         val numAudios = audios.size
                         Snackbar.make(requireView(),
-                            "$numImages images selected$numAudios audios selected$numVideos videos selected",
+                            "$numImages images selected $numAudios audios selected $numVideos videos selected",
                             Snackbar.LENGTH_LONG
                         ).show()
                     }
