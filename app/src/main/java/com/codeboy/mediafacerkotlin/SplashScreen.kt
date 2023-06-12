@@ -44,7 +44,7 @@ class SplashScreen : AppCompatActivity() {
             when {
                 hasPermissions(
                     this,
-                    Manifest.permission.WRITE_EXTERNAL_STORAGE,
+                    //Manifest.permission.WRITE_EXTERNAL_STORAGE,
                     Manifest.permission.READ_EXTERNAL_STORAGE,
                     Manifest.permission.WAKE_LOCK
                 ) || Build.VERSION.SDK_INT < Build.VERSION_CODES.M -> { moveToMain() }
@@ -63,7 +63,7 @@ class SplashScreen : AppCompatActivity() {
                 Manifest.permission.WAKE_LOCK)
         } else {
             arrayOf(
-                Manifest.permission.WRITE_EXTERNAL_STORAGE,
+                //Manifest.permission.WRITE_EXTERNAL_STORAGE,
                 Manifest.permission.READ_EXTERNAL_STORAGE,
                 Manifest.permission.WAKE_LOCK)
         }
