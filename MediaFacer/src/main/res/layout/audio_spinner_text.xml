@@ -14,4 +14,8 @@
     android:padding="8dp"
     android:text="Faya Faya"
     app:drawableStartCompat="@drawable/ic_music_folder_spinner"
-    app:drawableTint="@color/material_grey_400" />
+    app:drawableTint="@color/material_grey_400"
+   />
+
+   <!-- app:drawableStartCompat="@drawable/ic_music_folder_spinner"
+    app:drawableTint="@color/material_grey_400"-->

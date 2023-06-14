@@ -100,7 +100,7 @@ class MediaTools() : Fragment() {
                 .addAudioSelection()
                 .setSelectionCompleteDrawable(R.drawable.ic_send)
                 .setBottomItemSelectionColors(R.color.white, R.color.material_grey_600)
-                .setPickerColor(R.color.material_grey_900)
+                .setPickerColor(R.color.black)
                 .addMediaSelectionListener(object : MediaSelectionListener{
 
                     override fun onMediaItemsSelected(audios: ArrayList<AudioContent>, videos: ArrayList<VideoContent>, images: ArrayList<ImageContent>) {
