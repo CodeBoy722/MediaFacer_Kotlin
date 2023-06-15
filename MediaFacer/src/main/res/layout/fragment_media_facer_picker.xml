@@ -7,6 +7,7 @@
     <androidx.coordinatorlayout.widget.CoordinatorLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:id="@+id/picker_parent"
         style="@style/picker_background">
 
         <com.google.android.material.appbar.AppBarLayout

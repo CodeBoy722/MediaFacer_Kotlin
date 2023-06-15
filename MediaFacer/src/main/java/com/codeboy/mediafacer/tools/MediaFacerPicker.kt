@@ -48,6 +48,7 @@ class MediaFacerPicker : BottomSheetDialogFragment(), View.OnClickListener {
     private var audioFragPosition: Int? = null
 
     private var pickerColor: Int? = R.color.bright_navy_blue
+    private var pickerBackgroundColor: Int? = null
     private var imageMenuIcon : Int? = null
     private var videoMenuIcon : Int? = null
     private var audioMenuIcon : Int? = null
@@ -102,8 +103,12 @@ class MediaFacerPicker : BottomSheetDialogFragment(), View.OnClickListener {
             bindings.menus.setBackgroundColor((ResourcesCompat.getColor(resources,pickerColor!!, null)))
             bindings.completeSelection
                 .backgroundTintList = ColorStateList.valueOf(ResourcesCompat.getColor(resources,pickerColor!!, null));
-            bindings.selectedNum.setTextColor((ResourcesCompat.getColor(resources,pickerColor!!, null)))
+            bindings.selectedNum.setTextColor(ResourcesCompat.getColor(resources,pickerColor!!, null))
         }
+
+        /*if(pickerBackgroundColor != null){
+            bindings.pickerParent.setBackgroundColor(ResourcesCompat.getColor(resources,pickerBackgroundColor!!, null))
+        }*/
 
         when{
             (audioMenuIcon != null) -> {
@@ -285,6 +290,11 @@ class MediaFacerPicker : BottomSheetDialogFragment(), View.OnClickListener {
         this.pickerColor = pickerColor
         return this
     }
+
+    /*fun setPickerBackgroundColor(backgroundColor: Int): MediaFacerPicker{
+        pickerBackgroundColor = backgroundColor
+        return this
+    }*/
 
     //set fragment selection colors
     fun setBottomItemSelectionColors(selectedColor: Int, unselectedColor: Int): MediaFacerPicker{
