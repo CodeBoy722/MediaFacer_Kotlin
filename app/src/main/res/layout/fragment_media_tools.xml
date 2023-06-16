@@ -55,7 +55,7 @@
 
         <androidx.appcompat.widget.AppCompatButton
             android:id="@+id/open_picker"
-            android:layout_width="wrap_content"
+            android:layout_width="200dp"
             android:layout_height="35dp"
             android:layout_marginStart="16dp"
             android:layout_marginTop="16dp"
@@ -63,6 +63,7 @@
             android:background="@drawable/item_background"
             android:fontFamily="@font/notosans_bold"
             android:gravity="center"
+            android:padding="8dp"
             android:text="Open Picker"
             android:textColor="@color/white"
             app:layout_constraintEnd_toEndOf="parent"
@@ -72,7 +73,7 @@
 
         <androidx.appcompat.widget.AppCompatButton
             android:id="@+id/custom_picker_one"
-            android:layout_width="wrap_content"
+            android:layout_width="200dp"
             android:layout_height="35dp"
             android:layout_marginStart="16dp"
             android:layout_marginTop="16dp"
@@ -80,6 +81,7 @@
             android:background="@drawable/item_background"
             android:fontFamily="@font/notosans_bold"
             android:gravity="center"
+            android:padding="8dp"
             android:text="Custom picker one"
             android:textColor="@color/white"
             app:layout_constraintEnd_toEndOf="parent"
@@ -88,7 +90,7 @@
 
         <androidx.appcompat.widget.AppCompatButton
             android:id="@+id/custom_picker_two"
-            android:layout_width="wrap_content"
+            android:layout_width="200dp"
             android:layout_height="35dp"
             android:layout_marginStart="16dp"
             android:layout_marginTop="16dp"
@@ -96,6 +98,7 @@
             android:background="@drawable/item_background"
             android:fontFamily="@font/notosans_bold"
             android:gravity="center"
+            android:padding="8dp"
             android:text="Custom picker two"
             android:textColor="@color/white"
             app:layout_constraintEnd_toEndOf="parent"
@@ -104,7 +107,7 @@
 
         <androidx.appcompat.widget.AppCompatButton
             android:id="@+id/custom_picker_three"
-            android:layout_width="wrap_content"
+            android:layout_width="200dp"
             android:layout_height="35dp"
             android:layout_marginStart="16dp"
             android:layout_marginTop="16dp"
@@ -112,6 +115,7 @@
             android:background="@drawable/item_background"
             android:fontFamily="@font/notosans_bold"
             android:gravity="center"
+            android:padding="8dp"
             android:text="Custom picker three"
             android:textColor="@color/white"
             app:layout_constraintEnd_toEndOf="parent"

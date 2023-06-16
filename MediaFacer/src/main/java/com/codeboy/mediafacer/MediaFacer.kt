@@ -25,7 +25,6 @@ object MediaFacer : VideoGet, AudioGet, ImageGet {
     val externalImagesContent: Uri = Images.Media.EXTERNAL_CONTENT_URI
     val internalImagesContent: Uri = Images.Media.INTERNAL_CONTENT_URI
 
-
     private var mediaPaginationStart = 0
     private var mediaPaginationLimit = 0
     private var shouldPaginate = false

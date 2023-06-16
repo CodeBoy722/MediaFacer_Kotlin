@@ -27,7 +27,7 @@ class MainActivity : AppCompatActivity() {
         bindings = DataBindingUtil.setContentView(this, R.layout.activity_main)
         bindings.lifecycleOwner = this
 
-        bindings.aboutMenu.setOnClickListener {
+        bindings.readMe.setOnClickListener {
             hideBottomMenu()
             val about = About()
             val slideOutFromTop = Slide(Gravity.TOP)
