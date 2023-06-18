@@ -6,6 +6,8 @@ import android.view.Gravity
 import android.view.View
 import android.view.animation.Animation
 import android.view.animation.AnimationUtils
+import androidx.activity.OnBackPressedCallback
+import androidx.activity.OnBackPressedDispatcher
 import androidx.appcompat.app.AppCompatActivity
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
@@ -16,11 +18,15 @@ import com.codeboy.mediafacerkotlin.databinding.ActivityMainBinding
 import com.codeboy.mediafacerkotlin.fragments.*
 import com.codeboy.mediafacerkotlin.viewAdapters.MainPagerFragmentAdapter
 import com.google.android.gms.ads.*
+import com.google.android.gms.ads.interstitial.InterstitialAd
+import com.google.android.gms.ads.interstitial.InterstitialAdLoadCallback
+import com.google.firebase.analytics.FirebaseAnalytics
 
 class MainActivity : AppCompatActivity() {
 
     lateinit var bindings: ActivityMainBinding
     private var folderList = ArrayList<AudioBucketContent>()
+    var addControl = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -43,6 +49,15 @@ class MainActivity : AppCompatActivity() {
                 .commit()
             about.view?.startAnimation(anim)
         }
+
+        OnBackPressedDispatcher().addCallback(this, object : OnBackPressedCallback(true) {
+            // Back is pressed... Finishing the activity
+            override fun handleOnBackPressed() {
+                if(!addControl){
+                  finish()
+                }
+            }
+        })
 
         initializeBannerAd()
         setUpBottomMenu()
@@ -127,7 +142,7 @@ class MainActivity : AppCompatActivity() {
         return AdSize.getCurrentOrientationAnchoredAdaptiveBannerAdSize(this, adWidth)
     }
 
-    /*fun loadInterstitial() {
+    fun loadInterstitial() {
         InterstitialAd.load(this, getString(R.string.interstitial), AdRequest.Builder().build(), object : InterstitialAdLoadCallback() {
                 override fun onAdLoaded(interstitialAd: InterstitialAd) {
                     super.onAdLoaded(interstitialAd)
@@ -144,10 +159,25 @@ class MainActivity : AppCompatActivity() {
                             FirebaseAnalytics.getInstance(this@MainActivity)
                                 .logEvent(FirebaseAnalytics.Event.AD_IMPRESSION, bundle)
                         }
+
+                        override fun onAdDismissedFullScreenContent() {
+                            super.onAdDismissedFullScreenContent()
+                            addControl = false
+                        }
+
+                        override fun onAdFailedToShowFullScreenContent(p0: AdError) {
+                            super.onAdFailedToShowFullScreenContent(p0)
+                            addControl = false
+                        }
                     }
                     interstitialAd.show(this@MainActivity)
                 }
+
+            override fun onAdFailedToLoad(p0: LoadAdError) {
+                super.onAdFailedToLoad(p0)
+                addControl = false
+            }
         })
-    }*/
+    }
 
 }
