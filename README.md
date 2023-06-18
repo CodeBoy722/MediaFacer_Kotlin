@@ -1,8 +1,48 @@
-# MediaFacer
-Mediafacer is an Android library that leverages the Android MediaStore Apis primarily for quick retrieval of media content (Video, Audio, Images) from the Mediastore with support for both internal and external storage Medium and built-in pagination. 
+<p align="center"><img src="https://github.com/CodeBoy722/MediaFacer_Kotlin/blob/master/media/mediafacer_logo.png" width="150"></p>
+<h1 align="center"><b>MediaFacer</b></h1>
+<h4 align="center">Mediafacer is an Android library that leverages the Android MediaStore Apis primarily for quick retrieval of media content (Video, Audio, Images) from the Mediastore with support for both internal and external storage Medium and built-in pagination.</h4>
 
+[![](https://jitpack.io/v/CodeBoy722/MediaFacer_Kotlin.svg)](https://jitpack.io/#CodeBoy722/MediaFacer_Kotlin)
 
+<p align="center">
+    <a href="https://play.google.com/store/apps/details?id=com.codeboy.mediafacerkotlin&pli=1"><img src="https://github.com/CodeBoy722/MediaFacer_Kotlin/blob/master/media/google-play-badge.png" width="170"></a>
+</p>
 
+## Screenshots
+
+<p align="center">
+    <img src="https://github.com/CodeBoy722/MediaFacer_Kotlin/blob/master/media/audios_query.png" width=200>
+    <img src="https://github.com/CodeBoy722/MediaFacer_Kotlin/blob/master/media/images_query.png" width=200>
+    <img src="https://github.com/CodeBoy722/MediaFacer_Kotlin/blob/master/media/videos_query.png" width=200>
+    <img src="https://github.com/CodeBoy722/MediaFacer_Kotlin/blob/master/media/media_picker.png" width=200>
+</p>
+
+## Library Installation and Usage
+
+### Add the library to your android project
+```gradle
+ allprojects {
+		repositories {
+			...
+			maven { url 'https://jitpack.io' }
+		}
+	}   
+```
+
+Add the dependency in the app level build.gradle file
+
+```gradle
+dependencies {
+	   implementation 'com.github.CodeBoy722:MediaFacer_Kotlin:1.2'
+	}
+```
+
+### Permissions
+
+- Storage (`READ_MEDIA_AUDIO`, `READ_MEDIA_VIDEO`, `READ_MEDIA_IMAGES`, `READ_EXTERNAL_STORAGE`) to read audio, video, and image and media files depending on your usecase
+- Services (`FOREGROUND_SERVICE`, `WAKE_LOCK`) to keep the music playing even if the app itself is in background
+
+## License
 
 MIT License
 
