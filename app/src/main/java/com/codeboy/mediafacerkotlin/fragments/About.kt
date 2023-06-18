@@ -37,6 +37,10 @@ class About() : Fragment() {
             requireActivity().startActivity(Intent(Intent.ACTION_VIEW,  Uri.parse("https://github.com/CodeBoy722/MediaFacer_Kotlin")))
         }
 
+        bindings.kofi.setOnClickListener {
+            requireActivity().startActivity(Intent(Intent.ACTION_VIEW,  Uri.parse("https://ko-fi.com/codeboy722")))
+        }
+
         bindings.watchAd.setOnClickListener {
             (requireActivity() as MainActivity).addControl = true
             (requireActivity() as MainActivity).loadInterstitial()
@@ -44,12 +48,6 @@ class About() : Fragment() {
 
         bindings.copyBnb.setOnClickListener {
             val clip = ClipData.newPlainText("bnb address", "0xCE504c3Ab64d8f87BF7b0bC80d2BBE062890124A")
-            (requireActivity().getSystemService(CLIPBOARD_SERVICE) as ClipboardManager?)?.setPrimaryClip(clip)
-            Snackbar.make(requireView(), "Address Copied", Snackbar.LENGTH_LONG).show()
-        }
-
-        bindings.copyPaypal.setOnClickListener {
-            val clip = ClipData.newPlainText("paypal address", "moforemmanuel722@gmail.com")
             (requireActivity().getSystemService(CLIPBOARD_SERVICE) as ClipboardManager?)?.setPrimaryClip(clip)
             Snackbar.make(requireView(), "Address Copied", Snackbar.LENGTH_LONG).show()
         }
