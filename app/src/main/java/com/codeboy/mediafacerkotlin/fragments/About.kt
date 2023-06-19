@@ -33,7 +33,7 @@ class About() : Fragment() {
         bindings = FragmentAboutBinding.bind(view)
         bindings.lifecycleOwner = viewLifecycleOwner
 
-        bindings.gitLink.setOnClickListener {
+        bindings.githubLink.setOnClickListener {
             requireActivity().startActivity(Intent(Intent.ACTION_VIEW,  Uri.parse("https://github.com/CodeBoy722/MediaFacer_Kotlin")))
         }
 
