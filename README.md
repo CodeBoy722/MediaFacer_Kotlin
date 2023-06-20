@@ -2,7 +2,7 @@
 <h1 align="center"><b>MediaFacer</b></h1>
 <h4 align="center">Mediafacer is an Android library that leverages the Android MediaStore Apis primarily for quick retrieval of media content (Video, Audio, Images) from the Mediastore with support for both internal and external storage Medium and built-in pagination.</h4>
 
-[![](https://jitpack.io/v/CodeBoy722/MediaFacer_Kotlin.svg)](https://jitpack.io/#CodeBoy722/MediaFacer_Kotlin)
+[![](https://jitpack.io/v/CodeBoy722/MediaFacer_Kotlin.svg)](https://jitpack.io/#CodeBoy722/MediaFacer_Kotlin) [![API](https://img.shields.io/badge/API-21%2B-brightgreen.svg?style=flat)](https://android-arsenal.com/api?level=21)
 
 <p align="center">
     <a href="https://play.google.com/store/apps/details?id=com.codeboy.mediafacerkotlin&pli=1"><img src="https://github.com/CodeBoy722/MediaFacer_Kotlin/blob/master/media/google-play-badge.png" width="170"></a>
