@@ -95,6 +95,7 @@ internal class VideoSelect() : Fragment() {
 
         //observe video results for view model
         viewModel.videos.observe(viewLifecycleOwner) {
+            if(it.size == 0) bindings.emptyView.visibility = View.VISIBLE
             val results = ArrayList<VideoContent>()
             results.addAll(it)
             adapter.submitList(results)

@@ -93,6 +93,7 @@ internal class AudioSelect() : Fragment() {
 
         // observe audio search results from view Model
         viewModel.foundAudios.observe(viewLifecycleOwner){
+            if(it.size == 0) bindings.emptyView.visibility = View.VISIBLE
             val results = ArrayList<AudioContent>()
             results.addAll(it)
             adapter.submitList(results)
