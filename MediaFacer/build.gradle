@@ -1,6 +1,7 @@
 plugins {
     id 'com.android.library'
     id 'org.jetbrains.kotlin.android'
+    id("maven-publish")
 }
 
 android {
@@ -63,4 +64,30 @@ dependencies {
     // Common functionality used across multiple media libraries
     implementation("androidx.media3:media3-common:$mediaVersion")
 
+}
+
+publishing {
+    repositories {
+        maven {
+            name = "GitHubPackages"
+            url = uri("https://maven.pkg.github.com/codeboy722/mediaFacer_kotlin")
+            credentials {
+                username = project.username ?: System.getenv("GPR_USER")
+                password = project.gitkey ?: System.getenv("GPR_API_KEY")
+            }
+        }
+    }
+
+    project.afterEvaluate {
+        publishing {
+            publications {
+                gpr(MavenPublication) {
+                    groupId = 'com.codeboy'
+                    artifactId = 'mediafacer'
+                    version = "1.2"
+                    artifact bundleDebugAar
+                }
+            }
+        }
+    }
 }

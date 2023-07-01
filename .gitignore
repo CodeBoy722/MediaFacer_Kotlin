@@ -11,6 +11,7 @@
 /build
 /captures
 glims_keystore.jks
+github.properties
 .externalNativeBuild
 .cxx
 local.properties

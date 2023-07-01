@@ -103,13 +103,15 @@ class SplashScreen : AppCompatActivity() {
                 super.onRequestPermissionsResult(requestCode, permissions, grantResults)
                 return
             }
-            grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED && grantResults[1] == PackageManager.PERMISSION_GRANTED && grantResults[2] == PackageManager.PERMISSION_GRANTED -> {
+
+            (permissions.size == grantResults.size) ->{
                 Log.d("SplashScreen", "Storage permission granted")
                 granted = true
                 moveToMain()
             }
+
             else -> {
-                Toast.makeText(this, "Storage permission not granted", Toast.LENGTH_LONG).show()
+                Toast.makeText(this, "permissions not granted", Toast.LENGTH_LONG).show()
                 finish()
             }
         }
