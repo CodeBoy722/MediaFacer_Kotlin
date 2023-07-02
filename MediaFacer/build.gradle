@@ -72,8 +72,8 @@ publishing {
             name = "GitHubPackages"
             url = uri("https://maven.pkg.github.com/codeboy722/mediaFacer_kotlin")
             credentials {
-                username = project.username ?: System.getenv("GPR_USER")
-                password = project.gitkey ?: System.getenv("GPR_API_KEY")
+                username = project.findProperty("username") ?: System.getenv("GPR_USER")
+                password = project.findProperty("gitkey") ?: System.getenv("GPR_API_KEY")
             }
         }
     }
