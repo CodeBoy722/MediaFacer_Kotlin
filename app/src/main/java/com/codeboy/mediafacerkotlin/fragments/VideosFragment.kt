@@ -1,6 +1,7 @@
 package com.codeboy.mediafacerkotlin.fragments
 
 import android.content.Intent
+import android.net.Uri
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextUtils
@@ -13,6 +14,7 @@ import android.view.animation.Animation
 import android.view.animation.AnimationUtils
 import androidx.appcompat.widget.PopupMenu
 import androidx.fragment.app.Fragment
+import androidx.media3.common.MediaItem
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -100,6 +102,13 @@ class VideosFragment() : Fragment() {
         //observe the LifeData list of items and feed them to recyclerview each time there is an update
         model.videos.observe(viewLifecycleOwner) {
             //notifyDataSetChanged on adapter after submitting list to avoid scroll lagging on recyclerview
+
+            MediaItem.Builder()
+                .setMediaId(it[0].id.toString())
+                .setMediaMetadata(it[0].getMediaMetadata())
+                .setUri(Uri.parse(it[0].videoUri))
+                .build()
+
             if(it.size == 0) bindings.emptyView.visibility = View.VISIBLE
             adapter.submitList(it)
             paginationStart = it.size //+ 1
@@ -108,14 +117,14 @@ class VideosFragment() : Fragment() {
 
         //get paginated audio items using MediaFacer, remember to set paginationStart to size+1 of
         //of items gotten from MediaFacer to prepare for getting next page of items when user scroll
-        model.loadNewItems(requireActivity(),paginationStart,paginationLimit,shouldPaginate)
+        model.loadNewItems(requireActivity(),paginationStart,paginationLimit)
         bindings.loader.visibility = View.VISIBLE
 
         //adding EndlessScrollListener to our recyclerview to auto paginate items when user is
         //scrolling towards end of list
         bindings.videosList.addOnScrollListener(object: EndlessScrollListener(layoutManager){
             override fun onLoadMore(page: Int, totalItemsCount: Int, view: RecyclerView?) {
-                model.loadNewItems(requireActivity(),paginationStart,paginationLimit,shouldPaginate)
+                model.loadNewItems(requireActivity(),paginationStart,paginationLimit)
                 bindings.loader.visibility = View.VISIBLE
             }
         })
@@ -144,12 +153,12 @@ class VideosFragment() : Fragment() {
             bindings.loader.visibility = View.GONE
         }
 
-        model.loadNewItems(requireActivity(),paginationStart,paginationLimit,shouldPaginate)
+        model.loadNewItems(requireActivity(),paginationStart,paginationLimit)
         bindings.loader.visibility = View.VISIBLE
 
         bindings.videosList.addOnScrollListener(object: EndlessScrollListener(layoutManager){
             override fun onLoadMore(page: Int, totalItemsCount: Int, view: RecyclerView?) {
-                model.loadNewItems(requireActivity(),paginationStart,paginationLimit,shouldPaginate)
+                model.loadNewItems(requireActivity(),paginationStart,paginationLimit)
                 bindings.loader.visibility = View.VISIBLE
             }
         })
@@ -189,7 +198,7 @@ class VideosFragment() : Fragment() {
 
         bindings.videosList.addOnScrollListener(object: EndlessScrollListener(layoutManager){
             override fun onLoadMore(page: Int, totalItemsCount: Int, view: RecyclerView?) {
-                videoSearch.loadNewItems(requireActivity(),paginationStart,paginationLimit,shouldPaginate,
+                videoSearch.loadNewItems(requireActivity(),paginationStart,paginationLimit,
                 MediaFacer.videoSearchSelectionTypeDisplayName,searchHolder)
                 bindings.loader.visibility = View.VISIBLE
             }
@@ -210,7 +219,7 @@ class VideosFragment() : Fragment() {
                 val searchText = newText.toString().trim()
                 if(!TextUtils.isEmpty(searchText)){
                     searchHolder = searchText
-                    videoSearch.loadNewItems(requireActivity(),paginationStart,paginationLimit,shouldPaginate,
+                    videoSearch.loadNewItems(requireActivity(),paginationStart,paginationLimit,
                         MediaFacer.videoSearchSelectionTypeDisplayName,searchText)
                 }
             }
@@ -287,6 +296,13 @@ class VideosFragment() : Fragment() {
     override fun onDestroyView() {
         viewModelStore.clear()
         super.onDestroyView()
+    }
+
+    //get videos in suspend function
+    private suspend fun getVideos(): ArrayList<VideoContent> {
+       return MediaFacer
+            .withPagination(0, 30)
+            .getVideos(requireActivity(), MediaFacer.externalVideoContent)
     }
 
     /*private fun loadNewItems(){

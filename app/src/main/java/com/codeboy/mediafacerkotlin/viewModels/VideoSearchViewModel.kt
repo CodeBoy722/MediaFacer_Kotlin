@@ -18,12 +18,12 @@ class VideoSearchViewModel : ViewModel() {
     val videos: LiveData<ArrayList<VideoContent>> = _videos
     var videosList = ArrayList<VideoContent>()
 
-    fun loadNewItems(context: Context, paginationStart: Int, paginationLimit: Int, shouldPaginate: Boolean,
+    fun loadNewItems(context: Context, paginationStart: Int, paginationLimit: Int,
                      selectionType: String, selectionValue: String){
         CoroutineScope(Dispatchers.IO).async {
             videosList.addAll(
                 MediaFacer
-                    .withPagination(paginationStart, paginationLimit, shouldPaginate)
+                    .withPagination(paginationStart, paginationLimit)
                     .searchVideos(context, MediaFacer.externalVideoContent,selectionType,selectionValue)
             )
         }.invokeOnCompletion {

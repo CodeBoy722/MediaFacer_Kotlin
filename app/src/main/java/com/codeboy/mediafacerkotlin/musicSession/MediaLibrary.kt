@@ -127,7 +127,8 @@ class MediaLibrary : MediaLibraryService(), Player.Listener {
         if(musicListNew.isNotEmpty()){
             musicList = musicListNew
             for (musicItem in musicList){
-                mediaItems.add(MediaItem.Builder()
+                mediaItems.add(
+                    MediaItem.Builder()
                     .setMediaId(musicItem.musicId.toString())
                     .setMediaMetadata(musicItem.getMediaMetadata())
                     .setUri(Uri.parse(musicItem.musicUri))

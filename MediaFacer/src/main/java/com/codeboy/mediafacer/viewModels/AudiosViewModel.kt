@@ -29,7 +29,7 @@ internal class AudiosViewModel: ViewModel() {
         CoroutineScope(Dispatchers.IO).async {
             audiosList.addAll(
                 MediaFacer
-                    .withPagination(paginationStart, paginationLimit, shouldPaginate)
+                    .withPagination(paginationStart, paginationLimit)
                     .getAudios(context, MediaFacer.externalAudioContent)
             )
         }.invokeOnCompletion {
@@ -45,7 +45,7 @@ internal class AudiosViewModel: ViewModel() {
         CoroutineScope(Dispatchers.IO).async {
             foundList.addAll(
                 MediaFacer
-                    .withPagination(paginationStart, paginationLimit, shouldPaginate)
+                    .withPagination(paginationStart, paginationLimit)
                     .searchAudios(context, MediaFacer.externalAudioContent,selectionType,selectionValue)
             )
         }.invokeOnCompletion {

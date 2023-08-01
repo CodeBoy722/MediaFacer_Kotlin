@@ -10,13 +10,28 @@ import java.util.*
 
 class VideoContent(): Parcelable, Serializable {
 
+    /** the item id of this video item on the device Mediastore */
     var id: Int = 0
+
+    /** the file name of this video item as it is on device storage */
     var name: String = ""
+
+    /** the length of this video item measured in mili seconds */
     var duration: Long = 0
+
+    /** the file size of this video item in bytes */
     var size: Long = 0
+
+    /** the direct access path to this video item, can be used to load the video in a MediaPlayer or ExoPlayer instance */
     var videoUri: String = ""
+
+    /** artist name of this of video item */
     var artist: String = "<unknown>"
+
+    /** the full file path to this video item as it is on device storage, can no longer be used to access the audio in runtime, use videoUri instead*/
     var filePath: String = ""
+
+    /**  date representing the last time this video item was modified */
     var dateModified: Date = Date()
 
     constructor(parcel: Parcel) : this() {
@@ -29,6 +44,9 @@ class VideoContent(): Parcelable, Serializable {
         filePath = parcel.readString()!!
     }
 
+    /**
+    returns a Media3 object of this video item that can be used to load the video in a MediaPlayer and an ExoPlayer instance
+     */
     @androidx.annotation.OptIn(androidx.media3.common.util.UnstableApi::class)
     fun getMediaMetadata(): androidx.media3.common.MediaMetadata {
         return androidx.media3.common.MediaMetadata.Builder()
@@ -43,6 +61,9 @@ class VideoContent(): Parcelable, Serializable {
             .build()
     }
 
+    /**
+    returns a Media2 object of this video item that can be used to load the video in a MediaPlayer and an ExoPlayer instance
+     */
     fun getMediaMetadataCompat(): MediaMetadataCompat{
         return MediaMetadataCompat.Builder()
             .putString(MediaMetadata.METADATA_KEY_MEDIA_ID, videoUri)

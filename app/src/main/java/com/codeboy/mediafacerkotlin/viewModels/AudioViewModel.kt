@@ -25,7 +25,7 @@ class AudioViewModel : ViewModel() {
         CoroutineScope(Dispatchers.IO).async {
             audiosList.addAll(
                 MediaFacer
-                    .withPagination(paginationStart, paginationLimit, shouldPaginate)
+                    .withPagination(paginationStart, paginationLimit)
                     .getAudios(context, MediaFacer.externalAudioContent)
             )
         }.invokeOnCompletion {

@@ -19,16 +19,17 @@ class VideoViewModel : ViewModel() {
     val videos: LiveData<ArrayList<VideoContent>> = _videos
     private var videosList = ArrayList<VideoContent>()
 
-    fun loadNewItems(context: Context, paginationStart: Int, paginationLimit: Int, shouldPaginate: Boolean){
-        CoroutineScope(Dispatchers.IO).async {
+    fun loadNewItems(context: Context, paginationStart: Int, paginationLimit: Int){
+        CoroutineScope(Dispatchers.IO).async {// run code on IO thread with CoroutineScope
             videosList.addAll(
                 MediaFacer
-                    .withPagination(paginationStart, paginationLimit, shouldPaginate)
+                    .withPagination(paginationStart, paginationLimit)
                     .getVideos(context, externalVideoContent)
             )
         }.invokeOnCompletion {
-            Handler(Looper.getMainLooper())
+            Handler(Looper.getMainLooper())// use handler to post result back on main thread
                 .post{
+                    // continue your work here
                    _videos.value = videosList
                 }
         }

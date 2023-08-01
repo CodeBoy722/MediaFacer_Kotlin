@@ -25,11 +25,11 @@ internal class VideosViewModel: ViewModel() {
     var videoList = ArrayList<VideoContent>()
     var foundList = ArrayList<VideoContent>()
 
-    fun loadMoreVideoItems(context: Context, paginationStart: Int, paginationLimit: Int, shouldPaginate: Boolean){
+    fun loadMoreVideoItems(context: Context, paginationStart: Int, paginationLimit: Int){
         CoroutineScope(Dispatchers.IO).async {
             videoList.addAll(
                 MediaFacer
-                    .withPagination(paginationStart, paginationLimit, shouldPaginate)
+                    .withPagination(paginationStart, paginationLimit)
                     .getVideos(context, MediaFacer.externalVideoContent)
             )
         }.invokeOnCompletion {
@@ -41,12 +41,12 @@ internal class VideosViewModel: ViewModel() {
     }
 
     //search
-    fun searchVideoItems(context: Context, paginationStart: Int, paginationLimit: Int, shouldPaginate: Boolean,
+    fun searchVideoItems(context: Context, paginationStart: Int, paginationLimit: Int,
                      selectionType: String, selectionValue: String){
         CoroutineScope(Dispatchers.IO).async {
             foundList.addAll(
                 MediaFacer
-                    .withPagination(paginationStart, paginationLimit, shouldPaginate)
+                    .withPagination(paginationStart, paginationLimit,)
                     .searchVideos(context, MediaFacer.externalVideoContent,selectionType,selectionValue)
             )
         }.invokeOnCompletion {

@@ -18,11 +18,11 @@ class ImageFolderViewModel: ViewModel() {
     val imageFolders: LiveData<ArrayList<ImageFolderContent>> = _imageFolders
     private var imageFoldersList = ArrayList<ImageFolderContent>()
 
-    fun loadNewItems(context: Context, paginationStart: Int, paginationLimit: Int, shouldPaginate: Boolean){
+    fun loadNewItems(context: Context, paginationStart: Int, paginationLimit: Int){
         CoroutineScope(Dispatchers.IO).async {
             imageFoldersList.addAll(
                 MediaFacer
-                    .withPagination(paginationStart, paginationLimit, shouldPaginate)
+                    .withPagination(paginationStart, paginationLimit)
                     .getImageFolders(context, MediaFacer.externalImagesContent)
             )
         }.invokeOnCompletion {

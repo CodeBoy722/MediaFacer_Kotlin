@@ -27,7 +27,7 @@ internal class ImagesViewModel: ViewModel() {
         CoroutineScope(Dispatchers.IO).async {
             imagesList.addAll(
                 MediaFacer
-                    .withPagination(paginationStart, paginationLimit, shouldPaginate)
+                    .withPagination(paginationStart, paginationLimit)
                     .getImages(context, MediaFacer.externalImagesContent)
             )
         }.invokeOnCompletion {

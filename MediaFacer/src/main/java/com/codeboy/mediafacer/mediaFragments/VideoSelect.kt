@@ -120,12 +120,12 @@ internal class VideoSelect() : Fragment() {
     private fun loadVideos(){
         scrollListener = object: EndlessScrollListener(layoutManager){
             override fun onLoadMore(page: Int, totalItemsCount: Int, view: RecyclerView?) {
-                viewModel.loadMoreVideoItems(requireActivity(),paginationStart,paginationLimit,shouldPaginate)
+                viewModel.loadMoreVideoItems(requireActivity(),paginationStart,paginationLimit)
             }
         }
         bindings.videoList.addOnScrollListener(scrollListener)
 
-        viewModel.loadMoreVideoItems(requireActivity(),paginationStart,paginationLimit,shouldPaginate)
+        viewModel.loadMoreVideoItems(requireActivity(),paginationStart,paginationLimit)
     }
 
     private fun loadVideoFolders(){
@@ -199,7 +199,7 @@ internal class VideoSelect() : Fragment() {
 
         searchScrollListener = object: EndlessScrollListener(layoutManager){
             override fun onLoadMore(page: Int, totalItemsCount: Int, view: RecyclerView?) {
-                viewModel.searchVideoItems(requireActivity(),paginationStart,paginationLimit,shouldPaginate,
+                viewModel.searchVideoItems(requireActivity(),paginationStart,paginationLimit,
                     MediaFacer.videoSearchSelectionTypeDisplayName,searchHolder)
             }
         }
@@ -219,7 +219,7 @@ internal class VideoSelect() : Fragment() {
                 val searchText = newText.toString().trim()
                 if(!TextUtils.isEmpty(searchText)){
                     searchHolder = searchText
-                    viewModel.searchVideoItems(requireActivity(),paginationStart,paginationLimit,shouldPaginate,
+                    viewModel.searchVideoItems(requireActivity(),paginationStart,paginationLimit,
                         MediaFacer.videoSearchSelectionTypeDisplayName,searchText)
                 }
             }

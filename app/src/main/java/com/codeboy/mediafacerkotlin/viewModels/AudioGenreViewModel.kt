@@ -17,11 +17,11 @@ class AudioGenreViewModel {
     val audioGenres: LiveData<ArrayList<AudioGenreContent>> = _audioGenres
     private var audioGenreList = ArrayList<AudioGenreContent>()
 
-    fun loadNewItems(context: Context, paginationStart: Int, paginationLimit: Int, shouldPaginate: Boolean){
+    fun loadNewItems(context: Context, paginationStart: Int, paginationLimit: Int){
         CoroutineScope(Dispatchers.IO).async {
             audioGenreList.addAll(
                 MediaFacer
-                    .withPagination(paginationStart, paginationLimit, shouldPaginate)
+                    .withPagination(paginationStart, paginationLimit)
                     .getGenres(context, MediaFacer.externalAudioContent)
             )
         }.invokeOnCompletion {

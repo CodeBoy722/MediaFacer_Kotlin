@@ -32,11 +32,10 @@ object MediaFacer : VideoGet, AudioGet, ImageGet {
     fun withPagination(
         start: Int,
         limit: Int,
-        shouldPaginate: Boolean
     ): MediaFacer {
         mediaPaginationStart = start
         mediaPaginationLimit = limit
-        this.shouldPaginate = shouldPaginate
+        this.shouldPaginate = true
         return this
     }
 

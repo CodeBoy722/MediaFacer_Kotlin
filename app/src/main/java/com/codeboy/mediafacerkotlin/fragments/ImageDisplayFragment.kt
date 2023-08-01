@@ -96,7 +96,7 @@ class ImageDisplayFragment(
                     //load more when it last position
                     if(position == (pagerAdapter.itemCount - 1)){
                         if (shouldPaginate){
-                            model.loadNewItems(requireActivity(),paginationStart,paginationLimit,true)
+                            model.loadNewItems(requireActivity(),paginationStart,paginationLimit)
                         }
                     }
                 }

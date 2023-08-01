@@ -18,12 +18,11 @@ class AudioSearchViewModel: ViewModel() {
     val audios: LiveData<ArrayList<AudioContent>> = _audios
     var audiosList = ArrayList<AudioContent>()
 
-    fun loadNewItems(context: Context, paginationStart: Int, paginationLimit: Int, shouldPaginate: Boolean,
-                     selectionType: String, selectionValue: String){
+    fun loadNewItems(context: Context, paginationStart: Int, paginationLimit: Int, selectionType: String, selectionValue: String){
         CoroutineScope(Dispatchers.IO).async {
             audiosList.addAll(
                 MediaFacer
-                    .withPagination(paginationStart, paginationLimit, shouldPaginate)
+                    .withPagination(paginationStart, paginationLimit)
                     .searchAudios(context, MediaFacer.externalAudioContent,selectionType,selectionValue)
             )
         }.invokeOnCompletion {

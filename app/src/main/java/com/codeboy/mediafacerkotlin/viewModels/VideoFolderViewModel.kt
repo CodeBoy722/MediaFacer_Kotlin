@@ -18,11 +18,11 @@ class VideoFolderViewModel: ViewModel() {
     val videoFolders: LiveData<ArrayList<VideoFolderContent>> = _videoFolders
     private var videoFoldersList = ArrayList<VideoFolderContent>()
 
-    fun loadNewItems(context: Context, paginationStart: Int, paginationLimit: Int, shouldPaginate: Boolean){
+    fun loadNewItems(context: Context, paginationStart: Int, paginationLimit: Int){
         CoroutineScope(Dispatchers.IO).async {
             videoFoldersList.addAll(
                 MediaFacer
-                    .withPagination(paginationStart, paginationLimit, shouldPaginate)
+                    .withPagination(paginationStart, paginationLimit)
                     .getVideoFolders(context, MediaFacer.externalVideoContent)
             )
         }.invokeOnCompletion {

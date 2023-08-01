@@ -195,12 +195,12 @@ class AudiosFragment() : Fragment() {
             bindings.loader.visibility = View.GONE
         }
 
-        model.loadNewItems(requireActivity(),paginationStart,paginationLimit,shouldPaginate)
+        model.loadNewItems(requireActivity(),paginationStart,paginationLimit)
         bindings.loader.visibility = View.VISIBLE
 
         bindings.audiosList.addOnScrollListener(object: EndlessScrollListener(layoutManager){
             override  fun onLoadMore(page: Int, totalItemsCount: Int, view: RecyclerView?) {
-                model.loadNewItems(requireActivity(),paginationStart,paginationLimit,shouldPaginate)
+                model.loadNewItems(requireActivity(),paginationStart,paginationLimit)
                 bindings.loader.visibility = View.VISIBLE
             }
         })
@@ -230,12 +230,12 @@ class AudiosFragment() : Fragment() {
             bindings.loader.visibility = View.GONE
         }
 
-        model.loadNewItems(requireActivity(),paginationStart,paginationLimit,shouldPaginate)
+        model.loadNewItems(requireActivity(),paginationStart,paginationLimit)
         bindings.loader.visibility = View.VISIBLE
 
         bindings.audiosList.addOnScrollListener(object: EndlessScrollListener(layoutManager){
             override  fun onLoadMore(page: Int, totalItemsCount: Int, view: RecyclerView?) {
-                model.loadNewItems(requireActivity(),paginationStart,paginationLimit,shouldPaginate)
+                model.loadNewItems(requireActivity(),paginationStart,paginationLimit)
                 bindings.loader.visibility = View.VISIBLE
             }
         })
@@ -271,12 +271,12 @@ class AudiosFragment() : Fragment() {
             bindings.loader.visibility = View.GONE
         }
 
-        model.loadNewItems(requireActivity(),paginationStart,paginationLimit,shouldPaginate)
+        model.loadNewItems(requireActivity(),paginationStart,paginationLimit)
         bindings.loader.visibility = View.VISIBLE
 
         bindings.audiosList.addOnScrollListener(object: EndlessScrollListener(layoutManager){
             override  fun onLoadMore(page: Int, totalItemsCount: Int, view: RecyclerView?) {
-                model.loadNewItems(requireActivity(),paginationStart,paginationLimit,shouldPaginate)
+                model.loadNewItems(requireActivity(),paginationStart,paginationLimit)
                 bindings.loader.visibility = View.VISIBLE
             }
         })
@@ -312,12 +312,12 @@ class AudiosFragment() : Fragment() {
             bindings.loader.visibility = View.GONE
         }
 
-        model.loadNewItems(requireActivity(),paginationStart,paginationLimit,shouldPaginate)
+        model.loadNewItems(requireActivity(),paginationStart,paginationLimit)
         bindings.loader.visibility = View.VISIBLE
 
         bindings.audiosList.addOnScrollListener(object: EndlessScrollListener(layoutManager){
             override  fun onLoadMore(page: Int, totalItemsCount: Int, view: RecyclerView?) {
-                model.loadNewItems(requireActivity(),paginationStart,paginationLimit,shouldPaginate)
+                model.loadNewItems(requireActivity(),paginationStart,paginationLimit)
                 bindings.loader.visibility = View.VISIBLE
             }
         })
@@ -346,7 +346,7 @@ class AudiosFragment() : Fragment() {
 
         bindings.audiosList.addOnScrollListener(object: EndlessScrollListener(layoutManager){
             override  fun onLoadMore(page: Int, totalItemsCount: Int, view: RecyclerView?) {
-                audioSearch.loadNewItems(requireActivity(),paginationStart,paginationLimit,shouldPaginate,
+                audioSearch.loadNewItems(requireActivity(),paginationStart,paginationLimit,
                     MediaFacer.audioSearchSelectionTypeTitle,searchHolder)
                 bindings.loader.visibility = View.VISIBLE
             }
@@ -367,7 +367,7 @@ class AudiosFragment() : Fragment() {
                 val searchText = newText.toString().trim()
                 if(!TextUtils.isEmpty(searchText)){
                     searchHolder = searchText
-                    audioSearch.loadNewItems(requireActivity(),paginationStart,paginationLimit,shouldPaginate,
+                    audioSearch.loadNewItems(requireActivity(),paginationStart,paginationLimit,
                         MediaFacer.audioSearchSelectionTypeTitle,searchText)
                 }
             }

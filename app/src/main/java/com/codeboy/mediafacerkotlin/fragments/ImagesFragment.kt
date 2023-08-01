@@ -111,7 +111,7 @@ class ImagesFragment() : Fragment() {
 
         //get paginated audio items using MediaFacer, remember to set paginationStart to size+1 of
         //of items gotten from MediaFacer to prepare for getting next page of items when user scroll
-        model.loadNewItems(requireActivity(),paginationStart,paginationLimit,shouldPaginate)
+        model.loadNewItems(requireActivity(),paginationStart,paginationLimit)
         bindings.loader.visibility = View.VISIBLE
 
         //adding EndlessScrollListener to our recyclerview to auto paginate items when user is
@@ -148,12 +148,12 @@ class ImagesFragment() : Fragment() {
             bindings.loader.visibility = View.GONE
         }
 
-        model.loadNewItems(requireActivity(),paginationStart,paginationLimit,shouldPaginate)
+        model.loadNewItems(requireActivity(),paginationStart,paginationLimit)
         bindings.loader.visibility = View.VISIBLE
 
         bindings.imagesList.addOnScrollListener(object: EndlessScrollListener(layoutManager){
             override fun onLoadMore(page: Int, totalItemsCount: Int, view: RecyclerView?) {
-                model.loadNewItems(requireActivity(),paginationStart,paginationLimit,shouldPaginate)
+                model.loadNewItems(requireActivity(),paginationStart,paginationLimit)
                 bindings.loader.visibility = View.VISIBLE
             }
         })

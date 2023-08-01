@@ -18,11 +18,11 @@ class AudioBucketViewModel: ViewModel() {
     val audioBuckets: LiveData<ArrayList<AudioBucketContent>> = _audioBuckets
     private var audiosList = ArrayList<AudioBucketContent>()
 
-    fun loadNewItems(context: Context, paginationStart: Int, paginationLimit: Int, shouldPaginate: Boolean){
+    fun loadNewItems(context: Context, paginationStart: Int, paginationLimit: Int){
         CoroutineScope(Dispatchers.IO).async {
             audiosList.addAll(
                 MediaFacer
-                    .withPagination(paginationStart, paginationLimit, shouldPaginate)
+                    .withPagination(paginationStart, paginationLimit)
                     .getBuckets(context, MediaFacer.externalAudioContent)
             )
         }.invokeOnCompletion {

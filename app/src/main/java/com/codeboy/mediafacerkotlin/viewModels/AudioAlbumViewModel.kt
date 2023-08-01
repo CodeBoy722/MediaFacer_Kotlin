@@ -17,11 +17,11 @@ class AudioAlbumViewModel {
     val audioAlbums: LiveData<ArrayList<AudioAlbumContent>> = _audioAlbums
     private var audioAlbumList = ArrayList<AudioAlbumContent>()
 
-    fun loadNewItems(context: Context, paginationStart: Int, paginationLimit: Int, shouldPaginate: Boolean){
+    fun loadNewItems(context: Context, paginationStart: Int, paginationLimit: Int){
         CoroutineScope(Dispatchers.IO).async {
             audioAlbumList.addAll(
                 MediaFacer
-                    .withPagination(paginationStart, paginationLimit, shouldPaginate)
+                    .withPagination(paginationStart, paginationLimit)
                     .getAlbums(context, MediaFacer.externalAudioContent)
             )
         }.invokeOnCompletion {
