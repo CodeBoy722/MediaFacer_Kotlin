@@ -39,6 +39,12 @@ object MediaFacer : VideoGet, AudioGet, ImageGet {
         return this
     }
 
+    /**
+     *@param context the app or activity Context
+     * @param contentMedium internal or external storage uri
+     *
+     * @return  ArrayList of AudioContent representing data of audio media items on device Mediastore
+     */
     override fun getAudios(
         context: Context,
         contentMedium: Uri
@@ -136,6 +142,12 @@ object MediaFacer : VideoGet, AudioGet, ImageGet {
         return allAudio
     }
 
+    /**
+     *@param context the app or activity Context
+     * @param contentMedium internal or external storage uri
+     *
+     * @return  ArrayList of VideoContent representing data of video media items on device Mediastore
+     */
     @SuppressLint("Range")
     override fun getVideos(
         context: Context,
@@ -205,6 +217,12 @@ object MediaFacer : VideoGet, AudioGet, ImageGet {
         return videos
     }
 
+    /**
+     *@param context the app or activity Context
+     * @param contentMedium internal or external storage uri
+     *
+     * @return  ArrayList of ImageContent representing data of image media items on device Mediastore
+     */
     override fun getImages(
         context: Context,
         contentMedium: Uri
@@ -269,6 +287,14 @@ object MediaFacer : VideoGet, AudioGet, ImageGet {
         return allImages
     }
 
+
+    /**
+     * Get an ArrayList of VideoFolderContent with each item in the list representing a folder with videos from device Mediastore
+     *@param context the app or activity Context
+     * @param contentMedium internal or external storage uri
+     *
+     * @return  ArrayList of VideoFolderContent
+     */
     override fun getVideoFolders(
         context: Context,
         contentMedium: Uri
@@ -328,6 +354,14 @@ object MediaFacer : VideoGet, AudioGet, ImageGet {
         return videoFolders
     }
 
+
+    /**
+     * Get an ArrayList of ImageFolderContent with each item in the list representing a folder with images from device Mediastore
+     *@param context the app or activity Context
+     * @param contentMedium internal or external storage uri
+     *
+     * @return  ArrayList of ImageFolderContent
+     */
     override fun getImageFolders(
         context: Context,
         contentMedium: Uri
@@ -388,6 +422,14 @@ object MediaFacer : VideoGet, AudioGet, ImageGet {
         return imageFolders
     }
 
+    /**
+     * Get an ArrayList of AudioAlbumContent where each AudioAlbumContent is a data class containing audios with the same album name
+     * from device Mediastore
+     *@param context the app or activity Context
+     * @param contentMedium internal or external storage uri
+     *
+     * @return  ArrayList of AudioAlbumContent
+     */
     override fun getAlbums(
         context: Context,
         contentMedium: Uri
@@ -460,6 +502,14 @@ object MediaFacer : VideoGet, AudioGet, ImageGet {
         return albums
     }
 
+    /**
+     * Get an ArrayList of AudioBucketContent where each AudioBucketContent is a data class containing audios in the same folder on device storage
+     * from device Mediastore
+     *@param context the app or activity Context
+     * @param contentMedium internal or external storage uri
+     *
+     * @return  ArrayList of AudioBucketContent
+     */
     override fun getBuckets(
         context: Context,
         contentMedium: Uri
@@ -573,6 +623,14 @@ object MediaFacer : VideoGet, AudioGet, ImageGet {
         return audioBuckets
     }
 
+    /**
+     * Get an ArrayList of AudioArtistContent where each AudioArtistContent is a data class containing audio items from the same artist
+     * from device Mediastore
+     *@param context the app or activity Context
+     * @param contentMedium internal or external storage uri
+     *
+     * @return  ArrayList of AudioArtistContent
+     */
     override fun getArtists(
         context: Context,
         contentMedium: Uri
@@ -619,6 +677,15 @@ object MediaFacer : VideoGet, AudioGet, ImageGet {
         return audioArtists
     }
 
+
+    /**
+     * Get an ArrayList of AudioGenreContent where each AudioGenreContent is a data class containing audio items with the same genre
+     * from device Mediastore
+     *@param context the app or activity Context
+     * @param contentMedium internal or external storage uri
+     *
+     * @return  ArrayList of AudioGenreContent
+     */
     override fun getGenres(
         context: Context,
         contentMedium: Uri
@@ -703,6 +770,15 @@ object MediaFacer : VideoGet, AudioGet, ImageGet {
         return audioGenres
     }
 
+    /**
+     * Get an ArrayList of AudioContent from device Mediastore matching a specified search string
+     *@param context the app or activity Context
+     * @param contentMedium internal or external storage uri
+     * @param selectionType defines the type of value to search for ie:  Audio.Media.ALBUM, Audio.Media.ARTIST, Audio.Media.TITLE
+     * @param selectionValue the search string
+     *
+     * @return  ArrayList of AudioContent
+     */
     override fun searchAudios(
         context: Context,
         contentMedium: Uri,
@@ -798,6 +874,16 @@ object MediaFacer : VideoGet, AudioGet, ImageGet {
         return foundAudios
     }
 
+
+    /**
+     * Get an ArrayList of VideoContent from device Mediastore matching a specified search string
+     *@param context the app or activity Context
+     * @param contentMedium internal or external storage uri
+     * @param selectionType defines the type of value to search for ie:  Video.Media.DISPLAY_NAME, Video.Media.BUCKET_DISPLAY_NAME
+     * @param selectionValue the search string
+     *
+     * @return  ArrayList of VideoContent
+     */
     override fun searchVideos(
         context: Context,
         contentMedium: Uri,
