@@ -58,15 +58,6 @@ internal interface AudioGet {
             Audio.Artists.ARTIST
         )
 
-    val audioSearchSelectionTypeAlbum: String
-        get() = Audio.Media.ALBUM
-
-    val audioSearchSelectionTypeArtist: String
-        get() = Audio.Media.ARTIST
-
-    val audioSearchSelectionTypeTitle: String
-        get() = Audio.Media.TITLE
-
     val audioSelection: String
         get() = Audio.Media.IS_MUSIC + " != 0"
 

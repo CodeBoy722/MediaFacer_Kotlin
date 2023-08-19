@@ -25,6 +25,13 @@ object MediaFacer : VideoGet, AudioGet, ImageGet {
     val externalImagesContent: Uri = Images.Media.EXTERNAL_CONTENT_URI
     val internalImagesContent: Uri = Images.Media.INTERNAL_CONTENT_URI
 
+    const val audioSearchSelectionTypeAlbum: String = Audio.Media.ALBUM
+    const val audioSearchSelectionTypeArtist: String = Audio.Media.ARTIST
+    const val audioSearchSelectionTypeTitle: String = Audio.Media.TITLE
+
+    @SuppressLint("InlinedApi")
+    const val audioSearchSelectionTypeGenre: String = Audio.Media.GENRE
+
     private var mediaPaginationStart = 0
     private var mediaPaginationLimit = 0
     private var shouldPaginate = false
