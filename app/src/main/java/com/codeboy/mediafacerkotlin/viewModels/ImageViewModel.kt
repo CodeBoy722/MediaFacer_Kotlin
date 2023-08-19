@@ -24,7 +24,7 @@ class ImageViewModel : ViewModel() {
              imagesList.addAll(
                  MediaFacer
                      .withPagination(paginationStart, paginationLimit)
-                     .getImages(context, externalImagesContent)
+                     .getImages(context, MediaFacer.externalImagesContent)
              )
          }.invokeOnCompletion {
              Handler(Looper.getMainLooper())

@@ -957,13 +957,22 @@ object MediaFacer : VideoGet, AudioGet, ImageGet {
         return videos
     }
 
+    /*fun getGalleryContent(context: Context, contentMedium: Uri){
+
+
+    }
+
+    fun getGalleryByFolderContent(context: Context, contentMedium: Uri){
+
+    }
+
     fun deleteMedia(mediaId: Int) {
 
     }
 
     fun renameMedia(mediaId: Int) {
 
-    }
+    }*/
 
 
     /* fun setVideoObserver(appContext: Context){

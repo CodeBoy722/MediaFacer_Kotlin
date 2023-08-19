@@ -24,7 +24,7 @@ class VideoViewModel : ViewModel() {
             videosList.addAll(
                 MediaFacer
                     .withPagination(paginationStart, paginationLimit)
-                    .getVideos(context, externalVideoContent)
+                    .getVideos(context, MediaFacer.externalVideoContent)
             )
         }.invokeOnCompletion {
             Handler(Looper.getMainLooper())// use handler to post result back on main thread
