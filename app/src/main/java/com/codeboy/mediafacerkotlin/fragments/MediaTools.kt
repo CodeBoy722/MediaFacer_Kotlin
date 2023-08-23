@@ -29,14 +29,14 @@ class MediaTools() : Fragment() {
 
         bindings.openPicker.setOnClickListener {
             MediaFacerPicker()
-                .addAllMediaSelection()
+                .allMediaSelection()
                 .setPickerColor(R.color.cartesian_orange)
                 .setSelectionCompleteDrawable(R.drawable.ic_send)
-                .setMediaBottomMenuIcons(R.drawable.ic_audio, R.drawable.ic_video, R.drawable.ic_image)
-                .setAudioDefaultAlbumArtDrawable(R.drawable.music_placeholder)
-                .setSelectionMenuTitles("Music","Videos","Images")
-                .setBottomItemSelectionColors(R.color.white, R.color.material_grey_600)
-                .addMediaSelectionListener(object : MediaSelectionListener {
+                .setBottomNavIcons(R.drawable.ic_audio, R.drawable.ic_video, R.drawable.ic_image)
+                .setDefaultAlbumArtDrawable(R.drawable.music_placeholder)
+                .setBottomNavTitles("Music","Videos","Images")
+                .setBottomNavColors(R.color.white, R.color.material_grey_600)
+                .addMediaSelectionCompleteListener(object : MediaSelectionListener {
 
                     override fun onMediaItemsSelected(
                         audios: ArrayList<AudioContent>, videos: ArrayList<VideoContent>, images: ArrayList<ImageContent>, ) {
@@ -57,9 +57,9 @@ class MediaTools() : Fragment() {
                 .addAudioSelection()
                 .addImageSelection()
                 .setSelectionCompleteDrawable(R.drawable.ic_send)
-                .setBottomItemSelectionColors(R.color.white, R.color.material_grey_400)
+                .setBottomNavColors(R.color.white, R.color.material_grey_400)
                 .setPickerColor(R.color.crimson_red)
-                .addMediaSelectionListener(object : MediaSelectionListener{
+                .addMediaSelectionCompleteListener(object : MediaSelectionListener{
 
                     override fun onMediaItemsSelected(audios: ArrayList<AudioContent>, videos: ArrayList<VideoContent>, images: ArrayList<ImageContent>) {
                         val numImages = images.size
@@ -79,9 +79,9 @@ class MediaTools() : Fragment() {
                 .addAudioSelection()
                 .addImageSelection()
                 .setSelectionCompleteDrawable(R.drawable.ic_send)
-                .setBottomItemSelectionColors(R.color.white, R.color.material_grey_400)
+                .setBottomNavColors(R.color.white, R.color.material_grey_400)
                 .setPickerColor(R.color.cartesian_green)
-                .addMediaSelectionListener(object : MediaSelectionListener{
+                .addMediaSelectionCompleteListener(object : MediaSelectionListener{
 
                     override fun onMediaItemsSelected(audios: ArrayList<AudioContent>, videos: ArrayList<VideoContent>, images: ArrayList<ImageContent>) {
                         val numImages = images.size
@@ -99,9 +99,9 @@ class MediaTools() : Fragment() {
             MediaFacerPicker()
                 .addAudioSelection()
                 .setSelectionCompleteDrawable(R.drawable.ic_send)
-                .setBottomItemSelectionColors(R.color.white, R.color.material_grey_600)
+                .setBottomNavColors(R.color.white, R.color.material_grey_600)
                 .setPickerColor(R.color.black)
-                .addMediaSelectionListener(object : MediaSelectionListener{
+                .addMediaSelectionCompleteListener(object : MediaSelectionListener{
 
                     override fun onMediaItemsSelected(audios: ArrayList<AudioContent>, videos: ArrayList<VideoContent>, images: ArrayList<ImageContent>) {
                         val numImages = images.size

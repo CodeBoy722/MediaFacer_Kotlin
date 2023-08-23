@@ -2,7 +2,6 @@ package com.codeboy.mediafacer.tools
 
 import android.content.res.ColorStateList
 import android.content.res.Resources
-import android.graphics.Color
 import android.os.Bundle
 import android.view.*
 import androidx.core.content.ContextCompat
@@ -163,14 +162,14 @@ class MediaFacerPicker : BottomSheetDialogFragment(), View.OnClickListener {
         return this
     }
 
-    fun addAllMediaSelection(): MediaFacerPicker{
+    fun allMediaSelection(): MediaFacerPicker{
         addAudios = true
         addImages = true
         addVideos = true
         return this
     }
 
-    fun addMediaSelectionListener(listener: MediaSelectionListener): MediaFacerPicker{
+    fun addMediaSelectionCompleteListener(listener: MediaSelectionListener): MediaFacerPicker{
         this.listener = listener
         return this
     }
@@ -266,20 +265,20 @@ class MediaFacerPicker : BottomSheetDialogFragment(), View.OnClickListener {
 
     //pass in your custom default album image for audios without an album art
     //if you are selecting audios too
-    fun setAudioDefaultAlbumArtDrawable(drawableId: Int): MediaFacerPicker{
+    fun setDefaultAlbumArtDrawable(drawableId: Int): MediaFacerPicker{
         customAlbumDrawable = drawableId
         return this
     }
 
     //pass in your title strings here in any local or language to fit your use-case
-    fun setSelectionMenuTitles(audiosText: String, videosText: String, imagesText:String): MediaFacerPicker{
+    fun setBottomNavTitles(audiosText: String, videosText: String, imagesText:String): MediaFacerPicker{
         this.audiosText = audiosText
         this.videosText = videosText
         this.imagesText = imagesText
         return this
     }
 
-    fun setMediaBottomMenuIcons(audioIcon: Int?, videoIcon:Int?, imagesIcon: Int?): MediaFacerPicker{
+    fun setBottomNavIcons(audioIcon: Int?, videoIcon:Int?, imagesIcon: Int?): MediaFacerPicker{
         videoMenuIcon = videoIcon
         imageMenuIcon = imagesIcon
         audioMenuIcon = audioIcon
@@ -297,7 +296,7 @@ class MediaFacerPicker : BottomSheetDialogFragment(), View.OnClickListener {
     }*/
 
     //set fragment selection colors
-    fun setBottomItemSelectionColors(selectedColor: Int, unselectedColor: Int): MediaFacerPicker{
+    fun setBottomNavColors(selectedColor: Int, unselectedColor: Int): MediaFacerPicker{
         selectedFragMenuColor = selectedColor
         unSelectedFragMenuColor = unselectedColor
         return this
