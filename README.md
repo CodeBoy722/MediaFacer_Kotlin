@@ -42,6 +42,9 @@ dependencies {
 - Storage (`READ_MEDIA_AUDIO`, `READ_MEDIA_VIDEO`, `READ_MEDIA_IMAGES`, `READ_EXTERNAL_STORAGE`) to read audio, video, and image and media files depending on your usecase
 - Services (`FOREGROUND_SERVICE`, `WAKE_LOCK`) to keep the music playing even if the app itself is in background
 
+ ### Read Article/Documentation on Medium 
+ [MediaFacer: The ultimate tool for building Android media apps quickly (Part 1)](https://medium.com/codex/mediafacer-the-ultimate-tool-for-building-android-media-apps-quickly-part-1-9b6ca154b507?sk=f66510afc25698da489850e180cfbff5)
+
 ## License
 
 MIT License
