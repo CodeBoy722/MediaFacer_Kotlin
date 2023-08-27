@@ -10,6 +10,7 @@
 .DS_Store
 /build
 /captures
+glims_keystore.jks
 github.properties
 .externalNativeBuild
 .cxx
