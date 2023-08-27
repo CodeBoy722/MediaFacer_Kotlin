@@ -33,7 +33,7 @@ Add the dependency in the app level build.gradle file
 
 ```gradle
 dependencies {
-	   implementation 'com.github.CodeBoy722:MediaFacer_Kotlin:1.1'
+	   implementation 'com.github.CodeBoy722:MediaFacer_Kotlin:1.2'
 	}
 ```
 
