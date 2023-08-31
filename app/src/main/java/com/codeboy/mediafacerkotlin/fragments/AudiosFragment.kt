@@ -490,7 +490,7 @@ class AudiosFragment() : Fragment() {
                         mCurrentState = PlaybackState.STATE_PAUSED
                         bindings.playPause.setImageDrawable(getDrawable(requireActivity(), R.drawable.ic_play))
                     }
-                    PlaybackStateCompat.STATE_STOPPED -> mCurrentState = PlaybackState.STATE_STOPPED
+                    PlaybackStateCompat.STATE_STOPPED ->  mCurrentState = PlaybackState.STATE_STOPPED
                     PlaybackStateCompat.STATE_SKIPPING_TO_NEXT -> mCurrentState = PlaybackState.STATE_SKIPPING_TO_NEXT
                     PlaybackStateCompat.STATE_SKIPPING_TO_PREVIOUS -> mCurrentState = PlaybackState.STATE_SKIPPING_TO_PREVIOUS
                     PlaybackStateCompat.STATE_REWINDING -> mCurrentState = PlaybackState.STATE_REWINDING
@@ -498,7 +498,13 @@ class AudiosFragment() : Fragment() {
                     PlaybackStateCompat.STATE_BUFFERING -> {}
                     PlaybackStateCompat.STATE_CONNECTING -> mCurrentState = PlaybackState.STATE_CONNECTING
                     PlaybackStateCompat.STATE_ERROR -> mCurrentState = PlaybackState.STATE_ERROR
-                    PlaybackStateCompat.STATE_NONE -> mCurrentState = PlaybackState.STATE_NONE
+                    PlaybackStateCompat.STATE_NONE -> {
+                        audiosAdapter.playingState = false
+                        audiosAdapter.notifyDataSetChanged()
+                        PlaybackProtocol.setIsMusicPlaying(false)
+                        mCurrentState = PlaybackState.STATE_NONE
+                        bindings.playPause.setImageDrawable(getDrawable(requireActivity(), R.drawable.ic_play))
+                    }
                     PlaybackStateCompat.STATE_SKIPPING_TO_QUEUE_ITEM -> mCurrentState = PlaybackState.STATE_SKIPPING_TO_QUEUE_ITEM
                 }
             }

@@ -47,5 +47,11 @@
 
     <string name="exo_controls_shuffle_off_description" tools:ignore="PrivateResource">stop pick and play random tracks automatically</string>
 
+    <string name="codeboy_controls_repeat_all_description">repeat all songs when player finish paying all</string>
+
+    <string name="codeboy_controls_repeat_once_description">continuously repeat current playing song</string>
+
+    <string name="codeboy_controls_repeat_off_description">repeat mode off </string>
+
 
 </resources>

@@ -1,13 +1,12 @@
 package com.codeboy.mediafacerkotlin.musicSession
 
 import android.Manifest
+import android.annotation.SuppressLint
 import android.app.Notification
 import android.app.NotificationChannel
 import android.app.NotificationManager
-import android.app.PendingIntent
 import android.app.PendingIntent.FLAG_IMMUTABLE
 import android.app.PendingIntent.FLAG_UPDATE_CURRENT
-import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.content.pm.ServiceInfo
@@ -65,13 +64,17 @@ class MediaLibrary : MediaLibraryService(), Player.Listener {
         setupUpMusicList(musicList, 0)
     }
 
-    private lateinit var notificationManager: NotificationManager
-
     companion object {
         private const val SEARCH_QUERY_PREFIX_COMPAT = "androidx://media3-session/playFromSearch"
         private const val SEARCH_QUERY_PREFIX = "androidx://media3-session/setMediaUri"
         private const val CUSTOM_COMMAND_TOGGLE_SHUFFLE_MODE_ON = "android.media3.session.demo.SHUFFLE_ON"
         private const val CUSTOM_COMMAND_TOGGLE_SHUFFLE_MODE_OFF = "android.media3.session.demo.SHUFFLE_OFF"
+        private const val CUSTOM_COMMAND_REPEAT_OFF = "codeboy.session.repeat.off"
+        private const val CUSTOM_COMMAND_REPEAT_ONCE = "codeboy.session.repeat.once"
+        private const val CUSTOM_COMMAND_REPEAT_ALL = "codeboy.session.repeat.all"
+
+        private lateinit var currentShuffle: CommandButton
+        private lateinit var currentRepeat: CommandButton
 
         private const val CUSTOM_COMMAND_NEW_PLAYLIST = "mediafacer.action.newPlaylist"
         private const val CUSTOM_COMMAND_STOP_PLAYER = "mediafacer.action.stop"
@@ -98,11 +101,16 @@ class MediaLibrary : MediaLibraryService(), Player.Listener {
                 getShuffleCommandButton(
                     SessionCommand(CUSTOM_COMMAND_TOGGLE_SHUFFLE_MODE_OFF, Bundle.EMPTY)
                 ),
+                getRepeatModeCommandButton(CUSTOM_COMMAND_REPEAT_ALL),
+                getRepeatModeCommandButton(CUSTOM_COMMAND_REPEAT_ONCE),
+                getRepeatModeCommandButton(CUSTOM_COMMAND_REPEAT_OFF),
                 getNewPlaylistCommandButtons(),
-                getStopCommandButton()
+
+                //getStopCommandButton()
             )
-        customLayout = ImmutableList.of(customCommands[0])
-        notificationManager = this.getSystemService(NOTIFICATION_SERVICE) as NotificationManager
+        currentShuffle = customCommands[0]
+        currentRepeat = customCommands[4]
+        customLayout = ImmutableList.of(customCommands[0],customCommands[4])
         initializeSessionAndPlayer()
         setListener(MediaSessionServiceListener())
 
@@ -149,7 +157,6 @@ class MediaLibrary : MediaLibraryService(), Player.Listener {
 
      @OptIn(UnstableApi::class)
     override fun onUpdateNotification(session: MediaSession) {
-
         val playerNotificationBuilder = PlayerNotificationManager.Builder(this, NOTIFICATION_ID, CHANNEL_ID)
             .setChannelNameResourceId(R.string.channel_name)
             .setChannelDescriptionResourceId(R.string.description)
@@ -157,7 +164,14 @@ class MediaLibrary : MediaLibraryService(), Player.Listener {
             .setNotificationListener(object: PlayerNotificationManager.NotificationListener {
                 override fun onNotificationCancelled(notificationId: Int, dismissedByUser: Boolean) {
                     super.onNotificationCancelled(notificationId, dismissedByUser)
-                    //stopSelf()
+                    //remove notification and stop service totally
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+                        stopForeground(MediaLibraryService.STOP_FOREGROUND_REMOVE)
+                        stopSelf()
+                    }else{
+                        stopForeground(true)
+                        stopSelf()
+                    }
                 }
 
                 override fun onNotificationPosted(notificationId: Int, notification: Notification, ongoing: Boolean) {
@@ -167,7 +181,6 @@ class MediaLibrary : MediaLibraryService(), Player.Listener {
                     }else{
                         startForeground(notificationId, notification)
                     }
-                    //notificationManager.notify(notificationId, notification)
                 }
             })
             .setSmallIconResourceId(R.drawable.ic_logo_notiv)
@@ -175,8 +188,9 @@ class MediaLibrary : MediaLibraryService(), Player.Listener {
             .setPreviousActionIconResourceId(R.drawable.ic_skip_previous)
             .setPlayActionIconResourceId(R.drawable.ic_play)
             .setPauseActionIconResourceId(R.drawable.ic_pause)
-            //.setStopActionIconResourceId(R.drawable.ic_cancel)
-            .setCustomActionReceiver(object: PlayerNotificationManager.CustomActionReceiver{
+            .setStopActionIconResourceId(R.drawable.ic_cancel)
+         //this customs are not needed
+           /* .setCustomActionReceiver(object: PlayerNotificationManager.CustomActionReceiver{
                 override fun createCustomActions(context: Context, instanceId: Int): MutableMap<String, NotificationCompat.Action> {
                     return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
                         mutableMapOf(Pair(
@@ -208,10 +222,10 @@ class MediaLibrary : MediaLibraryService(), Player.Listener {
                         }
                     }
                 }
-            })
+            })*/
 
         playerNotification = playerNotificationBuilder.build()
-        //playerNotification.setUseStopAction(true)
+        playerNotification.setUseStopAction(true)
         playerNotification.setUseFastForwardAction(false)
         playerNotification.setUseRewindAction(false)
         playerNotification.setUseNextActionInCompactView(true)
@@ -270,7 +284,6 @@ class MediaLibrary : MediaLibraryService(), Player.Listener {
         return mediaLibrarySession
     }
 
-
     override fun onTaskRemoved(rootIntent: Intent?) {
      /*   if (!player.playWhenReady) {
             stopSelf()
@@ -283,7 +296,6 @@ class MediaLibrary : MediaLibraryService(), Player.Listener {
         MusicDataUtil(this).saveLastPlaylist(musicList)
         player.stop()
         player.release()
-        notificationManager.cancel(NOTIFICATION_ID)
         mediaLibrarySession.release()
         clearListener()
         isRunning = false
@@ -320,7 +332,8 @@ class MediaLibrary : MediaLibraryService(), Player.Listener {
                     // Enable shuffling.
                     player.shuffleModeEnabled = true
                     // Change the custom layout to contain the `Disable shuffling` command.
-                    customLayout = ImmutableList.of(customCommands[1])
+                    currentShuffle = customCommands[1]
+                    customLayout = ImmutableList.of(customCommands[1], currentRepeat)
                     // Send the updated custom layout to controllers.
                     session.setCustomLayout(customLayout)
                 }
@@ -329,8 +342,30 @@ class MediaLibrary : MediaLibraryService(), Player.Listener {
                     // Disable shuffling.
                     player.shuffleModeEnabled = false
                     // Change the custom layout to contain the `Enable shuffling` command.
-                    customLayout = ImmutableList.of(customCommands[0])
+                    currentShuffle = customCommands[0]
+                    customLayout = ImmutableList.of(customCommands[0], currentRepeat)
                     // Send the updated custom layout to controllers.
+                    session.setCustomLayout(customLayout)
+                }
+
+                CUSTOM_COMMAND_REPEAT_ALL -> {
+                    player.repeatMode = Player.REPEAT_MODE_ALL
+                    currentRepeat = customCommands[3]
+                    customLayout = ImmutableList.of(currentShuffle,customCommands[3])
+                    session.setCustomLayout(customLayout)
+                }
+
+                CUSTOM_COMMAND_REPEAT_ONCE -> {
+                    player.repeatMode = Player.REPEAT_MODE_ONE
+                    currentRepeat = customCommands[4]
+                    customLayout = ImmutableList.of(currentShuffle,customCommands[4])
+                    session.setCustomLayout(customLayout)
+                }
+
+                CUSTOM_COMMAND_REPEAT_OFF -> {
+                    player.repeatMode = Player.REPEAT_MODE_OFF
+                    currentRepeat = customCommands[2]
+                    customLayout = ImmutableList.of(currentShuffle,customCommands[2])
                     session.setCustomLayout(customLayout)
                 }
 
@@ -416,10 +451,10 @@ class MediaLibrary : MediaLibraryService(), Player.Listener {
 
             return MediaItemTree.getItemFromTitle(mediaTitle) ?: MediaItemTree.getRandomItem()
         }
-
     }
 
 
+    //add shuffling to media notification
     private fun getShuffleCommandButton(sessionCommand: SessionCommand): CommandButton {
         val isOn = sessionCommand.customAction == CUSTOM_COMMAND_TOGGLE_SHUFFLE_MODE_ON
         return CommandButton.Builder()
@@ -434,15 +469,39 @@ class MediaLibrary : MediaLibraryService(), Player.Listener {
             .build()
     }
 
+    //add repeat mode to media notification
+    @SuppressLint("PrivateResource")
+    private fun getRepeatModeCommandButton(sessionCommand: String) : CommandButton {
+        return CommandButton.Builder()
+            .setDisplayName(
+                getString(
+                    when (sessionCommand) {
+                        CUSTOM_COMMAND_REPEAT_ALL -> R.string.codeboy_controls_repeat_all_description
+                        CUSTOM_COMMAND_REPEAT_ONCE -> R.string.codeboy_controls_repeat_once_description
+                        else -> R.string.codeboy_controls_repeat_off_description
+                    }
+                )
+            )
+            .setSessionCommand(SessionCommand(sessionCommand, Bundle.EMPTY))
+            .setIconResId(
+                when (sessionCommand) {
+                    CUSTOM_COMMAND_REPEAT_ALL -> androidx.media3.ui.R.drawable.exo_icon_repeat_all
+                    CUSTOM_COMMAND_REPEAT_ONCE -> androidx.media3.ui.R.drawable.exo_icon_repeat_one
+                    else -> androidx.media3.ui.R.drawable.exo_icon_repeat_off
+                }
+            )
+            .build()
+    }
 
     private fun getNewPlaylistCommandButtons(): CommandButton{
         return CommandButton.Builder()
             .setDisplayName("new playlist")
             .setSessionCommand(SessionCommand(CUSTOM_COMMAND_NEW_PLAYLIST, Bundle.EMPTY))
-            .setIconResId(R.drawable.ic_logo_notiv)
+            //.setIconResId(R.drawable.ic_logo_notiv)
             .build()
     }
 
+    //not really needed as command button since media notification already has it
     private fun getStopCommandButton(): CommandButton{
         return CommandButton.Builder()
             .setDisplayName("Stop Player")
