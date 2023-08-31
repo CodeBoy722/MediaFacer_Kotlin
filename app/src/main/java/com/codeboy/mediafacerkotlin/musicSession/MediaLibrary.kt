@@ -109,8 +109,8 @@ class MediaLibrary : MediaLibraryService(), Player.Listener {
                 //getStopCommandButton()
             )
         currentShuffle = customCommands[0]
-        currentRepeat = customCommands[4]
-        customLayout = ImmutableList.of(customCommands[0],customCommands[4])
+        currentRepeat = customCommands[2]
+        customLayout = ImmutableList.of(customCommands[0],customCommands[2])
         initializeSessionAndPlayer()
         setListener(MediaSessionServiceListener())
 
@@ -252,7 +252,7 @@ class MediaLibrary : MediaLibraryService(), Player.Listener {
                     it.setHandleAudioBecomingNoisy(true)
                     it.setWakeMode(C.WAKE_MODE_LOCAL)
                     //it.addMediaItems(mediaItems)
-                    it.repeatMode = Player.REPEAT_MODE_ALL
+                    //it.repeatMode = Player.REPEAT_MODE_ALL
                     //it.shuffleModeEnabled = true
                     it.pauseAtEndOfMediaItems = false
                     it.seekTo(trackPosition, playbackPosition)
@@ -485,8 +485,9 @@ class MediaLibrary : MediaLibraryService(), Player.Listener {
             .setSessionCommand(SessionCommand(sessionCommand, Bundle.EMPTY))
             .setIconResId(
                 when (sessionCommand) {
-                    CUSTOM_COMMAND_REPEAT_ALL -> androidx.media3.ui.R.drawable.exo_icon_repeat_all
-                    CUSTOM_COMMAND_REPEAT_ONCE -> androidx.media3.ui.R.drawable.exo_icon_repeat_one
+                    //CUSTOM_COMMAND_REPEAT_ALL -> androidx.media3.ui.R.drawable.exo_icon_repeat_off
+                    CUSTOM_COMMAND_REPEAT_ONCE -> androidx.media3.ui.R.drawable.exo_icon_repeat_all
+                    CUSTOM_COMMAND_REPEAT_OFF -> androidx.media3.ui.R.drawable.exo_icon_repeat_one
                     else -> androidx.media3.ui.R.drawable.exo_icon_repeat_off
                 }
             )
