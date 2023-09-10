@@ -29,11 +29,18 @@
 	}   
 ```
 
-Add the dependency in the app level build.gradle file
+Add the dependency in the app-level build.gradle file
 
 ```gradle
 dependencies {
 	   implementation 'com.github.CodeBoy722:MediaFacer_Kotlin:1.2'
+	}
+```
+If your project is a JetPack Compose project, add the below material UI dependency in your app-level build.gradle to avoid Android resource-linking issues 
+
+```gradle
+dependencies {
+	   implementation 'com.google.android.material:material:1.9.0' // or above 
 	}
 ```
 
