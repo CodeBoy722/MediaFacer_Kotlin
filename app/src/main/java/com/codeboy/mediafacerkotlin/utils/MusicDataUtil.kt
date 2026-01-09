@@ -29,7 +29,4 @@ class MusicDataUtil(val context: Context) {
         val playlistJson: String = gson.toJson(playlist)
         lastPlaylist = playlistJson
     }
-
-
-
 }

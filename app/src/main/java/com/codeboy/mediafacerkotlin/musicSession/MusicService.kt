@@ -3,20 +3,21 @@ package com.codeboy.mediafacerkotlin.musicSession
 import android.app.Notification
 import android.app.NotificationManager
 import android.app.PendingIntent
-import android.content.*
+import android.content.BroadcastReceiver
+import android.content.ComponentName
+import android.content.Context
+import android.content.Intent
+import android.content.IntentFilter
 import android.content.pm.ServiceInfo
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.media.AudioFocusRequest
 import android.media.AudioManager
 import android.media.AudioManager.OnAudioFocusChangeListener
-import android.media.browse.MediaBrowser
 import android.net.Uri
-import androidx.media3.session.MediaSession
 import android.os.Build
 import android.os.Bundle
 import android.os.SystemClock
-import android.service.media.MediaBrowserService
 import android.support.v4.media.MediaBrowserCompat
 import android.support.v4.media.MediaMetadataCompat
 import android.support.v4.media.session.MediaSessionCompat
@@ -29,6 +30,7 @@ import androidx.media3.common.AudioAttributes
 import androidx.media3.common.C
 import androidx.media3.common.MediaItem
 import androidx.media3.common.Player
+import androidx.media3.common.util.UnstableApi
 import androidx.media3.exoplayer.ExoPlayer
 import androidx.media3.exoplayer.trackselection.DefaultTrackSelector
 import androidx.media3.ui.PlayerNotificationManager
@@ -41,6 +43,7 @@ import com.codeboy.mediafacerkotlin.utils.MusicDataUtil
 import java.io.FileNotFoundException
 import java.io.InputStream
 
+@UnstableApi
 class MusicService : MediaBrowserServiceCompat(), OnAudioFocusChangeListener, Player.Listener{
 
     private val LOG_TAG = "MediaFacer Music"
@@ -193,11 +196,8 @@ class MusicService : MediaBrowserServiceCompat(), OnAudioFocusChangeListener, Pl
         val mediaButtonIntent = Intent(Intent.ACTION_MEDIA_BUTTON)
         mediaButtonIntent.setClass(this, MediaButtonReceiver::class.java)
 
-        val pendingIntent = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            PendingIntent.getBroadcast(this,0, mediaButtonIntent, PendingIntent.FLAG_IMMUTABLE.and(PendingIntent.FLAG_UPDATE_CURRENT))
-        } else {
-            PendingIntent.getBroadcast(this, 0, mediaButtonIntent, PendingIntent.FLAG_UPDATE_CURRENT)
-        }
+        val pendingIntent =
+            PendingIntent.getBroadcast(this,0, mediaButtonIntent, PendingIntent.FLAG_IMMUTABLE)
 
         mMediaSessionCompat.setMediaButtonReceiver(pendingIntent)
         mMediaSessionCompat.setPlaybackState(buildState(PlaybackStateCompat.STATE_NONE.toLong()))
@@ -329,8 +329,7 @@ class MusicService : MediaBrowserServiceCompat(), OnAudioFocusChangeListener, Pl
         playerNotification.setUseChronometer(true)
 
         playerNotification.setPlayer(player)
-        playerNotification.setMediaSessionToken(mMediaSessionCompat.sessionToken)
-
+        //playerNotification.setMediaSessionToken(mMediaSessionCompat.sessionToken)
     }
     private fun buildState(state: Long): PlaybackStateCompat? {
         return PlaybackStateCompat.Builder().setActions(

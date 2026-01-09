@@ -8,12 +8,14 @@ import android.media.session.PlaybackState
 import android.net.Uri
 import android.os.Bundle
 import android.os.Parcelable
+import android.provider.MediaStore
 import android.support.v4.media.MediaBrowserCompat
 import android.support.v4.media.session.MediaControllerCompat
 import android.support.v4.media.session.PlaybackStateCompat
 import android.text.Editable
 import android.text.TextUtils
 import android.text.TextWatcher
+import android.util.Log
 import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.View
@@ -50,6 +52,7 @@ import com.google.gson.Gson
 import kotlinx.coroutines.Delay
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
+import kotlin.math.log
 
 class AudiosFragment() : Fragment() {
 
@@ -84,6 +87,16 @@ class AudiosFragment() : Fragment() {
         animationDrawable.setExitFadeDuration(2000)
         animationDrawable.start()*/
 
+        //media info
+        val audioCount = MediaFacer.getAudioCount(requireActivity(), MediaFacer.externalAudioContent)
+        val imageCount = MediaFacer.getImageCount(requireActivity(), MediaFacer.externalImagesContent)
+        val videoCount = MediaFacer.getVideoCount(requireActivity(), MediaFacer.externalVideoContent)
+
+        Log.d("audios count", audioCount.toString())
+        Log.d("images count", imageCount.toString())
+        Log.d("videos count", videoCount.toString())
+
+
         bindings.audiosList.hasFixedSize()
         bindings.audiosList.setHasFixedSize(true)
         bindings.audiosList.setItemViewCacheSize(20)
@@ -107,7 +120,7 @@ class AudiosFragment() : Fragment() {
         // init and setup your recyclerview with a layout manager
         val layoutManager = LinearLayoutManager(requireActivity(), RecyclerView.VERTICAL, false)
         bindings.audiosList.layoutManager = layoutManager
-        //bindings.audiosList.itemAnimator = anim
+        // bindings.audiosList.itemAnimator = anim
 
         paginationStart = 0
         paginationLimit = 100

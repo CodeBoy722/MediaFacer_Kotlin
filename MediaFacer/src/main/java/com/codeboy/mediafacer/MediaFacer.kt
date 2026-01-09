@@ -15,6 +15,7 @@ import java.io.File
 import java.util.*
 import java.util.concurrent.TimeUnit
 import kotlin.collections.ArrayList
+import androidx.core.net.toUri
 
 object MediaFacer : VideoGet, AudioGet, ImageGet {
 
@@ -112,7 +113,7 @@ object MediaFacer : VideoGet, AudioGet, ImageGet {
 
                             val albumId: Long =
                                 cursor.getLong(cursor.getColumnIndexOrThrow(Audio.Media.ALBUM_ID))
-                            val sArtworkUri = Uri.parse("content://media/external/audio/albumart")
+                            val sArtworkUri = "content://media/external/audio/albumart".toUri()
                             val artUri = Uri.withAppendedPath(sArtworkUri, albumId.toString())
                             audio.artUri = artUri.toString()
 
@@ -330,10 +331,7 @@ object MediaFacer : VideoGet, AudioGet, ImageGet {
 
                                         val dataPath: String =
                                             cursor.getString(cursor.getColumnIndexOrThrow(Video.Media.DATA))
-                                        var folderPath = dataPath.substring(
-                                            0,
-                                            dataPath.lastIndexOf("$folderName/")
-                                        )
+                                        var folderPath = dataPath.take(dataPath.lastIndexOf("$folderName/"))
                                         folderPath = "$folderPath$folderName/"
                                         videoFolder.folderPath = folderPath
 
@@ -397,10 +395,7 @@ object MediaFacer : VideoGet, AudioGet, ImageGet {
                                             cursor.getString(cursor.getColumnIndexOrThrow(Images.Media.BUCKET_DISPLAY_NAME))
                                         val dataPath: String =
                                             cursor.getString(cursor.getColumnIndexOrThrow(Images.Media.DATA))
-                                        var folderPath = dataPath.substring(
-                                            0,
-                                            dataPath.lastIndexOf("$folderName/")
-                                        )
+                                        var folderPath = dataPath.take(dataPath.lastIndexOf("$folderName/"))
                                         folderPath = "$folderPath$folderName/"
                                         imageFolder.folderPath = folderPath
 
@@ -481,7 +476,7 @@ object MediaFacer : VideoGet, AudioGet, ImageGet {
                                         album.albumArtist = albumArtist
 
                                         val sArtworkUri =
-                                            Uri.parse("content://media/external/audio/albumart")
+                                            "content://media/external/audio/albumart".toUri()
                                         val imageUri =
                                             Uri.withAppendedPath(sArtworkUri, albumId.toString())
                                         album.albumArtUri = imageUri.toString()
@@ -556,10 +551,7 @@ object MediaFacer : VideoGet, AudioGet, ImageGet {
                                                 val dataPath: String = cursor.getString(
                                                     cursor.getColumnIndexOrThrow(Audio.Media.DATA)
                                                 )
-                                                var folderPath = dataPath.substring(
-                                                    0,
-                                                    dataPath.lastIndexOf("$folderNameQ/")
-                                                )
+                                                var folderPath = dataPath.take(dataPath.lastIndexOf("$folderNameQ/"))
                                                 folderPath = "$folderPath$folderNameQ/"
 
                                                 audioBucket.bucketPath = folderPath
@@ -591,7 +583,7 @@ object MediaFacer : VideoGet, AudioGet, ImageGet {
                                 val folderName = parent.name
 
                                 var folderPath =
-                                    dataPath.substring(0, dataPath.lastIndexOf("$folderName/"))
+                                    dataPath.take(dataPath.lastIndexOf("$folderName/"))
                                 folderPath = "$folderPath$folderName/"
 
                                 when {
@@ -844,7 +836,7 @@ object MediaFacer : VideoGet, AudioGet, ImageGet {
 
                         val albumId: Long =
                             cursor.getLong(cursor.getColumnIndexOrThrow(Audio.Media.ALBUM_ID))
-                        val sArtworkUri = Uri.parse("content://media/external/audio/albumart")
+                        val sArtworkUri = "content://media/external/audio/albumart".toUri()
                         val artUri = Uri.withAppendedPath(sArtworkUri, albumId.toString())
                         audio.artUri = artUri.toString()
 
@@ -955,6 +947,46 @@ object MediaFacer : VideoGet, AudioGet, ImageGet {
             videos = super.searchVideos(context, contentMedium, selectionType, selectionValue)
         }
         return videos
+    }
+
+
+    /**
+     * Get an Int, number representing the number of AudioContent from device Mediastore
+     *@param context the app or activity Context
+     * @param contentMedium internal or external storage uri
+     * @param selectionType defines the type of value to search for ie:  Audio.Media.DISPLAY_NAME, Audio.Media.BUCKET_DISPLAY_NAME
+     * @param selectionValue the search string
+     *
+     * @return  Int, number representing the number of AudioContent
+     */
+    override fun getAudioCount(
+        context: Context,
+        contentMedium: Uri,
+    ): Int {
+        return super.getAudioCount(context, contentMedium,)
+    }
+
+
+    /**
+     * Get an Int, number representing the number of ImageContent from device Mediastore
+     *@param context the app or activity Context
+     * @param contentMedium internal or external storage uri
+     *
+     * @return  Int, number representing the number of ImageContent
+     */
+    override fun getImageCount(context: Context, contentMedium: Uri): Int {
+        return super.getImageCount(context, contentMedium)
+    }
+
+    /**
+     * Get an Int, number representing the number of VideoContent from device Mediastore
+     *@param context the app or activity Context
+     * @param contentMedium internal or external storage uri
+     *
+     * @return  Int, number representing the number of VideoContent
+     */
+    override fun getVideoCount(context: Context, contentMedium: Uri): Int {
+        return super.getVideoCount(context, contentMedium)
     }
 
     /*fun getGalleryContent(context: Context, contentMedium: Uri){

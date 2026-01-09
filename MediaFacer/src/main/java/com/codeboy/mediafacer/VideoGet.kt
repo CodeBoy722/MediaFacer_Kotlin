@@ -114,7 +114,7 @@ internal interface VideoGet {
                             val dataPath: String =
                                 cursor.getString(cursor.getColumnIndexOrThrow(Video.Media.DATA))
                             var folderPath =
-                                dataPath.substring(0, dataPath.lastIndexOf("$folderName/"))
+                                dataPath.take(dataPath.lastIndexOf("$folderName/"))
                             folderPath = "$folderPath$folderName/"
                             videoFolder.folderPath = folderPath
 
@@ -233,7 +233,7 @@ internal interface VideoGet {
 
                 val bucketId: Int =
                     cursor.getInt(cursor.getColumnIndexOrThrow(Video.Media.BUCKET_ID))
-                var folderPath = dataPath.substring(0, dataPath.lastIndexOf("$folderName/"))
+                var folderPath = dataPath.take(dataPath.lastIndexOf("$folderName/"))
                 folderPath = "$folderPath$folderName/"
 
                 if (!folderIds.contains(bucketId)) {
@@ -319,4 +319,17 @@ internal interface VideoGet {
         return videos
     }
 
+    fun getVideoCount(
+        context: Context,
+        contentMedium: Uri
+    ): Int {
+        val allVideo: ArrayList<VideoContent> = ArrayList()
+        val cursor = context.contentResolver.query(
+            contentMedium, videoProjections, null, null, null
+        )
+
+        val numOfVideos = cursor?.count?: 0
+        cursor?.close()
+        return numOfVideos
+    }
 }

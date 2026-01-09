@@ -106,7 +106,7 @@ internal interface ImageGet {
                             val dataPath: String =
                                 cursor.getString(cursor.getColumnIndexOrThrow(Images.Media.DATA))
                             var folderPath =
-                                dataPath.substring(0, dataPath.lastIndexOf("$folderName/"))
+                                dataPath.take(dataPath.lastIndexOf("$folderName/"))
                             folderPath = "$folderPath$folderName/"
                             imageFolder.folderPath = folderPath
 
@@ -227,7 +227,7 @@ internal interface ImageGet {
 
                 val dataPath: String =
                     cursor.getString(cursor.getColumnIndexOrThrow(Images.Media.DATA))
-                var folderPath = dataPath.substring(0, dataPath.lastIndexOf("$folderName/"))
+                var folderPath = dataPath.take(dataPath.lastIndexOf("$folderName/"))
                 folderPath = "$folderPath$folderName/"
 
                 if (!folderIds.contains(bucketId)) {
@@ -250,4 +250,17 @@ internal interface ImageGet {
         return absolutePictureFolders
     }
 
+
+    fun getImageCount(
+        context: Context,
+        contentMedium: Uri
+    ): Int {
+        val allImages = ArrayList<ImageContent>()
+        val cursor = context.contentResolver.query(
+            contentMedium, imageProjections, null, null, null
+        )
+        val numOfImages = cursor?.count ?: 0
+        cursor?.close()
+        return numOfImages
+    }
 }

@@ -10,6 +10,8 @@ import android.app.PendingIntent.FLAG_UPDATE_CURRENT
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.content.pm.ServiceInfo
+import android.media.AudioManager
+import android.media.AudioManager.OnAudioFocusChangeListener
 import android.net.Uri
 import android.os.Build
 import android.os.Bundle
@@ -20,6 +22,7 @@ import androidx.core.app.NotificationManagerCompat
 import androidx.core.app.TaskStackBuilder
 import androidx.lifecycle.Observer
 import androidx.media3.common.*
+import androidx.media3.session.MediaSession
 import androidx.media3.common.util.UnstableApi
 import androidx.media3.common.util.Util
 import androidx.media3.exoplayer.ExoPlayer
@@ -41,7 +44,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
-class MediaLibrary : MediaLibraryService(), Player.Listener {
+class MediaLibrary : MediaLibraryService(), OnAudioFocusChangeListener, Player.Listener {
 
     private val librarySessionCallback = CustomMediaLibrarySessionCallback()
     private lateinit var player: ExoPlayer
@@ -86,8 +89,6 @@ class MediaLibrary : MediaLibraryService(), Player.Listener {
         }
     }
 
-
-
     @OptIn(UnstableApi::class)
     override fun onCreate() {
         super.onCreate()
@@ -125,7 +126,6 @@ class MediaLibrary : MediaLibraryService(), Player.Listener {
             PlaybackProtocol.setMusicList(musicList)
             setupUpMusicList(musicList, 0)
         }
-
     }
 
     @OptIn(UnstableApi::class)
@@ -155,7 +155,7 @@ class MediaLibrary : MediaLibraryService(), Player.Listener {
         }//else the is no music on device so nothing will be set
     }
 
-     @OptIn(UnstableApi::class)
+
     override fun onUpdateNotification(session: MediaSession) {
         val playerNotificationBuilder = PlayerNotificationManager.Builder(this, NOTIFICATION_ID, CHANNEL_ID)
             .setChannelNameResourceId(R.string.channel_name)
@@ -189,40 +189,6 @@ class MediaLibrary : MediaLibraryService(), Player.Listener {
             .setPlayActionIconResourceId(R.drawable.ic_play)
             .setPauseActionIconResourceId(R.drawable.ic_pause)
             .setStopActionIconResourceId(R.drawable.ic_cancel)
-         //this customs are not needed
-           /* .setCustomActionReceiver(object: PlayerNotificationManager.CustomActionReceiver{
-                override fun createCustomActions(context: Context, instanceId: Int): MutableMap<String, NotificationCompat.Action> {
-                    return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-                        mutableMapOf(Pair(
-                            CUSTOM_COMMAND_STOP_PLAYER,
-                            NotificationCompat.Action(R.drawable.ic_cancel, "Stop Player",
-                                PendingIntent.getBroadcast(context, 300, Intent(
-                                    CUSTOM_COMMAND_STOP_PLAYER).setPackage(context.packageName), PendingIntent.FLAG_IMMUTABLE)//.and(PendingIntent.FLAG_UPDATE_CURRENT)
-                            )
-                        ))
-                    } else {
-                        mutableMapOf(Pair(
-                            CUSTOM_COMMAND_STOP_PLAYER,
-                            NotificationCompat.Action(R.drawable.ic_cancel, "Stop Player",
-                                PendingIntent.getBroadcast(context, 300, Intent(
-                                    CUSTOM_COMMAND_STOP_PLAYER).setPackage(context.packageName),PendingIntent.FLAG_IMMUTABLE )//PendingIntent.FLAG_UPDATE_CURRENT.and(PendingIntent.FLAG_IMMUTABLE)
-                            )
-                        ))
-                    }
-                }
-
-                override fun getCustomActions(player: Player): MutableList<String> {
-                    return mutableListOf(CUSTOM_COMMAND_STOP_PLAYER)
-                }
-
-                override fun onCustomAction(player: Player, action: String, intent: Intent) {
-                    when (action) {
-                        CUSTOM_COMMAND_STOP_PLAYER -> {
-                            stopSelf()
-                        }
-                    }
-                }
-            })*/
 
         playerNotification = playerNotificationBuilder.build()
         playerNotification.setUseStopAction(true)
@@ -232,8 +198,7 @@ class MediaLibrary : MediaLibraryService(), Player.Listener {
         playerNotification.setUsePreviousActionInCompactView(true)
         playerNotification.setUseChronometer(true)
         playerNotification.setPlayer(player)
-        playerNotification.setMediaSessionToken(session.sessionCompatToken)
-
+        playerNotification.setMediaSessionToken(session.platformToken)
     }
 
     @OptIn(UnstableApi::class)
@@ -453,7 +418,6 @@ class MediaLibrary : MediaLibraryService(), Player.Listener {
         }
     }
 
-
     //add shuffling to media notification
     private fun getShuffleCommandButton(sessionCommand: SessionCommand): CommandButton {
         val isOn = sessionCommand.customAction == CUSTOM_COMMAND_TOGGLE_SHUFFLE_MODE_ON
@@ -559,7 +523,6 @@ class MediaLibrary : MediaLibraryService(), Player.Listener {
             }
             notificationManagerCompat.notify(NOTIFICATION_ID, builder.build())
         }
-
     }
 
     @OptIn(UnstableApi::class)
@@ -614,6 +577,28 @@ class MediaLibrary : MediaLibraryService(), Player.Listener {
             }
             ExoPlayer.STATE_IDLE -> {
                 //here you can set items and prepare
+            }
+        }
+    }
+
+    override fun onAudioFocusChange(focusChange: Int) {
+        when (focusChange) {
+            AudioManager.AUDIOFOCUS_LOSS -> {
+                if (player.isPlaying) {
+                    player.stop()
+                }
+            }
+            AudioManager.AUDIOFOCUS_LOSS_TRANSIENT -> {
+                player.pause()
+            }
+            AudioManager.AUDIOFOCUS_LOSS_TRANSIENT_CAN_DUCK -> {
+                player.volume = 0.3f
+            }
+            AudioManager.AUDIOFOCUS_GAIN -> {
+                if (!player.isPlaying) {
+                    player.play()
+                }
+                player.volume = 1.0f
             }
         }
     }

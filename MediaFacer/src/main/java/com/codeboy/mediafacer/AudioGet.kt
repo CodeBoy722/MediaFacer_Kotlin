@@ -14,6 +14,7 @@ import com.codeboy.mediafacer.models.*
 import java.io.File
 import java.util.*
 import java.util.concurrent.TimeUnit
+import androidx.core.net.toUri
 
 internal interface AudioGet {
 
@@ -117,7 +118,7 @@ internal interface AudioGet {
 
                     val albumId: Long =
                         cursor.getLong(cursor.getColumnIndexOrThrow(Audio.Media.ALBUM_ID))
-                    val sArtworkUri = Uri.parse("content://media/external/audio/albumart")
+                    val sArtworkUri = "content://media/external/audio/albumart".toUri()
                     val arUri = Uri.withAppendedPath(sArtworkUri, albumId.toString())
                     audio.artUri = arUri.toString()
 
@@ -180,7 +181,7 @@ internal interface AudioGet {
                              }*/
                             album.albumArtist = albumArtist
 
-                            val sArtworkUri = Uri.parse("content://media/external/audio/albumart")
+                            val sArtworkUri = "content://media/external/audio/albumart".toUri()
                             val imageUri = Uri.withAppendedPath(sArtworkUri, albumId.toString())
                             album.albumArtUri = imageUri.toString()
                             album.albumId = albumId
@@ -250,7 +251,7 @@ internal interface AudioGet {
 
                     val albumId: Long =
                         cursor.getLong(cursor.getColumnIndexOrThrow(Audio.Media.ALBUM_ID))
-                    val sArtworkUri = Uri.parse("content://media/external/audio/albumart")
+                    val sArtworkUri = "content://media/external/audio/albumart".toUri()
                     val arUri = Uri.withAppendedPath(sArtworkUri, albumId.toString())
                     audio.artUri = arUri.toString()
 
@@ -310,7 +311,7 @@ internal interface AudioGet {
                                 cursor.getString(cursor.getColumnIndexOrThrow(Audio.Media.DATA))
 
                             var folderPath =
-                                dataPath.substring(0, dataPath.lastIndexOf("$folderNameQ/"))
+                                dataPath.take(dataPath.lastIndexOf("$folderNameQ/"))
                             folderPath = "$folderPath$folderNameQ/"
 
                             audioBucket.bucketPath = folderPath
@@ -339,7 +340,7 @@ internal interface AudioGet {
                             val folderName = parent.name
 
                             var folderPath =
-                                dataPath.substring(0, dataPath.lastIndexOf("$folderName/"))
+                                dataPath.take(dataPath.lastIndexOf("$folderName/"))
                             folderPath = "$folderPath$folderName/"
 
                             audioBucket.bucketPath = folderPath
@@ -427,7 +428,7 @@ internal interface AudioGet {
                                 val albumId: Long =
                                     cursor.getLong(cursor.getColumnIndexOrThrow(Audio.Media.ALBUM_ID))
                                 val sArtworkUri =
-                                    Uri.parse("content://media/external/audio/albumart")
+                                    "content://media/external/audio/albumart".toUri()
 
                                 val arUri = Uri.withAppendedPath(sArtworkUri, albumId.toString())
                                 folderAudio.artUri = arUri.toString()
@@ -464,7 +465,7 @@ internal interface AudioGet {
                             val folderName = parent.name
 
                             var folderPath =
-                                dataPath.substring(0, dataPath.lastIndexOf("$folderName/"))
+                                dataPath.take(dataPath.lastIndexOf("$folderName/"))
                             folderPath = "$folderPath$folderName/"
 
                             if (folderPath == bucketIdOrPath) {
@@ -501,7 +502,7 @@ internal interface AudioGet {
                                 val albumId: Long =
                                     cursor.getLong(cursor.getColumnIndexOrThrow(Audio.Media.ALBUM_ID))
                                 val sArtworkUri =
-                                    Uri.parse("content://media/external/audio/albumart")
+                                    "content://media/external/audio/albumart".toUri()
 
                                 val artUri =
                                     Uri.withAppendedPath(sArtworkUri, albumId.toString())
@@ -624,7 +625,7 @@ internal interface AudioGet {
 
                     val albumId: String =
                         cursor.getString(cursor.getColumnIndexOrThrow(Audio.Media.ALBUM_ID))
-                    val sArtworkUri = Uri.parse("content://media/external/audio/albumart")
+                    val sArtworkUri = "content://media/external/audio/albumart".toUri()
                     val artUri = Uri.withAppendedPath(sArtworkUri, albumId)
                     audio.artUri = artUri.toString()
 
@@ -807,7 +808,7 @@ internal interface AudioGet {
 
                             val albumId: Long =
                                 cursor.getLong(cursor.getColumnIndexOrThrow(Audio.Media.ALBUM_ID))
-                            val sArtworkUri = Uri.parse("content://media/external/audio/albumart")
+                            val sArtworkUri = "content://media/external/audio/albumart".toUri()
                             val artUri = Uri.withAppendedPath(sArtworkUri, albumId.toString())
                             audio.artUri = artUri.toString()
 
@@ -885,7 +886,7 @@ internal interface AudioGet {
 
                             val albumId: Long =
                                 cursor.getLong(cursor.getColumnIndexOrThrow(Audio.Media.ALBUM_ID))
-                            val sArtworkUri = Uri.parse("content://media/external/audio/albumart")
+                            val sArtworkUri = "content://media/external/audio/albumart".toUri()
                             val artUri = Uri.withAppendedPath(sArtworkUri, albumId.toString())
                             audio.artUri = artUri.toString()
 
@@ -960,7 +961,7 @@ internal interface AudioGet {
 
                     val albumId: Long =
                         cursor.getLong(cursor.getColumnIndexOrThrow(Audio.Media.ALBUM_ID))
-                    val sArtworkUri = Uri.parse("content://media/external/audio/albumart")
+                    val sArtworkUri = "content://media/external/audio/albumart".toUri()
                     val artUri = Uri.withAppendedPath(sArtworkUri, albumId.toString())
                     audio.artUri = artUri.toString()
 
@@ -1006,6 +1007,25 @@ internal interface AudioGet {
             genre = "unknown"
         }
         return genre
+    }
+
+    fun getAudioCount(
+        context: Context,
+        contentMedium: Uri,
+       ): Int {
+        val cursor = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+            context.contentResolver.query(
+                contentMedium, audioProjections, audioSelection, null, null
+            )!!
+        } else {
+            context.contentResolver.query(
+                contentMedium, audioProjectionsBelowQ, audioSelection, null, null
+            )!!
+        }
+
+        val numOfAudios = cursor.count
+        cursor.close()
+        return numOfAudios
     }
 
 }
