@@ -1,0 +1,30 @@
+{
+  "project_info": {
+    "project_number": "429511860355",
+    "project_id": "mediafacer-kotlin",
+    "storage_bucket": "mediafacer-kotlin.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:429511860355:android:5e7e8a42198a3c40067bb6",
+        "android_client_info": {
+          "package_name": "com.codeboy.mediafacerkotlin"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDvajwcXnzc67iPH7-iOErEcHCv_bp92sE"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      },
+      "admob_app_id": "ca-app-pub-5037936622076338~3166798163"
+    }
+  ],
+  "configuration_version": "1"
+}
