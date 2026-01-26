@@ -5,10 +5,7 @@ import android.content.Intent
 import android.graphics.drawable.AnimationDrawable
 import android.media.metrics.PlaybackStateEvent.STATE_PLAYING
 import android.media.session.PlaybackState
-import android.net.Uri
 import android.os.Bundle
-import android.os.Parcelable
-import android.provider.MediaStore
 import android.support.v4.media.MediaBrowserCompat
 import android.support.v4.media.session.MediaControllerCompat
 import android.support.v4.media.session.PlaybackStateCompat
@@ -24,11 +21,12 @@ import android.view.animation.Animation
 import android.view.animation.AnimationUtils
 import android.view.animation.LinearInterpolator
 import android.view.animation.RotateAnimation
+import androidx.annotation.OptIn
 import androidx.appcompat.content.res.AppCompatResources.getDrawable
 import androidx.appcompat.widget.PopupMenu
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.lifecycleScope
-import androidx.media3.common.MediaItem
+import androidx.media3.common.util.UnstableApi
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.transition.Slide
@@ -40,7 +38,7 @@ import com.codeboy.mediafacerkotlin.databinding.FragmentAudiosBinding
 import com.codeboy.mediafacerkotlin.dialogs.AudioDetails
 import com.codeboy.mediafacerkotlin.listeners.AudioActionListener
 import com.codeboy.mediafacerkotlin.listeners.AudioContainerActionListener
-import com.codeboy.mediafacerkotlin.musicSession.MediaLibrary
+import com.codeboy.mediafacerkotlin.musicSession.OldMediaLibrary
 import com.codeboy.mediafacerkotlin.musicSession.MusicService
 import com.codeboy.mediafacerkotlin.musicSession.PlaybackProtocol
 import com.codeboy.mediafacerkotlin.utils.EndlessScrollListener
@@ -49,10 +47,8 @@ import com.codeboy.mediafacerkotlin.viewAdapters.*
 import com.codeboy.mediafacerkotlin.viewModels.*
 import com.google.android.flexbox.*
 import com.google.gson.Gson
-import kotlinx.coroutines.Delay
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
-import kotlin.math.log
 
 class AudiosFragment() : Fragment() {
 
@@ -461,6 +457,7 @@ class AudiosFragment() : Fragment() {
 
     //MusicService Section, functions for music playback with media session and exoplayer -------------------------------------------------------------------------------------------------------------------------------------------------------------
 
+    @OptIn(UnstableApi::class)
     private fun startAndBindMusicService(){
         val intent = Intent(requireActivity(), MusicService::class.java)
         requireActivity().startService(intent)
@@ -472,13 +469,14 @@ class AudiosFragment() : Fragment() {
         }
     }
 
+    @OptIn(UnstableApi::class)
     private fun startAndBindMediaLibrary(){
-        if (!MediaLibrary.isStarted()){
-            val intent = Intent(requireActivity(), MediaLibrary::class.java)
+        if (!OldMediaLibrary.isStarted()){
+            val intent = Intent(requireActivity(), OldMediaLibrary::class.java)
             requireActivity().startService(intent)
         }
         MediaBrowserCompat(requireActivity(),
-            ComponentName(requireActivity(), MediaLibrary::class.java), mMediaBrowserConnectionCallback, requireActivity().intent.extras).apply {
+            ComponentName(requireActivity(), OldMediaLibrary::class.java), mMediaBrowserConnectionCallback, requireActivity().intent.extras).apply {
             connect()
             musicServiceBrowserCompat = this
         }

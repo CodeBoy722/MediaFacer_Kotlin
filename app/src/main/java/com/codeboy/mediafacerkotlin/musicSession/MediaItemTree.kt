@@ -9,6 +9,7 @@ import androidx.media3.common.util.Util
 import com.codeboy.mediafacer.models.AudioContent
 import com.google.common.collect.ImmutableList
 import org.json.JSONObject
+import androidx.core.net.toUri
 
 object MediaItemTree {
 
@@ -307,8 +308,8 @@ object MediaItemTree {
         val genre = audio.genre
         val subtitleConfigurations: MutableList<MediaItem.SubtitleConfiguration> = mutableListOf()
         //no subtitles here
-        val sourceUri = Uri.parse(audio.musicUri)
-        val imageUri = Uri.parse(audio.musicUri)
+        val sourceUri = audio.musicUri.toUri()
+        val imageUri = audio.musicUri.toUri()
         // key of such items in tree
         val idInTree = ITEM_PREFIX + id
         val albumFolderIdInTree = ALBUM_PREFIX + album

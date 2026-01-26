@@ -82,7 +82,7 @@
         </service>-->
 
         <service
-            android:name=".musicSession.MediaLibrary"
+            android:name=".musicSession.OldMediaLibrary"
             android:foregroundServiceType="mediaPlayback"
             android:enabled="true"
             android:exported="false">
